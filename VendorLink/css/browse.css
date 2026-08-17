@@ -1,0 +1,369 @@
+/* ==========================
+   BROWSE EVENTS PAGE
+========================== */
+
+.browse{
+    padding:80px 0;
+    background:#F8FAFC;
+}
+
+.browse-header{
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.browse-header h1{
+    font-size:48px;
+    color:#0F172A;
+    margin-bottom:15px;
+}
+
+.browse-header p{
+    color:#64748B;
+    font-size:18px;
+}
+
+/* ==========================
+   LAYOUT
+========================== */
+
+.browse-layout{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:35px;
+}
+
+/* ==========================
+   FILTER SIDEBAR
+========================== */
+
+.filters{
+
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    height:fit-content;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.filters h3{
+
+    margin-bottom:25px;
+    font-size:24px;
+
+}
+
+.filters label{
+
+    display:block;
+    margin-top:20px;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#334155;
+
+}
+
+.filters input,
+.filters select{
+
+    width:100%;
+    padding:14px;
+    border:1px solid #CBD5E1;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+
+}
+
+.filters input:focus,
+.filters select:focus{
+
+    border-color:#2563EB;
+
+}
+
+.filter-btn{
+
+    width:100%;
+    margin-top:30px;
+    padding:15px;
+    background:#2563EB;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    transition:.3s;
+
+}
+
+.filter-btn:hover{
+
+    background:#1D4ED8;
+
+}
+
+/* ==========================
+   EVENT GRID
+========================== */
+
+.events{
+
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:30px;
+
+}
+
+.event-card{
+
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+
+}
+
+.event-card:hover{
+
+    transform:translateY(-10px);
+
+}
+
+.event-card img{
+
+    width:100%;
+    height:220px;
+    object-fit:cover;
+
+}
+
+.event-content{
+
+    padding:25px;
+
+}
+
+.event-content h3{
+
+    margin-bottom:15px;
+    font-size:24px;
+    color:#0F172A;
+
+}
+
+.event-content p{
+
+    margin-bottom:10px;
+    color:#64748B;
+
+}
+
+.event-content .primary-btn{
+
+    margin-top:20px;
+    display:inline-block;
+
+}
+
+/* ==========================
+   STATUS BADGE
+========================== */
+
+.status{
+
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:15px;
+
+}
+
+.open{
+
+    background:#DCFCE7;
+    color:#15803D;
+
+}
+
+.full{
+
+    background:#FEE2E2;
+    color:#B91C1C;
+
+}
+
+/* ==========================
+   PAGINATION
+========================== */
+
+.pagination{
+
+    margin-top:60px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+
+}
+
+.pagination a{
+
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-decoration:none;
+    color:#2563EB;
+    font-weight:600;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.pagination a.active{
+
+    background:#2563EB;
+    color:white;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:1100px){
+
+.browse-layout{
+
+    grid-template-columns:1fr;
+
+}
+
+.filters{
+
+    order:2;
+
+}
+
+.events{
+
+    grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:768px){
+
+.events{
+
+    grid-template-columns:1fr;
+
+}
+
+.browse-header h1{
+
+    font-size:36px;
+
+}
+
+.filters{
+
+    padding:25px;
+
+}
+
+}
+/* ==========================
+   EVENT DETAILS
+========================== */
+
+.event-details{
+    padding:80px 0;
+}
+
+.banner{
+    width:100%;
+    height:420px;
+    object-fit:cover;
+    border-radius:20px;
+    margin-bottom:50px;
+}
+
+.details-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:40px;
+}
+
+.left h1{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.left p{
+    color:#64748B;
+    margin:20px 0;
+}
+
+.left h3{
+    margin-top:35px;
+    margin-bottom:15px;
+}
+
+.info-list,
+.requirements{
+    padding-left:20px;
+}
+
+.info-list li,
+.requirements li{
+    margin-bottom:12px;
+    color:#475569;
+}
+
+.apply-card{
+    background:#fff;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    position:sticky;
+    top:100px;
+}
+
+.price{
+    margin:25px 0;
+}
+
+.price h1{
+    font-size:42px;
+    color:#2563EB;
+}
+
+.apply-card hr{
+    margin:25px 0;
+    border:none;
+    border-top:1px solid #E5E7EB;
+}
+
+@media(max-width:900px){
+
+.details-grid{
+    grid-template-columns:1fr;
+}
+
+.banner{
+    height:260px;
+}
+
+.apply-card{
+    position:static;
+}
+
+}
