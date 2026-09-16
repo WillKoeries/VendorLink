@@ -61,7 +61,6 @@ public class NotificationService {
 
     @Transactional
     public void markAllAsRead(Long userId) {
-        // Single bulk UPDATE instead of loading N entities and saving them individually
         notificationRepository.markAllReadByUserId(userId);
     }
 }

@@ -32,7 +32,6 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        // Prevent privilege escalation: only VENDOR and ORGANIZER roles are allowed via self-registration
         if (request.getRole() == Role.ADMIN) {
             throw new IllegalArgumentException("Cannot self-register as ADMIN. Admin accounts must be created by an existing administrator.");
         }
