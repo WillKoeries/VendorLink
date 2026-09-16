@@ -1,83 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | VendorLink</title>
 
-<meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Register | VendorLink</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/auth.css">
-
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
-
 <body>
 
-<section class="auth">
+<!-- Navigation -->
+<header>
+    <div class="container navbar">
+        <div class="logo">
+            <h2>Vendor<span>Link</span></h2>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="register.html" class="register-btn active">Join Now</a>
+        </div>
+    </div>
+</header>
 
-<div class="auth-container">
+<main class="auth-wrapper">
+    <div class="auth-card">
 
-<div class="auth-left">
+        <!-- Left Moving Visual Stage -->
+        <section class="auth-stage">
+            <div class="stage-slides">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" class="slide-img active" alt="Cape Town Summer Market">
+                <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Joburg Street Food Stalls">
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Artisan Craft Expo">
+                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Twilight Night Market">
+            </div>
+            <div class="stage-overlay"></div>
 
-<h1>Join VendorLink</h1>
+            <div class="stage-content">
+                <span class="stage-badge"><i class="fa-solid fa-sparkles"></i> Get Started</span>
+                <h1 class="stage-headline">Join South Africa's Market Network</h1>
+                <p class="stage-desc">
+                    Create an account to reserve verified stalls, showcase your brand, or manage your upcoming events and applications.
+                </p>
+            </div>
 
-<p>
+            <div class="stage-footer">
+                <div class="stage-indicators">
+                    <span class="stage-dot active"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                </div>
+            </div>
+        </section>
 
-Create your vendor account and start applying for markets today.
+        <!-- Right Form Panel -->
+        <section class="auth-panel">
 
-</p>
+            <div id="authAlert" class="auth-alert">
+                <i id="alertIcon" class="fa-solid fa-circle-exclamation"></i>
+                <span id="alertMsg"></span>
+            </div>
 
-<img src="images/register.png">
+            <div class="auth-title">
+                <h2>Create Your Account</h2>
+                <p>Register as a Vendor or an Event Organizer/Admin.</p>
+            </div>
 
-</div>
+            <form id="registerForm" class="form-box" novalidate>
 
-<div class="auth-right">
+                <!-- Simple Role Selection -->
+                <div class="input-field-wrap">
+                    <label for="regRole">I want to register as</label>
+                    <div class="input-icon-box">
+                        <i class="fa-solid fa-user-tag"></i>
+                        <select id="regRole" required>
+                            <option value="VENDOR">Vendor (Trader / Stallholder)</option>
+                            <option value="ADMIN">Admin / Event Organizer</option>
+                        </select>
+                    </div>
+                </div>
 
-<form>
+                <div class="input-field-wrap">
+                    <label for="regFullName">Full Name</label>
+                    <div class="input-icon-box">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="regFullName" placeholder="Full Name" required>
+                    </div>
+                </div>
 
-<h2>Create Account</h2>
+                <div class="input-field-wrap">
+                    <label for="regEmail">Email Address</label>
+                    <div class="input-icon-box">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="regEmail" placeholder="Email Address" required>
+                    </div>
+                </div>
 
-<input type="text" placeholder="Full Name">
+                <div class="input-field-wrap">
+                    <label for="regBusinessName" id="regBusinessLabel">Business Name</label>
+                    <div class="input-icon-box">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <input type="text" id="regBusinessName" placeholder="Business or Brand Name" required>
+                    </div>
+                </div>
 
-<input type="email" placeholder="Email Address">
+                <div class="input-field-wrap">
+                    <label for="regPassword">Password</label>
+                    <div class="input-icon-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="regPassword" placeholder="Password (Min 8 characters)" required>
+                    </div>
+                </div>
 
-<input type="text" placeholder="Business Name">
+                <button type="submit" class="auth-submit-btn">
+                    <span>Create Account</span> <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
 
-<input type="password" placeholder="Password">
+            <p class="auth-toggle-link">
+                Already have an account? <a href="login.html">Login here</a>
+            </p>
 
-<input type="password" placeholder="Confirm Password">
+        </section>
 
-<button>
+    </div>
+</main>
 
-Create Account
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Rotating Background Visuals
+      const slides = document.querySelectorAll('.slide-img');
+      const dots = document.querySelectorAll('.stage-dot');
+      let currentSlide = 0;
 
-</button>
+      setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+      }, 4000);
 
-<p>
+      // Alert Notification Helper
+      const authAlert = document.getElementById('authAlert');
+      const alertIcon = document.getElementById('alertIcon');
+      const alertMsg = document.getElementById('alertMsg');
 
-Already have an account?
+      function showAlert(type, message) {
+        authAlert.className = `auth-alert ${type}`;
+        authAlert.style.display = 'flex';
+        alertIcon.className = type === 'error' ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
+        alertMsg.textContent = message;
+      }
 
-<a href="login.html">
+      // Dynamic label update on role selection
+      const regRole = document.getElementById('regRole');
+      const regBusinessLabel = document.getElementById('regBusinessLabel');
+      const regBusinessName = document.getElementById('regBusinessName');
 
-Login
+      regRole.addEventListener('change', () => {
+        if (regRole.value === 'ADMIN') {
+          regBusinessLabel.textContent = 'Organization or Company Name';
+          regBusinessName.placeholder = 'Organization or Company Name';
+        } else {
+          regBusinessLabel.textContent = 'Business Name';
+          regBusinessName.placeholder = 'Business or Brand Name';
+        }
+      });
 
-</a>
+      // Registration Handler
+      const registerForm = document.getElementById('registerForm');
+      registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-</p>
+        const role = regRole.value;
+        const fullName = document.getElementById('regFullName').value.trim();
+        const email = document.getElementById('regEmail').value.trim().toLowerCase();
+        const businessName = regBusinessName.value.trim();
+        const password = document.getElementById('regPassword').value;
 
-</form>
+        if (!fullName || !email || !businessName || !password) {
+          showAlert('error', 'Please fill in all fields.');
+          return;
+        }
 
-</div>
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showAlert('error', 'Please enter a valid email address.');
+          return;
+        }
 
-</div>
+        if (password.length < 8) {
+          showAlert('error', 'Password must be at least 8 characters.');
+          return;
+        }
 
-</section>
+        // Check if user already exists
+        const users = JSON.parse(localStorage.getItem('vendorlink_users') || '[]');
+        const exists = users.find(u => u.email === email);
+
+        if (exists) {
+          showAlert('error', 'An account with this email already exists.');
+          return;
+        }
+
+        // Store new account
+        users.push({ fullName, email, businessName, password, role });
+        localStorage.setItem('vendorlink_users', JSON.stringify(users));
+
+        showAlert('success', 'Account created successfully! Redirecting to login...');
+
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1200);
+      });
+    });
+</script>
 
 </body>
-
 </html>
