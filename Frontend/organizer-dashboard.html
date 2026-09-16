@@ -2,263 +2,113 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard | VendorLink</title>
 
-<title>Organizer Dashboard | VendorLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/dashboard.css">
-
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/notifications.css">
 </head>
 
 <body>
 
-<div class="dashboard">
-
-<!-- Sidebar -->
-
-<aside class="sidebar">
-
-<h2>Vendor<span>Link</span></h2>
-
-<ul>
-
-<li class="active">Dashboard</li>
-
-<li>Events</li>
-
-<li>Applications</li>
-
-<li>Vendors</li>
-
-<li>Reports</li>
-
-<li>Settings</li>
-
-<li>Logout</li>
-
-</ul>
-
-</aside>
-
-<!-- Main Content -->
-
-<main class="main">
-
-<div class="topbar">
-
-<h1>Organizer Dashboard</h1>
-
-<div class="profile">
-
-<img src="images/profile.jpg">
-
-<span>John Smith</span>
-
-</div>
-
-</div>
-
-<!-- Statistics -->
-
-<div class="stats">
-
-<div class="card">
-
-<h3>Total Events</h3>
-
-<h1>24</h1>
-
-<p>+3 this month</p>
-
-</div>
-
-<div class="card">
-
-<h3>Applications</h3>
-
-<h1>468</h1>
-
-<p>+52 today</p>
-
-</div>
-
-<div class="card">
-
-<h3>Approved Vendors</h3>
-
-<h1>213</h1>
-
-<p>89% approval</p>
-
-</div>
-
-<div class="card">
-
-<h3>Revenue</h3>
-
-<h1>R82 450</h1>
-
-<p>This month</p>
-
-</div>
-
-</div>
-
-<!-- Events Table -->
-
-<section class="table-section">
-
-<h2>Upcoming Events</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Event</th>
-
-<th>Date</th>
-
-<th>Location</th>
-
-<th>Applications</th>
-
-<th>Status</th>
-
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>Cape Town Summer Market</td>
-
-<td>20 Aug</td>
-
-<td>Cape Town</td>
-
-<td>145</td>
-
-<td><span class="open">Open</span></td>
-
-<td><button>Manage</button></td>
-
-</tr>
-
-<tr>
-
-<td>Food Truck Festival</td>
-
-<td>4 Sept</td>
-
-<td>Johannesburg</td>
-
-<td>98</td>
-
-<td><span class="open">Open</span></td>
-
-<td><button>Manage</button></td>
-
-</tr>
-
-<tr>
-
-<td>Craft Expo</td>
-
-<td>15 Sept</td>
-
-<td>Durban</td>
-
-<td>62</td>
-
-<td><span class="closed">Closed</span></td>
-
-<td><button>View</button></td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</section>
-
-<!-- Recent Applications -->
-
-<section class="applications">
-
-<h2>Recent Vendor Applications</h2>
-
-<div class="application">
-
-<img src="images/vendor1.jpg">
-
-<div>
-
-<h3>Lisa's Coffee Bar</h3>
-
-<p>Food Vendor</p>
-
-</div>
-
-<button class="approve">Approve</button>
-
-<button class="reject">Reject</button>
-
-</div>
-
-<div class="application">
-
-<img src="images/vendor2.jpg">
-
-<div>
-
-<h3>Creative Crafts</h3>
-
-<p>Handmade Products</p>
-
-</div>
-
-<button class="approve">Approve</button>
-
-<button class="reject">Reject</button>
-
-</div>
-
-<div class="application">
-
-<img src="images/vendor3.jpg">
-
-<div>
-
-<h3>Fashion Corner</h3>
-
-<p>Clothing Vendor</p>
-
-</div>
-
-<button class="approve">Approve</button>
-
-<button class="reject">Reject</button>
-
-</div>
-
-</section>
-
-</main>
-
-</div>
-
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Vendor<span>Link</span></h2>
+
+            <ul>
+                <li class="active"><a href="organizer-dashboard.html" style="color:inherit; text-decoration:none;">Dashboard</a></li>
+                <li><a href="browse-events.html" style="color:inherit; text-decoration:none;">Browse Events</a></li>
+                <li><a href="index.html" style="color:inherit; text-decoration:none;">Home</a></li>
+                <li id="sidebar-logout">Logout</li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+
+            <div class="topbar">
+                <h1>Organizer Dashboard</h1>
+
+                <div class="profile">
+                    <img src="images/profile.png" alt="Profile" onerror="this.src='images/market1.png'">
+                    <span id="topbar-user-name">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="card">
+                    <h3>Total Events</h3>
+                    <h1 id="stat-total-events">...</h1>
+                    <p>Organized on VendorLink</p>
+                </div>
+
+                <div class="card">
+                    <h3>Applications</h3>
+                    <h1 id="stat-applications">...</h1>
+                    <p>Total applications received</p>
+                </div>
+
+                <div class="card">
+                    <h3>Approved Vendors</h3>
+                    <h1 id="stat-approved">...</h1>
+                    <p>Confirmed stalls</p>
+                </div>
+
+                <div class="card">
+                    <h3>Revenue</h3>
+                    <h1 id="stat-revenue">...</h1>
+                    <p>From confirmed stall fees</p>
+                </div>
+            </div>
+
+            <!-- Events Table -->
+            <section class="table-section">
+                <h2>Upcoming Events</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Stalls</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="upcoming-events-tbody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">Loading events via Axios...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Recent Applications -->
+            <section class="applications" id="recent-applications-list">
+                <h2>Recent Vendor Applications</h2>
+                <div style="text-align: center; padding: 30px; color: #94a3b8;">
+                    Loading vendor applications via Axios...
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- Axios and Application Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 
 </html>
