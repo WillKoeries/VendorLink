@@ -1,180 +1,458 @@
-/* ==========================
-ABOUT HERO
-========================== */
+/* ===================================================
+   VENDORLINK 3D & DYNAMIC ABOUT STYLES
+=================================================== */
 
-.about-hero{
-
-padding:100px 0;
-background:#2563EB;
-color:white;
-text-align:center;
-
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --navy: #0f172a;
+  --navy-dark: #020617;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-500: #64748b;
+  --slate-700: #334155;
+  --emerald: #10b981;
 }
 
-.about-hero h1{
-
-font-size:56px;
-margin-bottom:20px;
-
+body {
+  background-color: var(--slate-50);
+  color: var(--slate-700);
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
 }
 
-.about-hero p{
-
-font-size:20px;
-color:#E2E8F0;
-
+/* --- 3D Hero Canvas --- */
+.about-hero-3d {
+  position: relative;
+  background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 60%, #020617 100%);
+  color: #ffffff;
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 80px 0;
 }
 
-/* ==========================
-OUR STORY
-========================== */
-
-.story{
-
-padding:90px 0;
-
+#threeCanvasContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: auto;
+  cursor: grab;
 }
 
-.story-grid{
-
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:60px;
-align-items:center;
-
+#threeCanvasContainer:active {
+  cursor: grabbing;
 }
 
-.story img{
-
-width:100%;
-border-radius:20px;
-box-shadow:0 15px 35px rgba(0,0,0,.1);
-
+.hero-overlay-content {
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
+  pointer-events: none;
 }
 
-.story h2{
-
-margin-bottom:20px;
-
+.hero-overlay-content a,
+.hero-overlay-content button {
+  pointer-events: auto;
 }
 
-.story p{
-
-margin-bottom:20px;
-color:#64748B;
-
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(37, 99, 235, 0.35);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  color: #93c5fd;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  margin-bottom: 20px;
 }
 
-/* ==========================
-MISSION
-========================== */
-
-.mission{
-
-background:#F8FAFC;
-padding:90px 0;
-text-align:center;
-
+.about-hero-3d h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
 }
 
-.mission-cards{
-
-margin-top:50px;
-
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:30px;
-
+.about-hero-3d h1 span {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.mission-card{
-
-background:white;
-padding:40px;
-border-radius:18px;
-box-shadow:0 8px 20px rgba(0,0,0,.08);
-
+.about-hero-3d p {
+  font-size: 1.18rem;
+  color: #cbd5e1;
+  line-height: 1.7;
+  max-width: 640px;
+  margin-bottom: 25px;
 }
 
-.mission-card h3{
-
-margin-bottom:15px;
-
+.canvas-hint {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ==========================
-TEAM
-========================== */
-
-.team{
-
-padding:90px 0;
-
+/* --- Origin Story --- */
+.story-section {
+  padding: 100px 0;
+  background: #ffffff;
 }
 
-.team h2{
-
-text-align:center;
-margin-bottom:50px;
-
+.story-grid-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 60px;
+  align-items: center;
 }
 
-.team-grid{
-
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:30px;
-
+.story-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-bottom: 20px;
 }
 
-.team-card{
-
-background:white;
-border-radius:18px;
-overflow:hidden;
-box-shadow:0 8px 20px rgba(0,0,0,.08);
-text-align:center;
-
+.story-text p {
+  font-size: 1.05rem;
+  color: var(--slate-500);
+  line-height: 1.8;
+  margin-bottom: 20px;
 }
 
-.team-card img{
-
-height:250px;
-object-fit:cover;
-
+.tilt-card-wrap {
+  perspective: 1000px;
 }
 
-.team-card h3{
-
-margin-top:20px;
-
+.tilt-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12);
+  border: 1px solid var(--slate-200);
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out, box-shadow 0.3s ease;
 }
 
-.team-card p{
-
-padding:20px;
-color:#64748B;
-
+.tilt-card img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
 }
 
-/* ==========================
-RESPONSIVE
-========================== */
-
-@media(max-width:992px){
-
-.story-grid,
-.mission-cards,
-.team-grid{
-
-grid-template-columns:1fr;
-
+.tilt-card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.15), transparent 60%);
+  pointer-events: none;
 }
 
-.about-hero h1{
-
-font-size:42px;
-
+/* --- Core Brand Pillars with Morphing Blurred Backdrops --- */
+.pillars-section {
+  padding: 100px 0;
+  background: var(--slate-50);
 }
 
+.section-headline {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+
+.section-headline h2 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.section-headline p {
+  font-size: 1.05rem;
+  color: var(--slate-500);
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.pillar-3d-card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--slate-200);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.pillar-3d-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 45px -10px rgba(37, 99, 235, 0.16);
+  border-color: #93c5fd;
+}
+
+/* Ever-Changing Morphing Animated Blurred Backdrop */
+.pillar-bg-blur {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px) brightness(0.95);
+  transform: scale(1.15);
+  z-index: 1;
+  animation: bgShift 14s ease-in-out infinite alternate;
+}
+
+@keyframes bgShift {
+  0% {
+    transform: scale(1.1) rotate(0deg);
+    filter: blur(16px) hue-rotate(0deg);
+  }
+  50% {
+    transform: scale(1.22) rotate(2deg);
+    filter: blur(22px) hue-rotate(25deg);
+  }
+  100% {
+    transform: scale(1.12) rotate(-2deg);
+    filter: blur(16px) hue-rotate(-15deg);
+  }
+}
+
+/* Specific Contextual Image Backdrops */
+.pillar-connect-bg {
+  background-image: linear-gradient(135deg, rgba(37, 99, 235, 0.55), rgba(15, 23, 42, 0.8)),
+    url('https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=700&q=80');
+}
+
+.pillar-grow-bg {
+  background-image: linear-gradient(135deg, rgba(16, 185, 129, 0.55), rgba(15, 23, 42, 0.8)),
+    url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=700&q=80');
+}
+
+.pillar-transparency-bg {
+  background-image: linear-gradient(135deg, rgba(14, 165, 233, 0.55), rgba(15, 23, 42, 0.8)),
+    url('https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80');
+}
+
+/* Frosted Content Overlay */
+.pillar-content-wrap {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  padding: 44px 34px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.pillar-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.65rem;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--slate-200);
+}
+
+.pillar-content-wrap h3 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 14px;
+  letter-spacing: -0.5px;
+}
+
+.pillar-content-wrap p {
+  color: var(--slate-700);
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+/* --- Market Scope Strip --- */
+.market-scope-strip {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 70px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.market-scope-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  text-align: center;
+}
+
+.scope-item h2 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #38bdf8;
+  margin-bottom: 8px;
+}
+
+.scope-item p {
+  color: #94a3b8;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+/* --- Engineering Team Section (Abstract Tech Monograms) --- */
+.team-section {
+  padding: 100px 0;
+  background: #ffffff;
+}
+
+.team-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.team-member-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1.5px solid var(--slate-200);
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-member-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Futuristic Monogram Header Banner */
+.team-monogram-banner {
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  overflow: hidden;
+}
+
+.monogram-glow-orb {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: 0.5;
+}
+
+.team-avatar-glyph {
+  position: relative;
+  z-index: 2;
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.team-member-info {
+  padding: 26px 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-member-info h4 {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.team-member-info .team-role {
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.team-member-info p {
+  color: var(--slate-500);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 0 0 16px 0;
+  flex-grow: 1;
+}
+
+.tech-tag-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tech-tag {
+  background: var(--slate-100);
+  color: var(--slate-700);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 1080px) {
+  .story-grid-layout { grid-template-columns: 1fr; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .team-grid-layout { grid-template-columns: repeat(2, 1fr); }
+  .market-scope-grid { grid-template-columns: 1fr; gap: 30px; }
+}
+
+@media (max-width: 768px) {
+  .about-hero-3d h1 { font-size: 2.5rem; }
+  .team-grid-layout { grid-template-columns: 1fr; }
 }
