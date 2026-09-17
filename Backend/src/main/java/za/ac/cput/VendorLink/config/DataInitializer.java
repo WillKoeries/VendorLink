@@ -106,7 +106,7 @@ public class DataInitializer implements CommandLineRunner {
                 .website("https://instagram.com/lisascoffeebar")
                 .city("Cape Town")
                 .province("Western Cape")
-                .profileImageUrl("images/vendor1.jpg")
+                .profileImageUrl("images/profile.png")
                 .build());
 
         User vendor2 = userRepository.save(User.builder()
@@ -125,7 +125,7 @@ public class DataInitializer implements CommandLineRunner {
                 .phone("+27 83 234 5678")
                 .city("Cape Town")
                 .province("Western Cape")
-                .profileImageUrl("images/vendor2.jpg")
+                .profileImageUrl("images/market1.png")
                 .build());
 
         User vendor3 = userRepository.save(User.builder()
@@ -144,7 +144,7 @@ public class DataInitializer implements CommandLineRunner {
                 .phone("+27 84 345 6789")
                 .city("Cape Town")
                 .province("Western Cape")
-                .profileImageUrl("images/vendor3.jpg")
+                .profileImageUrl("images/market2.png")
                 .build());
 
         // 4. Events
@@ -163,7 +163,7 @@ public class DataInitializer implements CommandLineRunner {
                 .availableStalls(15)
                 .expectedVisitors("4,500+")
                 .requirements("Business registration (if applicable)\nFood vendors must provide a valid health certificate.\nBring your own gazebo and tables.\nSetup begins at 06:30 AM.")
-                .bannerImageUrl("images/event-banner.jpg")
+                .bannerImageUrl("images/market4.png")
                 .status(EventStatus.OPEN)
                 .build());
 
@@ -182,7 +182,7 @@ public class DataInitializer implements CommandLineRunner {
                 .availableStalls(8)
                 .expectedVisitors("6,000+")
                 .requirements("Food truck or trailer required.\nGas safety certificate required.\nFire extinguisher on site.")
-                .bannerImageUrl("images/event2.jpg")
+                .bannerImageUrl("images/market1.png")
                 .status(EventStatus.OPEN)
                 .build());
 
@@ -201,7 +201,7 @@ public class DataInitializer implements CommandLineRunner {
                 .availableStalls(22)
                 .expectedVisitors("3,000+")
                 .requirements("Original handmade goods only.\nNo mass-imported resale items permitted.")
-                .bannerImageUrl("images/event3.jpg")
+                .bannerImageUrl("images/market2.png")
                 .status(EventStatus.OPEN)
                 .build());
 
