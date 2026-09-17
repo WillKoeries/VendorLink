@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>VendorLink | Connecting Small Vendors with South African Markets</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +37,7 @@
     </div>
 </header>
 
-<!-- ==================== HERO SECTION ==================== -->
+<!-- Hero Section -->
 <section class="hero-section">
     <div class="container hero-grid">
 
@@ -66,11 +67,14 @@
             </div>
         </div>
 
-        <!-- Hero Visual Showcase with Animated Badges -->
+        <!-- Hero Visual Showcase with Guaranteed Image Fallback -->
         <div class="hero-visual-stage">
-            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" alt="Vibrant South African Food and Craft Market" class="hero-main-img">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                 referrerpolicy="no-referrer"
+                 alt="Vibrant South African Food and Craft Market"
+                 class="hero-main-img"
+                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
 
-            <!-- Floating Card 1 -->
             <div class="hero-floating-card card-top-right">
                 <div class="floating-icon" style="background: #ecfdf5; color: #059669;">
                     <i class="fa-solid fa-circle-check"></i>
@@ -81,7 +85,6 @@
                 </div>
             </div>
 
-            <!-- Floating Card 2 -->
             <div class="hero-floating-card card-bottom-left">
                 <div class="floating-icon" style="background: #eff6ff; color: #2563eb;">
                     <i class="fa-solid fa-bolt"></i>
@@ -96,7 +99,7 @@
     </div>
 </section>
 
-<!-- ==================== STATS COUNTER STRIP ==================== -->
+<!-- Stats Counter Strip -->
 <section class="stats-strip">
     <div class="container stats-flex">
         <div class="stat-item">
@@ -118,7 +121,7 @@
     </div>
 </section>
 
-<!-- ==================== FEATURED MARKETS WITH INTERACTIVE PILLS ==================== -->
+<!-- Featured Markets Section -->
 <section class="featured-section">
     <div class="container">
 
@@ -127,7 +130,6 @@
             <p>Filter active festivals, weekend food fairs, and artisan markets accepting applications right now.</p>
         </div>
 
-        <!-- Quick Interactive Category Filter Bar -->
         <div class="marketplace-filter-bar">
             <button class="filter-pill active" data-filter="all"><i class="fa-solid fa-border-all"></i> All Categories</button>
             <button class="filter-pill" data-filter="food"><i class="fa-solid fa-utensils"></i> Food &amp; Street Bites</button>
@@ -135,7 +137,6 @@
             <button class="filter-pill" data-filter="night"><i class="fa-solid fa-moon"></i> Night Markets</button>
         </div>
 
-        <!-- Event Grid -->
         <div class="events-home-grid" id="homeEventsGrid">
 
             <!-- Card 1 -->
@@ -143,7 +144,10 @@
                 <div class="home-event-img-wrap">
                     <span class="home-event-badge">Food Market</span>
                     <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> 15 Stalls Left</span>
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80" alt="Cape Town Summer Market">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80"
+                         referrerpolicy="no-referrer"
+                         alt="Cape Town Summer Market"
+                         onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                 </div>
                 <div class="home-event-body">
                     <h3>Cape Town Summer Market</h3>
@@ -162,7 +166,10 @@
                 <div class="home-event-img-wrap">
                     <span class="home-event-badge">Food Truck Bay</span>
                     <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> 4 Bays Left</span>
-                    <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=700&q=80" alt="Joburg Street Food Carnival">
+                    <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=700&q=80"
+                         referrerpolicy="no-referrer"
+                         alt="Joburg Street Food Carnival"
+                         onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                 </div>
                 <div class="home-event-body">
                     <h3>Joburg Street Food Carnival</h3>
@@ -176,12 +183,15 @@
                 </div>
             </div>
 
-            <!-- Card 3: Fully Booked Rule VL-007 -->
+            <!-- Card 3 -->
             <div class="home-event-card" data-category="crafts">
                 <div class="home-event-img-wrap">
                     <span class="home-event-badge">Handmade Craft</span>
                     <span class="home-stall-badge full"><i class="fa-solid fa-ban"></i> Fully Booked</span>
-                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=700&q=80" alt="Umhlanga Artisan Craft Fair">
+                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=700&q=80"
+                         referrerpolicy="no-referrer"
+                         alt="Umhlanga Artisan Craft Fair"
+                         onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                 </div>
                 <div class="home-event-body">
                     <h3>Umhlanga Artisan Craft Fair</h3>
@@ -200,7 +210,10 @@
                 <div class="home-event-img-wrap">
                     <span class="home-event-badge">Night Market</span>
                     <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> 8 Stalls Left</span>
-                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=700&q=80" alt="Pretoria Twilight Fest">
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=700&q=80"
+                         referrerpolicy="no-referrer"
+                         alt="Pretoria Twilight Fest"
+                         onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                 </div>
                 <div class="home-event-body">
                     <h3>Pretoria Twilight Fest</h3>
@@ -225,7 +238,7 @@
     </div>
 </section>
 
-<!-- ==================== DUAL-JOURNEY WORKFLOW SECTION ==================== -->
+<!-- Dual-Journey Workflow Section -->
 <section class="journey-section">
     <div class="container">
 
@@ -245,9 +258,7 @@
             </div>
         </div>
 
-        <!-- Journey Deck 1: Vendors -->
         <div class="journey-grid" id="deckVendorJourney">
-
             <div class="journey-step-card">
                 <span class="step-num">01</span>
                 <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -268,12 +279,9 @@
                 <h4>Approved &amp; Trade</h4>
                 <p>Receive real-time notification badges and setup coordinates directly on your phone, ready to trade with confidence.</p>
             </div>
-
         </div>
 
-        <!-- Journey Deck 2: Organizers -->
         <div class="journey-grid" id="deckOrgJourney" style="display: none;">
-
             <div class="journey-step-card">
                 <span class="step-num">01</span>
                 <div class="step-icon"><i class="fa-solid fa-calendar-plus"></i></div>
@@ -294,13 +302,12 @@
                 <h4>Review &amp; Track Revenue</h4>
                 <p>Approve vendors with one click, track stall fee collections, and export verified vendor rosters instantly.</p>
             </div>
-
         </div>
 
     </div>
 </section>
 
-<!-- ==================== CALL TO ACTION BANNER ==================== -->
+<!-- Call To Action -->
 <section class="home-cta">
     <div class="container">
         <h2>Ready to Grow Your Market Footprint?</h2>
@@ -311,7 +318,7 @@
     </div>
 </section>
 
-<!-- ==================== FOOTER ==================== -->
+<!-- Footer -->
 <footer>
     <div class="container footer">
         <div>
@@ -341,10 +348,8 @@
     </div>
 </footer>
 
-<!-- ==================== INTERACTIVE JAVASCRIPT ==================== -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Quick Category Filter Pills on Homepage
       const filterPills = document.querySelectorAll('.filter-pill');
       const eventCards = document.querySelectorAll('.home-event-card');
 
@@ -365,7 +370,6 @@
         });
       });
 
-      // 2. Dual Journey Switcher (Vendors vs Organizers)
       const btnVendorJourney = document.getElementById('btnVendorJourney');
       const btnOrgJourney = document.getElementById('btnOrgJourney');
       const deckVendorJourney = document.getElementById('deckVendorJourney');

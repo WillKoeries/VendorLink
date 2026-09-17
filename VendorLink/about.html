@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>About Us | VendorLink</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Three.js 3D Engine CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
@@ -39,9 +39,8 @@
     </div>
 </header>
 
-<!-- ==================== 3D INTERACTIVE HERO ==================== -->
+<!-- 3D Hero -->
 <section class="about-hero-3d">
-    <!-- Three.js 3D WebGL Canvas Layer -->
     <div id="threeCanvasContainer" title="Click and drag to rotate the 3D Vendor Network"></div>
 
     <div class="container hero-overlay-content">
@@ -58,10 +57,9 @@
     </div>
 </section>
 
-<!-- ==================== OUR ORIGIN & MISSION ==================== -->
+<!-- Origin Story -->
 <section class="story-section">
     <div class="container story-grid-layout">
-
         <div class="story-text">
             <h2>Bridging the Structural Gap in Local Markets</h2>
             <p>
@@ -82,29 +80,27 @@
             </div>
         </div>
 
-        <!-- 3D Gyroscopic Tilt Card -->
         <div class="tilt-card-wrap">
             <div class="tilt-card" id="storyTiltCard">
                 <div class="tilt-card-glow"></div>
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" alt="Vibrant South African Market Stalls">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                     referrerpolicy="no-referrer"
+                     alt="Vibrant South African Market Stalls"
+                     onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
             </div>
         </div>
-
     </div>
 </section>
 
-<!-- ==================== CORE BRAND PILLARS (ATMOSPHERIC BLURRED BACKDROPS) ==================== -->
+<!-- Core Pillars -->
 <section class="pillars-section">
     <div class="container">
-
         <div class="section-head section-headline">
             <h2>Our Core Brand Pillars</h2>
             <p>Foundational principles backed by atmospheric, dynamic marketplace environments.</p>
         </div>
 
         <div class="pillars-grid">
-
-            <!-- Pillar 1: Connect -->
             <div class="pillar-3d-card">
                 <div class="pillar-bg-blur pillar-connect-bg"></div>
                 <div class="pillar-content-wrap">
@@ -116,7 +112,6 @@
                 </div>
             </div>
 
-            <!-- Pillar 2: Empower & Grow -->
             <div class="pillar-3d-card">
                 <div class="pillar-bg-blur pillar-grow-bg"></div>
                 <div class="pillar-content-wrap">
@@ -128,7 +123,6 @@
                 </div>
             </div>
 
-            <!-- Pillar 3: Transparency -->
             <div class="pillar-3d-card">
                 <div class="pillar-bg-blur pillar-transparency-bg"></div>
                 <div class="pillar-content-wrap">
@@ -139,13 +133,11 @@
                     </p>
                 </div>
             </div>
-
         </div>
-
     </div>
 </section>
 
-<!-- ==================== ECONOMIC INCLUSION METRICS ==================== -->
+<!-- Economic Scope Strip -->
 <section class="market-scope-strip">
     <div class="container market-scope-grid">
         <div class="scope-item">
@@ -163,18 +155,15 @@
     </div>
 </section>
 
-<!-- ==================== ENGINEERING TEAM (ABSTRACT MONOGRAM CARDS) ==================== -->
+<!-- Engineering Team -->
 <section class="team-section">
     <div class="container">
-
         <div class="section-head section-headline">
             <h2>Meet Our Engineering Team</h2>
             <p>The core team architecting the VendorLink multi-tenant platform.</p>
         </div>
 
         <div class="team-grid-layout">
-
-            <!-- Member 1: Lisakhanya -->
             <div class="team-member-card">
                 <div class="team-monogram-banner">
                     <div class="monogram-glow-orb" style="background: #3b82f6;"></div>
@@ -191,14 +180,13 @@
                 </div>
             </div>
 
-            <!-- Member 2: Tshegofatso -->
             <div class="team-member-card">
                 <div class="team-monogram-banner">
                     <div class="monogram-glow-orb" style="background: #10b981;"></div>
                     <div class="team-avatar-glyph"><i class="fa-solid fa-code"></i></div>
                 </div>
                 <div class="team-member-info">
-                    <h4>Tshegofatso</h4>
+                    <h4>Tshegofatso Hlabela</h4>
                     <div class="team-role">Lead Frontend Engineer</div>
                     <p>Develops responsive user interfaces, interactive 3D WebGL scenes, and client state workflows.</p>
                     <div class="tech-tag-row">
@@ -209,7 +197,6 @@
                 </div>
             </div>
 
-            <!-- Member 3: Wazeer -->
             <div class="team-member-card">
                 <div class="team-monogram-banner">
                     <div class="monogram-glow-orb" style="background: #8b5cf6;"></div>
@@ -227,7 +214,6 @@
                 </div>
             </div>
 
-            <!-- Member 4: Will -->
             <div class="team-member-card">
                 <div class="team-monogram-banner">
                     <div class="monogram-glow-orb" style="background: #f59e0b;"></div>
@@ -244,9 +230,7 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </section>
 
@@ -279,10 +263,8 @@
     </div>
 </footer>
 
-<!-- ==================== THREE.JS CANVAS & TILT SCRIPTS ==================== -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Initialize Three.js 3D Network Globe
       const container = document.getElementById('threeCanvasContainer');
       if (container && window.THREE) {
         const scene = new THREE.Scene();
@@ -294,7 +276,6 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Glowing Wireframe Icosahedron
         const geoSphere = new THREE.IcosahedronGeometry(75, 2);
         const matSphere = new THREE.MeshBasicMaterial({
           color: 0x3b82f6,
@@ -305,7 +286,6 @@
         const meshSphere = new THREE.Mesh(geoSphere, matSphere);
         scene.add(meshSphere);
 
-        // Particle Constellation
         const particleCount = 180;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
@@ -326,7 +306,6 @@
         const particleSystem = new THREE.Points(particleGeo, particleMat);
         scene.add(particleSystem);
 
-        // Drag Interaction
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
 
@@ -369,7 +348,6 @@
         animate();
       }
 
-      // 2. Gyroscopic Mouse-Tracking Tilt for Story Card
       const tiltCard = document.getElementById('storyTiltCard');
       if (tiltCard) {
         tiltCard.addEventListener('mousemove', (e) => {

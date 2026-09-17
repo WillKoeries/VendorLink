@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Events & Stalls | VendorLink</title>
+    <meta name="referrer" content="no-referrer">
+    <title>Browse Events &amp; Stalls | VendorLink</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,9 +40,8 @@
 <section class="browse">
     <div class="container">
 
-        <!-- Page Title -->
         <div class="browse-header">
-            <h1>Discover Markets, Festivals & Pop-Ups</h1>
+            <h1>Discover Markets, Festivals &amp; Pop-Ups</h1>
             <p>Explore verified trading spots across South Africa. Filter by stall dimensions, utilities, category, and province.</p>
         </div>
 
@@ -59,15 +59,14 @@
         <!-- Quick Category Pills -->
         <div class="category-pills">
             <button class="pill-btn active" data-cat="all"><i class="fa-solid fa-border-all"></i> All Opportunities</button>
-            <button class="pill-btn" data-cat="Food"><i class="fa-solid fa-utensils"></i> Food & Street Eats</button>
-            <button class="pill-btn" data-cat="Crafts"><i class="fa-solid fa-palette"></i> Crafts & Handmade</button>
-            <button class="pill-btn" data-cat="Fashion"><i class="fa-solid fa-shirt"></i> Fashion & Vintage</button>
-            <button class="pill-btn" data-cat="Night"><i class="fa-solid fa-moon"></i> Night & Music Markets</button>
-            <button class="pill-btn" data-cat="Produce"><i class="fa-solid fa-seedling"></i> Organic & Farmers</button>
-            <button class="pill-btn" data-cat="Tech"><i class="fa-solid fa-laptop"></i> Pop-Up & Tech Expos</button>
+            <button class="pill-btn" data-cat="Food"><i class="fa-solid fa-utensils"></i> Food &amp; Street Eats</button>
+            <button class="pill-btn" data-cat="Crafts"><i class="fa-solid fa-palette"></i> Crafts &amp; Handmade</button>
+            <button class="pill-btn" data-cat="Fashion"><i class="fa-solid fa-shirt"></i> Fashion &amp; Vintage</button>
+            <button class="pill-btn" data-cat="Night"><i class="fa-solid fa-moon"></i> Night &amp; Music Markets</button>
+            <button class="pill-btn" data-cat="Produce"><i class="fa-solid fa-seedling"></i> Organic &amp; Farmers</button>
         </div>
 
-        <!-- Main Layout: Sidebar Filters + Event Grid -->
+        <!-- Main Layout -->
         <div class="browse-layout">
 
             <!-- Multi-Factor Filter Sidebar -->
@@ -77,7 +76,6 @@
                     <button class="reset-link" id="resetFilters">Clear All</button>
                 </div>
 
-                <!-- Province Filter -->
                 <div class="filter-group">
                     <label class="group-title"><i class="fa-solid fa-location-dot" style="color: #2563eb;"></i> Province</label>
                     <select id="provinceSelect">
@@ -86,11 +84,9 @@
                         <option value="Gauteng">Gauteng</option>
                         <option value="KwaZulu-Natal">KwaZulu-Natal</option>
                         <option value="Eastern Cape">Eastern Cape</option>
-                        <option value="Limpopo">Limpopo</option>
                     </select>
                 </div>
 
-                <!-- Stall Size & Footprint -->
                 <div class="filter-group">
                     <label class="group-title"><i class="fa-solid fa-ruler-combined" style="color: #2563eb;"></i> Stall Footprint</label>
                     <div class="checkbox-list">
@@ -113,26 +109,20 @@
                     </div>
                 </div>
 
-                <!-- Utilities Available -->
                 <div class="filter-group">
                     <label class="group-title"><i class="fa-solid fa-plug" style="color: #2563eb;"></i> Required Utilities</label>
                     <div class="checkbox-list">
                         <label class="checkbox-item">
                             <input type="checkbox" name="utility" value="Power">
-                            <span>Generator / Electrical Power</span>
+                            <span>Generator / Power</span>
                         </label>
                         <label class="checkbox-item">
                             <input type="checkbox" name="utility" value="Water">
-                            <span>Potable Running Water</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="utility" value="Indoor">
-                            <span>Indoor / Covered Arena</span>
+                            <span>Running Water</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Max Stall Fee Slider -->
                 <div class="filter-group">
                     <label class="group-title"><i class="fa-solid fa-wallet" style="color: #2563eb;"></i> Max Stall Fee (ZAR)</label>
                     <input type="range" min="100" max="1000" step="50" value="1000" class="range-slider" id="priceRange">
@@ -142,7 +132,6 @@
                     </div>
                 </div>
 
-                <!-- Availability Filter -->
                 <div class="filter-group">
                     <label class="group-title"><i class="fa-solid fa-ticket" style="color: #2563eb;"></i> Status</label>
                     <div class="checkbox-list">
@@ -154,9 +143,8 @@
                 </div>
             </aside>
 
-            <!-- Events Container -->
+            <!-- Events Grid -->
             <main>
-                <!-- Toolbar -->
                 <div class="events-toolbar">
                     <p class="results-count">Showing <strong id="visibleCount">6</strong> events</p>
                     <div>
@@ -170,214 +158,165 @@
                     </div>
                 </div>
 
-                <!-- Grid of Events with Varied Images & Stall Dimensions -->
                 <div class="events-grid" id="eventsContainer">
 
-                    <!-- Card 1: Food & Street Food -->
-                    <div class="event-card"
-                         data-category="Food"
-                         data-province="Western Cape"
-                         data-fee="250"
-                         data-stalls="15"
-                         data-size="Standard Gazebo"
-                         data-utilities="Power Water">
+                    <!-- Card 1 -->
+                    <div class="event-card" data-category="Food" data-province="Western Cape" data-fee="250" data-stalls="15" data-size="Standard Gazebo" data-utilities="Power Water">
                         <div class="card-image-wrap">
                             <span class="category-tag">Food &amp; Beverage</span>
                             <span class="stall-status-badge open"><i class="fa-solid fa-circle-check"></i> 15 Open</span>
-                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80" alt="Cape Town Summer Market">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80"
+                                 referrerpolicy="no-referrer"
+                                 alt="Cape Town Summer Market"
+                                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                         </div>
                         <div class="event-body">
                             <h3>Cape Town Summer Market</h3>
                             <div class="event-meta-list">
                                 <div class="event-meta-item"><i class="fa-solid fa-location-dot"></i> Green Point Park, Cape Town</div>
                                 <div class="event-meta-item"><i class="fa-regular fa-calendar"></i> 20 Aug 2026 • 09:00 - 18:00</div>
-                                <div class="event-meta-item"><i class="fa-solid fa-users"></i> ~4,500 Estimated Visitors</div>
                             </div>
                             <div class="specs-wrapper">
                                 <span class="spec-badge"><i class="fa-solid fa-maximize"></i> 3m x 3m Gazebo</span>
                                 <span class="spec-badge"><i class="fa-solid fa-bolt"></i> 220V Power</span>
-                                <span class="spec-badge"><i class="fa-solid fa-droplet"></i> Water Tap</span>
                             </div>
                             <div class="card-footer">
-                                <div class="fee-display">
-                                    <span>Stall Fee</span>
-                                    <strong>R250</strong>
-                                </div>
+                                <div class="fee-display"><span>Stall Fee</span><strong>R250</strong></div>
                                 <a href="event-details.html" class="card-btn apply">Apply for Stall <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 2: Food Trucks & Drive-ins -->
-                    <div class="event-card"
-                         data-category="Food"
-                         data-province="Gauteng"
-                         data-fee="450"
-                         data-stalls="4"
-                         data-size="Food Truck Bay"
-                         data-utilities="Power Water">
+                    <!-- Card 2 -->
+                    <div class="event-card" data-category="Food" data-province="Gauteng" data-fee="450" data-stalls="4" data-size="Food Truck Bay" data-utilities="Power Water">
                         <div class="card-image-wrap">
                             <span class="category-tag">Food Trucks</span>
                             <span class="stall-status-badge open"><i class="fa-solid fa-circle-check"></i> 4 Open</span>
-                            <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=700&q=80" alt="Joburg Street Food Carnival">
+                            <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=700&q=80"
+                                 referrerpolicy="no-referrer"
+                                 alt="Joburg Street Food Carnival"
+                                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                         </div>
                         <div class="event-body">
                             <h3>Joburg Street Food Carnival</h3>
                             <div class="event-meta-list">
                                 <div class="event-meta-item"><i class="fa-solid fa-location-dot"></i> Rosebank Mall Arena, Johannesburg</div>
                                 <div class="event-meta-item"><i class="fa-regular fa-calendar"></i> 4 Sep 2026 • 11:00 - 22:00</div>
-                                <div class="event-meta-item"><i class="fa-solid fa-users"></i> ~6,200 Estimated Visitors</div>
                             </div>
                             <div class="specs-wrapper">
                                 <span class="spec-badge"><i class="fa-solid fa-truck"></i> Dedicated Truck Bay</span>
                                 <span class="spec-badge"><i class="fa-solid fa-bolt"></i> 32A 3-Phase</span>
-                                <span class="spec-badge"><i class="fa-solid fa-fire-burner"></i> Gas Allowed</span>
                             </div>
                             <div class="card-footer">
-                                <div class="fee-display">
-                                    <span>Bay Fee</span>
-                                    <strong>R450</strong>
-                                </div>
+                                <div class="fee-display"><span>Bay Fee</span><strong>R450</strong></div>
                                 <a href="event-details.html" class="card-btn apply">Reserve Bay <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 3: Handmade & Artisan Crafts -->
-                    <div class="event-card"
-                         data-category="Crafts"
-                         data-province="KwaZulu-Natal"
-                         data-fee="180"
-                         data-stalls="22"
-                         data-size="Compact Table"
-                         data-utilities="Indoor">
+                    <!-- Card 3 -->
+                    <div class="event-card" data-category="Crafts" data-province="KwaZulu-Natal" data-fee="180" data-stalls="22" data-size="Compact Table" data-utilities="Indoor">
                         <div class="card-image-wrap">
                             <span class="category-tag">Handmade &amp; Art</span>
                             <span class="stall-status-badge open"><i class="fa-solid fa-circle-check"></i> 22 Open</span>
-                            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=700&q=80" alt="Umhlanga Maker & Artisan Fair">
+                            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=700&q=80"
+                                 referrerpolicy="no-referrer"
+                                 alt="Umhlanga Maker &amp; Artisan Fair"
+                                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                         </div>
                         <div class="event-body">
                             <h3>Umhlanga Artisan &amp; Craft Fair</h3>
                             <div class="event-meta-list">
                                 <div class="event-meta-item"><i class="fa-solid fa-location-dot"></i> Oyster Box Promenade, Durban</div>
                                 <div class="event-meta-item"><i class="fa-regular fa-calendar"></i> 12 Sep 2026 • 09:00 - 16:00</div>
-                                <div class="event-meta-item"><i class="fa-solid fa-users"></i> ~3,000 Estimated Visitors</div>
                             </div>
                             <div class="specs-wrapper">
-                                <span class="spec-badge"><i class="fa-solid fa-table"></i> 2m x 1m Table provided</span>
+                                <span class="spec-badge"><i class="fa-solid fa-table"></i> 2m x 1m Table</span>
                                 <span class="spec-badge"><i class="fa-solid fa-umbrella"></i> Covered Pavilion</span>
-                                <span class="spec-badge"><i class="fa-solid fa-chair"></i> 2 Chairs</span>
                             </div>
                             <div class="card-footer">
-                                <div class="fee-display">
-                                    <span>Table Fee</span>
-                                    <strong>R180</strong>
-                                </div>
+                                <div class="fee-display"><span>Table Fee</span><strong>R180</strong></div>
                                 <a href="event-details.html" class="card-btn apply">Apply for Stall <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 4: Night Market & Live Music -->
-                    <div class="event-card"
-                         data-category="Night"
-                         data-province="Gauteng"
-                         data-fee="320"
-                         data-stalls="8"
-                         data-size="Double Stall"
-                         data-utilities="Power">
+                    <!-- Card 4 -->
+                    <div class="event-card" data-category="Night" data-province="Gauteng" data-fee="320" data-stalls="8" data-size="Double Stall" data-utilities="Power">
                         <div class="card-image-wrap">
                             <span class="category-tag">Night Market</span>
                             <span class="stall-status-badge open"><i class="fa-solid fa-circle-check"></i> 8 Open</span>
-                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=700&q=80" alt="Pretoria Twilight Craft Market">
+                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=700&q=80"
+                                 referrerpolicy="no-referrer"
+                                 alt="Pretoria Twilight Craft Market"
+                                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                         </div>
                         <div class="event-body">
                             <h3>Pretoria Twilight Fest &amp; Market</h3>
                             <div class="event-meta-list">
                                 <div class="event-meta-item"><i class="fa-solid fa-location-dot"></i> Menlyn Courtyard, Pretoria</div>
                                 <div class="event-meta-item"><i class="fa-regular fa-calendar"></i> 25 Sep 2026 • 16:00 - 23:00</div>
-                                <div class="event-meta-item"><i class="fa-solid fa-users"></i> ~5,500 Night Shoppers</div>
                             </div>
                             <div class="specs-wrapper">
                                 <span class="spec-badge"><i class="fa-solid fa-maximize"></i> 6m x 3m Double Space</span>
-                                <span class="spec-badge"><i class="fa-solid fa-lightbulb"></i> Ambient Fairy Lights</span>
                                 <span class="spec-badge"><i class="fa-solid fa-bolt"></i> High Amp Power</span>
                             </div>
                             <div class="card-footer">
-                                <div class="fee-display">
-                                    <span>Stall Fee</span>
-                                    <strong>R320</strong>
-                                </div>
+                                <div class="fee-display"><span>Stall Fee</span><strong>R320</strong></div>
                                 <a href="event-details.html" class="card-btn apply">Apply for Stall <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 5: Farmers & Organic Produce -->
-                    <div class="event-card"
-                         data-category="Produce"
-                         data-province="Western Cape"
-                         data-fee="150"
-                         data-stalls="12"
-                         data-size="Standard Gazebo"
-                         data-utilities="Water">
+                    <!-- Card 5 -->
+                    <div class="event-card" data-category="Produce" data-province="Western Cape" data-fee="150" data-stalls="12" data-size="Standard Gazebo" data-utilities="Water">
                         <div class="card-image-wrap">
                             <span class="category-tag">Farmers Market</span>
                             <span class="stall-status-badge open"><i class="fa-solid fa-circle-check"></i> 12 Open</span>
-                            <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=700&q=80" alt="Stellenbosch Fresh Valley Market">
+                            <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=700&q=80"
+                                 referrerpolicy="no-referrer"
+                                 alt="Stellenbosch Fresh Valley Market"
+                                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                         </div>
                         <div class="event-body">
                             <h3>Stellenbosch Fresh Valley Market</h3>
                             <div class="event-meta-list">
                                 <div class="event-meta-item"><i class="fa-solid fa-location-dot"></i> Blaauwklippen Estate, Stellenbosch</div>
                                 <div class="event-meta-item"><i class="fa-regular fa-calendar"></i> Every Saturday • 08:00 - 14:00</div>
-                                <div class="event-meta-item"><i class="fa-solid fa-users"></i> ~2,800 Weekly Buyers</div>
                             </div>
                             <div class="specs-wrapper">
-                                <span class="spec-badge"><i class="fa-solid fa-maximize"></i> 3m x 3m Grass Plot</span>
-                                <span class="spec-badge"><i class="fa-solid fa-droplet"></i> Direct Wash Water</span>
-                                <span class="spec-badge"><i class="fa-solid fa-leaf"></i> Fresh Produce Only</span>
+                                <span class="spec-badge"><i class="fa-solid fa-maximize"></i> 3m x 3m Plot</span>
+                                <span class="spec-badge"><i class="fa-solid fa-droplet"></i> Water Access</span>
                             </div>
                             <div class="card-footer">
-                                <div class="fee-display">
-                                    <span>Per Day</span>
-                                    <strong>R150</strong>
-                                </div>
+                                <div class="fee-display"><span>Per Day</span><strong>R150</strong></div>
                                 <a href="event-details.html" class="card-btn apply">Apply for Stall <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 6: Fully Booked Example (Meets Rule VL-007) -->
-                    <div class="event-card"
-                         data-category="Fashion"
-                         data-province="Gauteng"
-                         data-fee="280"
-                         data-stalls="0"
-                         data-size="Standard Gazebo"
-                         data-utilities="Indoor Power">
+                    <!-- Card 6 -->
+                    <div class="event-card" data-category="Fashion" data-province="Gauteng" data-fee="280" data-stalls="0" data-size="Standard Gazebo" data-utilities="Indoor Power">
                         <div class="card-image-wrap">
                             <span class="category-tag">Fashion &amp; Apparel</span>
                             <span class="stall-status-badge full"><i class="fa-solid fa-ban"></i> Fully Booked</span>
-                            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=700&q=80" alt="Maboneng Vintage & Thrift Fair">
+                            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=700&q=80"
+                                 referrerpolicy="no-referrer"
+                                 alt="Maboneng Vintage &amp; Thrift Fair"
+                                 onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
                         </div>
                         <div class="event-body">
                             <h3>Maboneng Vintage &amp; Thrift Fair</h3>
                             <div class="event-meta-list">
                                 <div class="event-meta-item"><i class="fa-solid fa-location-dot"></i> Fox Street, Maboneng, JHB</div>
                                 <div class="event-meta-item"><i class="fa-regular fa-calendar"></i> 28 Aug 2026 • 10:00 - 18:00</div>
-                                <div class="event-meta-item"><i class="fa-solid fa-users"></i> ~4,000 Visitors</div>
                             </div>
                             <div class="specs-wrapper">
                                 <span class="spec-badge"><i class="fa-solid fa-maximize"></i> 3m x 3m Rail Space</span>
-                                <span class="spec-badge"><i class="fa-solid fa-door-open"></i> Indoor Warehouse</span>
-                                <span class="spec-badge"><i class="fa-solid fa-shirt"></i> Changing Rooms</span>
+                                <span class="spec-badge"><i class="fa-solid fa-door-open"></i> Indoor Arena</span>
                             </div>
                             <div class="card-footer">
-                                <div class="fee-display">
-                                    <span>Stall Fee</span>
-                                    <strong>R280</strong>
-                                </div>
+                                <div class="fee-display"><span>Stall Fee</span><strong>R280</strong></div>
                                 <button class="card-btn disabled" disabled>Sold Out</button>
                             </div>
                         </div>
@@ -419,7 +358,6 @@
     </div>
 </footer>
 
-<!-- Filter & Search Logic -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('searchInput');
@@ -440,13 +378,11 @@
 
       let currentCategory = 'all';
 
-      // Update Max Price Label
       priceRange.addEventListener('input', (e) => {
         priceDisplay.textContent = `Up to R${e.target.value}`;
         applyFilters();
       });
 
-      // Quick Pill selection
       categoryPills.forEach(pill => {
         pill.addEventListener('click', () => {
           categoryPills.forEach(p => p.classList.remove('active'));
@@ -456,7 +392,6 @@
         });
       });
 
-      // Filter execution
       function applyFilters() {
         const query = searchInput.value.toLowerCase().trim();
         const selectedProvince = provinceSelect.value;
@@ -482,7 +417,6 @@
           const utilities = card.dataset.utilities || '';
           const cardText = card.innerText.toLowerCase();
 
-          // Evaluate conditions
           const matchesCategory = (currentCategory === 'all' || cat === currentCategory);
           const matchesProvince = (selectedProvince === 'all' || prov === selectedProvince);
           const matchesPrice = fee <= maxPrice;
@@ -504,7 +438,6 @@
         visibleCountEl.textContent = visibleCount;
       }
 
-      // Sorting
       sortOrder.addEventListener('change', () => {
         const value = sortOrder.value;
         const sortedCards = [...cards];
@@ -520,7 +453,6 @@
         sortedCards.forEach(c => eventsContainer.appendChild(c));
       });
 
-      // Clear all filters
       resetFilters.addEventListener('click', () => {
         searchInput.value = '';
         provinceSelect.value = 'all';
@@ -535,7 +467,6 @@
         applyFilters();
       });
 
-      // Event listeners
       searchInput.addEventListener('input', applyFilters);
       searchTrigger.addEventListener('click', applyFilters);
       provinceSelect.addEventListener('change', applyFilters);
@@ -543,7 +474,6 @@
       stallSizeCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
       utilityCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
 
-      // Initial run
       applyFilters();
     });
 </script>

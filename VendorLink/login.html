@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>Login | VendorLink</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,13 +40,21 @@
 <main class="auth-wrapper">
     <div class="auth-card">
 
-        <!-- Left Moving Visual Stage -->
+        <!-- Left Moving Visual Stage with Fallbacks -->
         <section class="auth-stage">
             <div class="stage-slides">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" class="slide-img active" alt="Cape Town Summer Market">
-                <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Joburg Street Food Stalls">
-                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Artisan Craft Expo">
-                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Twilight Night Market">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                     referrerpolicy="no-referrer" class="slide-img active" alt="Cape Town Summer Market"
+                     onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
+                <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80"
+                     referrerpolicy="no-referrer" class="slide-img" alt="Joburg Street Food Stalls"
+                     onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80"
+                     referrerpolicy="no-referrer" class="slide-img" alt="Artisan Craft Expo"
+                     onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
+                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80"
+                     referrerpolicy="no-referrer" class="slide-img" alt="Twilight Night Market"
+                     onerror="this.onerror=null;this.src='https://images.stockcake.com/public/4/d/6/4d632676-47b6-49ea-b73a-359ecbc1f068_large/vibrant-african-marketplace-stockcake.jpg';">
             </div>
             <div class="stage-overlay"></div>
 
@@ -120,7 +129,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Rotating Background Visuals
       const slides = document.querySelectorAll('.slide-img');
       const dots = document.querySelectorAll('.stage-dot');
       let currentSlide = 0;
@@ -133,7 +141,6 @@
         dots[currentSlide].classList.add('active');
       }, 4000);
 
-      // Alert Notification Helper
       const authAlert = document.getElementById('authAlert');
       const alertIcon = document.getElementById('alertIcon');
       const alertMsg = document.getElementById('alertMsg');
@@ -145,7 +152,6 @@
         alertMsg.textContent = message;
       }
 
-      // Unified Login Authentication & Auto-Routing
       const loginForm = document.getElementById('loginForm');
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -157,18 +163,15 @@
           return;
         }
 
-        // Built-in Default Test Users
         const defaultAccounts = [
           { email: 'admin@vendorlink.co.za', password: 'password123', role: 'ADMIN' },
           { email: 'organizer@vendorlink.co.za', password: 'password123', role: 'ADMIN' },
           { email: 'vendor@vendorlink.co.za', password: 'password123', role: 'VENDOR' }
         ];
 
-        // Retrieve any newly registered users from storage
         const localAccounts = JSON.parse(localStorage.getItem('vendorlink_users') || '[]');
         const accountsPool = [...defaultAccounts, ...localAccounts];
 
-        // Match user by email & password
         const user = accountsPool.find(acc => acc.email === email && acc.password === password);
 
         if (user) {
@@ -176,7 +179,6 @@
           sessionStorage.setItem('vendorlink_session', JSON.stringify(user));
 
           setTimeout(() => {
-            // Automatically route by user role
             if (user.role === 'ADMIN' || user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ORGANIZER') {
               window.location.href = 'organizer-dashboard.html';
             } else {
