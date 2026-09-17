@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing Plans | VendorLink</title>
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pricing | VendorLink</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pricing.css">
+    <link rel="stylesheet" href="css/notifications.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,6 +31,17 @@
 
 <!-- Navigation -->
 <header>
+
+    <div class="container navbar">
+
+        <div class="logo">
+            <h2>Vendor<span>Link</span></h2>
+        </div>
+
+        <nav>
+
+            <ul>
+
     <div class="container navbar">
         <div class="logo">
             <h2>Vendor<span>Link</span></h2>
@@ -27,6 +52,134 @@
                 <li><a href="browse-events.html">Browse Events</a></li>
                 <li><a href="pricing.html" class="active">Pricing</a></li>
                 <li><a href="about.html">About Us</a></li>
+
+            </ul>
+
+        </nav>
+
+        <div class="buttons">
+
+            <a href="login.html" class="login-btn">Login</a>
+
+            <a href="register.html" class="register-btn">
+                Join as Vendor
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+<section class="pricing-header">
+
+    <div class="container">
+
+        <h1>Simple Pricing for Every Vendor</h1>
+
+        <p>
+            Choose the plan that best suits your business. Upgrade anytime as your business grows.
+        </p>
+
+    </div>
+
+</section>
+
+<section class="pricing-cards">
+
+    <div class="container cards">
+
+        <!-- FREE -->
+
+        <div class="price-card">
+
+            <h3>Free</h3>
+
+            <h2>R0</h2>
+
+            <p class="small">Perfect for beginners</p>
+
+            <ul>
+
+                <li>✔ Apply to Events</li>
+                <li>✔ Vendor Profile</li>
+                <li>✔ Basic Support</li>
+                <li>✔ Event Notifications</li>
+
+            </ul>
+
+            <a href="register.html" class="outline-btn">
+
+                Get Started
+
+            </a>
+
+        </div>
+
+        <!-- PROFESSIONAL -->
+
+        <div class="price-card featured">
+
+            <div class="badge">
+
+                Most Popular
+
+            </div>
+
+            <h3>Professional</h3>
+
+            <h2>R99<span>/month</span></h2>
+
+            <p class="small">Grow your business</p>
+
+            <ul>
+
+                <li>✔ Unlimited Applications</li>
+                <li>✔ Featured Vendor Profile</li>
+                <li>✔ Priority Listings</li>
+                <li>✔ Premium Support</li>
+                <li>✔ Analytics Dashboard</li>
+
+            </ul>
+
+            <a href="#" class="primary-btn">
+
+                Start Free Trial
+
+            </a>
+
+        </div>
+
+        <!-- ENTERPRISE -->
+
+        <div class="price-card">
+
+            <h3>Enterprise</h3>
+
+            <h2>Custom</h2>
+
+            <p class="small">For organisations</p>
+
+            <ul>
+
+                <li>✔ Unlimited Events</li>
+                <li>✔ Dedicated Manager</li>
+                <li>✔ API Access</li>
+                <li>✔ Advanced Analytics</li>
+                <li>✔ 24/7 Support</li>
+
+            </ul>
+
+            <a href="#" class="outline-btn">
+
+                Contact Sales
+
+            </a>
+
+        </div>
+
+    </div>
+
             </ul>
         </nav>
         <div class="buttons">
@@ -281,6 +434,53 @@
 
 <!-- Footer -->
 <footer>
+
+    <div class="container footer">
+
+        <div>
+
+            <h2>VendorLink</h2>
+
+            <p>
+                Connecting vendors with opportunities across South Africa.
+            </p>
+
+        </div>
+
+        <div>
+
+            <h3>Quick Links</h3>
+
+            <ul>
+
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="about.html">About Us</a></li>
+
+            </ul>
+
+        </div>
+
+        <div>
+
+            <h3>Support</h3>
+
+            <ul>
+
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Contact</a></li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
     <div class="container footer">
         <div>
             <h2>Vendor<span>Link</span></h2>

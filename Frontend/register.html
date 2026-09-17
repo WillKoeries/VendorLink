@@ -1,5 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | VendorLink</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+
+<body>
+
+<header>
+    <div class="container navbar">
+        <div class="logo">
+            <h2>Vendor<span>Link</span></h2>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+
+        <div class="buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="register.html" class="register-btn active">Join as Vendor</a>
+        </div>
+    </div>
+</header>
+
+<section class="auth">
+    <div class="auth-container">
+        <div class="auth-left">
+            <h1>Join VendorLink</h1>
+            <p>Create your vendor or organizer account to start connecting with premier markets across South Africa.</p>
+            <img src="images/hero.png" alt="Register" onerror="this.src='images/market2.png'">
+        </div>
+
+        <div class="auth-right">
+            <form id="register-form">
+                <h2>Create Account</h2>
+
+                <input type="text" id="reg-fullname" placeholder="Full Name *" required>
+                <input type="email" id="reg-email" placeholder="Email Address *" required>
+
+                <select id="reg-role"
+                        style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 0.95rem; background: #fff;">
+                    <option value="VENDOR">I am a Vendor</option>
+                    <option value="ORGANIZER">I am an Event Organizer</option>
+                </select>
+
+                <input type="text" id="reg-business" placeholder="Business / Organization Name">
+                <input type="tel" id="reg-phone" placeholder="Phone Number (e.g. +27 82 123 4567)">
+                <input type="password" id="reg-password" placeholder="Password (min. 6 characters) *" required>
+                <input type="password" id="reg-confirm-password" placeholder="Confirm Password *" required>
+
+                <button type="submit" id="reg-submit-btn">Create Account</button>
+
+                <p>
+                    Already have an account?
+                    <a href="login.html">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</body>
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

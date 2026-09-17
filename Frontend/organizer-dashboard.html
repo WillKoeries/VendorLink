@@ -1,5 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Organizer Dashboard | VendorLink</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Vendor<span>Link</span></h2>
+
+        <ul>
+            <li class="active"><a href="organizer-dashboard.html"
+                                  style="color:inherit; text-decoration:none;">Dashboard</a></li>
+            <li><a href="browse-events.html" style="color:inherit; text-decoration:none;">Browse Events</a></li>
+            <li><a href="index.html" style="color:inherit; text-decoration:none;">Home</a></li>
+            <li id="sidebar-logout">Logout</li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <div class="topbar">
+            <h1>Organizer Dashboard</h1>
+
+            <div class="profile">
+                <img src="images/profile.png" alt="Profile" onerror="this.src='images/market1.png'">
+                <span id="topbar-user-name">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="card">
+                <h3>Total Events</h3>
+                <h1 id="stat-total-events">...</h1>
+                <p>Organized on VendorLink</p>
+            </div>
+
+            <div class="card">
+                <h3>Applications</h3>
+                <h1 id="stat-applications">...</h1>
+                <p>Total applications received</p>
+            </div>
+
+            <div class="card">
+                <h3>Approved Vendors</h3>
+                <h1 id="stat-approved">...</h1>
+                <p>Confirmed stalls</p>
+            </div>
+
+            <div class="card">
+                <h3>Revenue</h3>
+                <h1 id="stat-revenue">...</h1>
+                <p>From confirmed stall fees</p>
+            </div>
+        </div>
+
+        <!-- Events Table -->
+        <section class="table-section">
+            <h2>Upcoming Events</h2>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Stalls</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="upcoming-events-tbody">
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">Loading events via
+                        Axios...
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Recent Applications -->
+        <section class="applications" id="recent-applications-list">
+            <h2>Recent Vendor Applications</h2>
+            <div style="text-align: center; padding: 30px; color: #94a3b8;">
+                Loading vendor applications via Axios...
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
