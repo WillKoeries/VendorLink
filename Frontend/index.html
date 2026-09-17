@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>VendorLink</title>
+    <title>VendorLink | Connecting Small Vendors with South African Markets</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -18,10 +14,15 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/notifications.css">
-</head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
+</head>
 <body>
 
+<!-- Navigation Bar -->
 <header>
     <div class="container navbar">
 
@@ -244,6 +245,200 @@
 
                 </div>
 
+        <div class="logo">
+            <h2>Vendor<span>Link</span></h2>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="register.html" class="register-btn">Join as Vendor</a>
+        </div>
+    </div>
+</header>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section class="hero-section">
+    <div class="container hero-grid">
+
+        <div class="hero-left">
+        <span class="hero-badge">
+          <i class="fa-solid fa-sparkles"></i> South Africa's Premier Market Platform
+        </span>
+            <h1 class="hero-title">
+                Find Markets, Festivals &amp; Pop-Ups That <span>Need Your Stalls</span>
+            </h1>
+            <p class="hero-subtitle">
+                VendorLink bridges the structural gap between informal stallholders and premier event organizers across Cape Town, Johannesburg, and Durban with real-time stall capacity.
+            </p>
+
+            <div class="hero-cta-group">
+                <a href="register.html" class="primary-btn" style="padding: 14px 28px; font-size: 1rem;">
+                    <i class="fa-solid fa-store" style="margin-right: 8px;"></i> Join as Vendor
+                </a>
+                <a href="browse-events.html" class="secondary-btn" style="padding: 14px 28px; font-size: 1rem;">
+                    Explore Open Markets
+                </a>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; color: var(--slate-500); font-size: 0.88rem;">
+                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Zero upfront reservation fees
+                <i class="fa-solid fa-circle-check" style="color: #10b981; margin-left: 10px;"></i> Verified market organizers
+            </div>
+        </div>
+
+        <!-- Hero Visual Showcase with Animated Badges -->
+        <div class="hero-visual-stage">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" alt="Vibrant South African Food and Craft Market" class="hero-main-img">
+
+            <!-- Floating Card 1 -->
+            <div class="hero-floating-card card-top-right">
+                <div class="floating-icon" style="background: #ecfdf5; color: #059669;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="floating-text">
+                    <h5>Stall Approved!</h5>
+                    <p>Cape Town Summer Market • 3m Gazebo</p>
+                </div>
+            </div>
+
+            <!-- Floating Card 2 -->
+            <div class="hero-floating-card card-bottom-left">
+                <div class="floating-icon" style="background: #eff6ff; color: #2563eb;">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="floating-text">
+                    <h5>Real-Time Capacity</h5>
+                    <p>Instant stall count &amp; no double-bookings</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== STATS COUNTER STRIP ==================== -->
+<section class="stats-strip">
+    <div class="container stats-flex">
+        <div class="stat-item">
+            <h3>2,500+</h3>
+            <p>Registered Local Vendors</p>
+        </div>
+        <div class="stat-item">
+            <h3>350+</h3>
+            <p>Verified Festivals &amp; Markets</p>
+        </div>
+        <div class="stat-item">
+            <h3>18,000+</h3>
+            <p>Applications Processed</p>
+        </div>
+        <div class="stat-item">
+            <h3>95%</h3>
+            <p>Successful Stall Placements</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FEATURED MARKETS WITH INTERACTIVE PILLS ==================== -->
+<section class="featured-section">
+    <div class="container">
+
+        <div class="section-head">
+            <h2>Curated Market Opportunities</h2>
+            <p>Filter active festivals, weekend food fairs, and artisan markets accepting applications right now.</p>
+        </div>
+
+        <!-- Quick Interactive Category Filter Bar -->
+        <div class="marketplace-filter-bar">
+            <button class="filter-pill active" data-filter="all"><i class="fa-solid fa-border-all"></i> All Categories</button>
+            <button class="filter-pill" data-filter="food"><i class="fa-solid fa-utensils"></i> Food &amp; Street Bites</button>
+            <button class="filter-pill" data-filter="crafts"><i class="fa-solid fa-palette"></i> Arts &amp; Crafts</button>
+            <button class="filter-pill" data-filter="night"><i class="fa-solid fa-moon"></i> Night Markets</button>
+        </div>
+
+        <!-- Event Grid -->
+        <div class="events-home-grid" id="homeEventsGrid">
+
+            <!-- Card 1 -->
+            <div class="home-event-card" data-category="food">
+                <div class="home-event-img-wrap">
+                    <span class="home-event-badge">Food Market</span>
+                    <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> 15 Stalls Left</span>
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80" alt="Cape Town Summer Market">
+                </div>
+                <div class="home-event-body">
+                    <h3>Cape Town Summer Market</h3>
+                    <div class="home-meta-line"><i class="fa-solid fa-location-dot"></i> Green Point Park, Cape Town</div>
+                    <div class="home-meta-line"><i class="fa-regular fa-calendar"></i> 20 August 2026 • 09:00 - 18:00</div>
+                    <div class="home-meta-line"><i class="fa-solid fa-users"></i> ~4,500 Estimated Shoppers</div>
+                    <div class="home-event-footer">
+                        <div class="home-price-tag">R250 <small>/ stall</small></div>
+                        <a href="event-details.html" class="primary-btn" style="padding: 8px 16px; font-size: 0.85rem;">View Stall</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="home-event-card" data-category="food">
+                <div class="home-event-img-wrap">
+                    <span class="home-event-badge">Food Truck Bay</span>
+                    <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> 4 Bays Left</span>
+                    <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=700&q=80" alt="Joburg Street Food Carnival">
+                </div>
+                <div class="home-event-body">
+                    <h3>Joburg Street Food Carnival</h3>
+                    <div class="home-meta-line"><i class="fa-solid fa-location-dot"></i> Rosebank Mall, Johannesburg</div>
+                    <div class="home-meta-line"><i class="fa-regular fa-calendar"></i> 4 September 2026 • 11:00 - 22:00</div>
+                    <div class="home-meta-line"><i class="fa-solid fa-users"></i> ~6,200 Food Lovers</div>
+                    <div class="home-event-footer">
+                        <div class="home-price-tag">R450 <small>/ bay</small></div>
+                        <a href="event-details.html" class="primary-btn" style="padding: 8px 16px; font-size: 0.85rem;">View Stall</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Fully Booked Rule VL-007 -->
+            <div class="home-event-card" data-category="crafts">
+                <div class="home-event-img-wrap">
+                    <span class="home-event-badge">Handmade Craft</span>
+                    <span class="home-stall-badge full"><i class="fa-solid fa-ban"></i> Fully Booked</span>
+                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=700&q=80" alt="Umhlanga Artisan Craft Fair">
+                </div>
+                <div class="home-event-body">
+                    <h3>Umhlanga Artisan Craft Fair</h3>
+                    <div class="home-meta-line"><i class="fa-solid fa-location-dot"></i> Promenade, Durban</div>
+                    <div class="home-meta-line"><i class="fa-regular fa-calendar"></i> 12 September 2026 • 09:00 - 16:00</div>
+                    <div class="home-meta-line"><i class="fa-solid fa-users"></i> ~3,000 Visitors</div>
+                    <div class="home-event-footer">
+                        <div class="home-price-tag">R180 <small>/ stall</small></div>
+                        <button class="secondary-btn" style="padding: 8px 16px; font-size: 0.85rem; color: #94a3b8; border-color: #cbd5e1; cursor: not-allowed;" disabled>Sold Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="home-event-card" data-category="night">
+                <div class="home-event-img-wrap">
+                    <span class="home-event-badge">Night Market</span>
+                    <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> 8 Stalls Left</span>
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=700&q=80" alt="Pretoria Twilight Fest">
+                </div>
+                <div class="home-event-body">
+                    <h3>Pretoria Twilight Fest</h3>
+                    <div class="home-meta-line"><i class="fa-solid fa-location-dot"></i> Menlyn Courtyard, Pretoria</div>
+                    <div class="home-meta-line"><i class="fa-regular fa-calendar"></i> 25 September 2026 • 16:00 - 23:00</div>
+                    <div class="home-meta-line"><i class="fa-solid fa-users"></i> ~5,500 Night Visitors</div>
+                    <div class="home-event-footer">
+                        <div class="home-price-tag">R320 <small>/ stall</small></div>
+                        <a href="event-details.html" class="primary-btn" style="padding: 8px 16px; font-size: 0.85rem;">View Stall</a>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -275,9 +470,102 @@
         </a>
 
     </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="browse-events.html" class="secondary-btn" style="padding: 12px 30px; font-weight: 700;">
+                Browse All 40+ Active Stalls <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+            </a>
+        </div>
 
+    </div>
 </section>
 
+<!-- ==================== DUAL-JOURNEY WORKFLOW SECTION ==================== -->
+<section class="journey-section">
+    <div class="container">
+
+        <div class="section-head">
+            <h2>How VendorLink Operates</h2>
+            <p>A connected two-sided marketplace designed to eliminate manual WhatsApp bookings and fragmented social posts.</p>
+        </div>
+
+        <div class="journey-tab-control">
+            <div class="journey-switcher">
+                <button class="journey-btn active" id="btnVendorJourney">
+                    <i class="fa-solid fa-store"></i> For Stall Vendors
+                </button>
+                <button class="journey-btn" id="btnOrgJourney">
+                    <i class="fa-regular fa-calendar-check"></i> For Event Organizers
+                </button>
+            </div>
+        </div>
+
+        <!-- Journey Deck 1: Vendors -->
+        <div class="journey-grid" id="deckVendorJourney">
+
+            <div class="journey-step-card">
+                <span class="step-num">01</span>
+                <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h4>Discover &amp; Filter</h4>
+                <p>Search verified markets by province, stall dimensions, required utilities (gas/power/water), and booth fees.</p>
+            </div>
+
+            <div class="journey-step-card">
+                <span class="step-num">02</span>
+                <div class="step-icon"><i class="fa-solid fa-file-signature"></i></div>
+                <h4>1-Click Application</h4>
+                <p>Submit your trading permits, business categories, and food certificates once without endless paperwork.</p>
+            </div>
+
+            <div class="journey-step-card">
+                <span class="step-num">03</span>
+                <div class="step-icon"><i class="fa-solid fa-certificate"></i></div>
+                <h4>Approved &amp; Trade</h4>
+                <p>Receive real-time notification badges and setup coordinates directly on your phone, ready to trade with confidence.</p>
+            </div>
+
+        </div>
+
+        <!-- Journey Deck 2: Organizers -->
+        <div class="journey-grid" id="deckOrgJourney" style="display: none;">
+
+            <div class="journey-step-card">
+                <span class="step-num">01</span>
+                <div class="step-icon"><i class="fa-solid fa-calendar-plus"></i></div>
+                <h4>Publish Event &amp; Quotas</h4>
+                <p>Configure venue dates, stall quotas (food bays, gazebo plots, compact tables), and payment deadlines in minutes.</p>
+            </div>
+
+            <div class="journey-step-card">
+                <span class="step-num">02</span>
+                <div class="step-icon"><i class="fa-solid fa-sliders"></i></div>
+                <h4>Automated Capacity Protection</h4>
+                <p>Zero overbooking risks. The platform automatically monitors approved vendors and locks out applications at full capacity.</p>
+            </div>
+
+            <div class="journey-step-card">
+                <span class="step-num">03</span>
+                <div class="step-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h4>Review &amp; Track Revenue</h4>
+                <p>Approve vendors with one click, track stall fee collections, and export verified vendor rosters instantly.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== CALL TO ACTION BANNER ==================== -->
+<section class="home-cta">
+    <div class="container">
+        <h2>Ready to Grow Your Market Footprint?</h2>
+        <p>Join over 2,500 vendors and premier event hosts across South Africa building stronger community commerce together.</p>
+        <a href="register.html" class="cta-btn-white">
+            Create Your Free Account <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
 <footer>
 
     <div class="container footer">
@@ -349,5 +637,79 @@
 <script src="js/auth.js"></script>
 <script src="js/home.js"></script>
 </body>
+    <div class="container footer">
+        <div>
+            <h2>Vendor<span>Link</span></h2>
+            <p>Empowering informal traders, market vendors, and event organizers across South Africa through a unified digital marketplace.</p>
+        </div>
+        <div>
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3>Support &amp; Inquiries</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Terms &amp; Conditions</a></li>
+                <li><a href="#">support@vendorlink.co.za</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>&copy; 2026 VendorLink. All Rights Reserved.</p>
+    </div>
+</footer>
 
+<!-- ==================== INTERACTIVE JAVASCRIPT ==================== -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Quick Category Filter Pills on Homepage
+      const filterPills = document.querySelectorAll('.filter-pill');
+      const eventCards = document.querySelectorAll('.home-event-card');
+
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          filterPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+
+          const filter = pill.dataset.filter;
+
+          eventCards.forEach(card => {
+            if (filter === 'all' || card.dataset.category === filter) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // 2. Dual Journey Switcher (Vendors vs Organizers)
+      const btnVendorJourney = document.getElementById('btnVendorJourney');
+      const btnOrgJourney = document.getElementById('btnOrgJourney');
+      const deckVendorJourney = document.getElementById('deckVendorJourney');
+      const deckOrgJourney = document.getElementById('deckOrgJourney');
+
+      btnVendorJourney.addEventListener('click', () => {
+        btnVendorJourney.classList.add('active');
+        btnOrgJourney.classList.remove('active');
+        deckVendorJourney.style.display = 'grid';
+        deckOrgJourney.style.display = 'none';
+      });
+
+      btnOrgJourney.addEventListener('click', () => {
+        btnOrgJourney.classList.add('active');
+        btnVendorJourney.classList.remove('active');
+        deckOrgJourney.style.display = 'grid';
+        deckVendorJourney.style.display = 'none';
+      });
+    });
+</script>
+
+</body>
 </html>

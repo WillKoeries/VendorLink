@@ -124,4 +124,456 @@
 <script src="js/event-details.js"></script>
 </body>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cape Town Summer Market | VendorLink</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/browse.css">
+
+    <style>
+        /* Specific styles for event details hero and stall selector */
+        .details-hero {
+          position: relative;
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          height: 380px;
+          margin-bottom: 40px;
+          box-shadow: var(--shadow-lg);
+        }
+
+        .details-hero img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .details-hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.85) 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 35px;
+          color: #ffffff;
+        }
+
+        .hero-tags {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 12px;
+        }
+
+        .hero-title {
+          font-size: 2.5rem;
+          font-weight: 800;
+          letter-spacing: -0.5px;
+          margin-bottom: 8px;
+        }
+
+        /* Stall Option Switcher Cards */
+        .stall-options-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin: 24px 0 30px;
+        }
+
+        .stall-option-card {
+          border: 2px solid var(--slate-200);
+          background: #ffffff;
+          border-radius: var(--radius-md);
+          padding: 18px 16px;
+          cursor: pointer;
+          transition: var(--transition);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .stall-option-card:hover {
+          border-color: #93c5fd;
+          transform: translateY(-2px);
+        }
+
+        .stall-option-card.selected {
+          border-color: var(--primary);
+          background: #eff6ff;
+          box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+        }
+
+        .stall-option-card h4 {
+          font-size: 0.98rem;
+          font-weight: 700;
+          color: var(--navy);
+          margin-bottom: 4px;
+        }
+
+        .stall-option-card p {
+          font-size: 0.8rem;
+          color: var(--slate-500);
+          margin-bottom: 12px;
+        }
+
+        .stall-option-price {
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: var(--primary);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(15, 23, 42, 0.7);
+          backdrop-filter: blur(6px);
+          z-index: 2000;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+        }
+
+        .modal-card {
+          background: #ffffff;
+          border-radius: var(--radius-lg);
+          width: 100%;
+          max-width: 580px;
+          max-height: 90vh;
+          overflow-y: auto;
+          padding: 35px;
+          box-shadow: var(--shadow-lg);
+          animation: modalSlide 0.25s ease-out;
+        }
+
+        @keyframes modalSlide {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<header>
+    <div class="container navbar">
+        <div class="logo">
+            <h2>Vendor<span>Link</span></h2>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html" class="active">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="register.html" class="register-btn">Join as Vendor</a>
+        </div>
+    </div>
+</header>
+
+<!-- ==================== EVENT DETAILS VIEW ==================== -->
+<main style="padding: 40px 0 80px;">
+    <div class="container">
+
+        <!-- Breadcrumb Link -->
+        <p style="font-size: 0.88rem; margin-bottom: 20px; color: var(--slate-500);">
+            <a href="browse-events.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Browse Events
+            </a> / Cape Town Summer Market
+        </p>
+
+        <!-- Banner Hero with Gradient Backdrop -->
+        <div class="details-hero">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80" alt="Cape Town Summer Market Showcase">
+            <div class="details-hero-overlay">
+                <div class="hero-tags">
+                    <span class="home-event-badge"><i class="fa-solid fa-utensils"></i> Food &amp; Artisan</span>
+                    <span class="home-stall-badge open"><i class="fa-solid fa-circle-check"></i> Applications Open</span>
+                </div>
+                <h1 class="hero-title">Cape Town Summer Market</h1>
+                <p style="color: #cbd5e1; font-size: 1.05rem; margin: 0;">
+                    <i class="fa-solid fa-location-dot" style="color: #60a5fa;"></i> Green Point Park, Cape Town &bull;
+                    <i class="fa-regular fa-calendar" style="color: #60a5fa; margin-left: 10px;"></i> 20 August 2026
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Layout: 2 Columns (Details Left, Sticky Reservation Card Right) -->
+        <div class="details-grid">
+
+            <!-- Left Details Column -->
+            <div class="left">
+
+                <div style="background: #ffffff; padding: 35px; border-radius: var(--radius-md); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+                    <h2 style="font-size: 1.6rem; color: var(--navy); margin-bottom: 14px; font-weight: 700;">About This Market</h2>
+                    <p style="font-size: 1.02rem; color: var(--slate-500); line-height: 1.8;">
+                        The Cape Town Summer Market gathers artisanal street food vendors, local handcrafted jewelry, sustainable fashion designers, and local produce producers for an energized community weekend against the backdrop of Green Point Park.
+                    </p>
+                    <p style="font-size: 1.02rem; color: var(--slate-500); line-height: 1.8; margin-top: 14px;">
+                        With an estimated 4,500+ attendees over the course of the day, this market provides exceptional exposure for emerging small businesses, food truck operators, and craft stallholders.
+                    </p>
+                </div>
+
+                <!-- Stall Footprint Selector -->
+                <div style="background: #ffffff; padding: 35px; border-radius: var(--radius-md); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); margin-bottom: 30px;">
+                    <h2 style="font-size: 1.4rem; color: var(--navy); margin-bottom: 8px; font-weight: 700;">
+                        Select Available Stall Footprint
+                    </h2>
+                    <p style="font-size: 0.92rem; color: var(--slate-500);">
+                        Choose your required space to see dynamic pricing and utility specifications:
+                    </p>
+
+                    <div class="stall-options-grid">
+
+                        <!-- Option 1: Gazebo Plot -->
+                        <div class="stall-option-card selected" onclick="selectStall(this, 'Standard Gazebo (3m x 3m)', 250, '15 Spots Remaining', '220V Single-Phase + Water Access')">
+                            <div>
+                                <h4>Standard Gazebo</h4>
+                                <p>3m x 3m Open Lawn Plot</p>
+                            </div>
+                            <div class="stall-option-price">R250</div>
+                        </div>
+
+                        <!-- Option 2: Compact Table -->
+                        <div class="stall-option-card" onclick="selectStall(this, 'Compact Table (2m x 1m)', 180, '6 Spots Remaining', 'Covered Arena + 1 Table &amp; Chair')">
+                            <div>
+                                <h4>Artisan Table</h4>
+                                <p>2m x 1m Covered Pavilion</p>
+                            </div>
+                            <div class="stall-option-price">R180</div>
+                        </div>
+
+                        <!-- Option 3: Food Truck Bay -->
+                        <div class="stall-option-card" onclick="selectStall(this, 'Food Truck Bay (Drive-in)', 450, '3 Spots Remaining', 'Dedicated Bay + 32A 3-Phase Power')">
+                            <div>
+                                <h4>Food Truck Bay</h4>
+                                <p>6m x 3m Dedicated Drive-in</p>
+                            </div>
+                            <div class="stall-option-price">R450</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Utility & Dimension Specs Breakdown -->
+                    <div style="background: var(--slate-50); border-radius: 12px; padding: 20px; border: 1px solid var(--slate-200);">
+                        <h4 style="font-size: 0.95rem; color: var(--navy); margin-bottom: 12px; font-weight: 700;">
+                            <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Included Utilities for Selected Stall:
+                        </h4>
+                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--slate-700);">
+                            <li><i class="fa-solid fa-check" style="color: #10b981; width: 20px;"></i> <span id="utilitySpecText">220V Single-Phase + Water Access</span></li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981; width: 20px;"></i> Overnight on-site security patrol included</li>
+                            <li><i class="fa-solid fa-check" style="color: #10b981; width: 20px;"></i> Designated vendor vehicle loading pass</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Requirements & Compliance -->
+                <div style="background: #ffffff; padding: 35px; border-radius: var(--radius-md); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 1.4rem; color: var(--navy); margin-bottom: 16px; font-weight: 700;">Trading Rules &amp; Requirements</h2>
+                    <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px; color: var(--slate-700); font-size: 0.95rem;">
+                        <li><strong>Business Registration:</strong> Valid CIPC certificate (if trading as a registered entity).</li>
+                        <li><strong>Food &amp; Beverage:</strong> Food vendors must present a valid Certificate of Acceptability (CoA).</li>
+                        <li><strong>Setup Times:</strong> Gate access starts at 06:30 AM. Stalls must be fully ready for trading by 08:30 AM.</li>
+                        <li><strong>Gazebo Weighting:</strong> All gazebos must be securely weighted down with sandbags or 10kg weights.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Right Sticky Reservation Panel -->
+            <div class="right">
+                <div class="apply-card">
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                        <span style="font-size: 0.8rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Stall Reservation</span>
+                        <span class="badge-status open" id="stallsRemainingBadge">15 Available</span>
+                    </div>
+
+                    <!-- Dynamic Price -->
+                    <div class="price" style="margin: 10px 0 20px;">
+                        <h1 id="checkoutPrice">R250</h1>
+                        <span id="checkoutStallType">Standard Gazebo (3m x 3m)</span>
+                    </div>
+
+                    <!-- Occupancy Visual Progress -->
+                    <div style="margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; color: var(--slate-500); margin-bottom: 6px;">
+                            <span>Occupancy</span>
+                            <span>45 / 60 Stalls Booked</span>
+                        </div>
+                        <div class="occupancy-bar-wrap">
+                            <div class="occupancy-bar" style="width: 75%;"></div>
+                        </div>
+                    </div>
+
+                    <button class="primary-btn" id="openApplyModalBtn" style="width: 100%; padding: 14px; font-size: 1rem; margin-bottom: 20px;">
+                        <i class="fa-solid fa-file-signature"></i> Apply for Stall
+                    </button>
+
+                    <div style="font-size: 0.82rem; color: var(--slate-500); text-align: center; margin-bottom: 20px;">
+                        <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> No reservation fees until approved
+                    </div>
+
+                    <hr>
+
+                    <!-- Organizer Info -->
+                    <div style="margin-top: 20px;">
+                        <h3 style="font-size: 1.05rem; color: var(--navy); margin-bottom: 12px; font-weight: 700;">Event Host</h3>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+                            <div style="width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800;">
+                                <i class="fa-regular fa-building"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-size: 0.95rem; color: var(--navy); margin: 0;">Cape Markets &amp; Festivals Co.</h4>
+                                <p style="font-size: 0.8rem; color: var(--slate-500); margin: 0;">Verified Platform Host</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.88rem; color: var(--slate-700); margin-bottom: 6px;"><i class="fa-regular fa-envelope" style="color: var(--primary); width: 20px;"></i> events@vendorlink.co.za</p>
+                        <p style="font-size: 0.88rem; color: var(--slate-700);"><i class="fa-solid fa-phone" style="color: var(--primary); width: 20px;"></i> +27 21 555 0123</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<!-- ==================== APPLICATION MODAL ==================== -->
+<div class="modal-overlay" id="applicationModal">
+    <div class="modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-size: 1.4rem; color: var(--navy); font-weight: 800; margin: 0;">Stall Application</h2>
+            <button id="closeModalBtn" style="background: none; border: none; font-size: 1.4rem; color: var(--slate-500); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <p style="font-size: 0.9rem; color: var(--slate-500); margin-bottom: 20px;">
+            Applying for: <strong id="modalStallName" style="color: var(--primary);">Standard Gazebo (3m x 3m)</strong> at Cape Town Summer Market.
+        </p>
+
+        <form id="vendorApplicationForm">
+            <div style="margin-bottom: 16px;">
+                <label for="appBusinessName" style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Business / Brand Name</label>
+                <input type="text" id="appBusinessName" placeholder="e.g. Mama's Authentic Bakes" required style="width: 100%; padding: 12px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-family: inherit;">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label for="appCategory" style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Trading Category</label>
+                <select id="appCategory" required style="width: 100%; padding: 12px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-family: inherit; background: #fff;">
+                    <option value="Food">Food &amp; Beverage</option>
+                    <option value="Crafts">Handmade Crafts &amp; Arts</option>
+                    <option value="Fashion">Fashion &amp; Apparel</option>
+                    <option value="Beauty">Health &amp; Beauty</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label for="appPhone" style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Contact WhatsApp / Mobile</label>
+                <input type="tel" id="appPhone" placeholder="+27 82 000 0000" required style="width: 100%; padding: 12px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-family: inherit;">
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <label for="appDocument" style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Upload Certificate / Product Catalog (PDF)</label>
+                <input type="file" id="appDocument" accept=".pdf,.png,.jpg" style="width: 100%; padding: 10px; border: 1.5px dashed var(--slate-300); border-radius: 8px; font-family: inherit;">
+            </div>
+
+            <button type="submit" class="primary-btn" style="width: 100%; padding: 14px; font-size: 1rem;">
+                Submit Application
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container footer">
+        <div>
+            <h2>Vendor<span>Link</span></h2>
+            <p>Connecting small vendors with events and markets across South Africa.</p>
+        </div>
+        <div>
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3>Support</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">support@vendorlink.co.za</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>&copy; 2026 VendorLink. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<!-- ==================== SCRIPT CONTROLLER ==================== -->
+<script>
+    let currentStall = "Standard Gazebo (3m x 3m)";
+
+    function selectStall(cardElement, stallName, price, availability, utilityText) {
+      // Toggle card selection state
+      document.querySelectorAll('.stall-option-card').forEach(c => c.classList.remove('selected'));
+      cardElement.classList.add('selected');
+
+      currentStall = stallName;
+
+      // Update right sticky panel
+      document.getElementById('checkoutPrice').textContent = `R${price}`;
+      document.getElementById('checkoutStallType').textContent = stallName;
+      document.getElementById('stallsRemainingBadge').textContent = availability;
+      document.getElementById('utilitySpecText').innerHTML = utilityText;
+      document.getElementById('modalStallName').textContent = stallName;
+    }
+
+    // Modal Handling
+    const modal = document.getElementById('applicationModal');
+    const openBtn = document.getElementById('openApplyModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    openBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Form Submission
+    document.getElementById('vendorApplicationForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const businessName = document.getElementById('appBusinessName').value;
+
+      alert(`Success! Application for ${businessName} (${currentStall}) has been submitted to Cape Markets & Festivals Co. You will be notified via SMS/Email once approved.`);
+      modal.style.display = 'none';
+    });
+</script>
+
+</body>
 </html>

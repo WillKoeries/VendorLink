@@ -114,4 +114,636 @@
 <script src="js/dashboard.js"></script>
 </body>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard | VendorLink</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- ==================== SIDEBAR NAVIGATION ==================== -->
+    <aside class="dashboard-sidebar">
+
+        <div class="brand-header">
+            <h2>Vendor<span>Link</span></h2>
+            <span class="brand-role-tag">ROLE_ORGANIZER</span>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li class="nav-item active" data-target="dashboardView">
+                <a role="button" tabindex="0"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            </li>
+            <li class="nav-item" data-target="eventsView">
+                <a role="button" tabindex="0"><i class="fa-solid fa-calendar-days"></i> Events</a>
+            </li>
+            <li class="nav-item" data-target="applicationsView">
+                <a role="button" tabindex="0"><i class="fa-solid fa-clipboard-list"></i> Applications</a>
+            </li>
+            <li class="nav-item" data-target="vendorsView">
+                <a role="button" tabindex="0"><i class="fa-solid fa-store"></i> Vendors</a>
+            </li>
+            <li class="nav-item" data-target="reportsView">
+                <a role="button" tabindex="0"><i class="fa-solid fa-chart-line"></i> Reports &amp; Revenue</a>
+            </li>
+            <li class="nav-item" data-target="settingsView">
+                <a role="button" tabindex="0"><i class="fa-solid fa-sliders"></i> Settings</a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="login.html" class="action-btn outline" style="width: 100%; box-sizing: border-box; justify-content: center; color: #ef4444; border-color: #334155;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <main class="dashboard-main">
+
+        <!-- Topbar Header -->
+        <header class="dashboard-topbar">
+            <div class="topbar-title">
+                <h1 id="pageHeading">Dashboard Overview</h1>
+                <p id="pageSubHeading">Monitor your market stall capacity, vendor bookings, and revenue streams.</p>
+            </div>
+
+            <div class="topbar-actions">
+                <button class="primary-btn" id="openCreateBtn" style="font-size: 0.88rem; padding: 10px 18px;">
+                    <i class="fa-solid fa-plus"></i> Post New Event
+                </button>
+
+                <div class="profile-pill">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="John Smith Profile Picture">
+                    <div class="profile-info">
+                        <span class="profile-name">John Smith</span>
+                        <span class="profile-role">Cape Markets Co.</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==================== TAB 1: DASHBOARD OVERVIEW ==================== -->
+        <section id="dashboardView" class="tab-view active-view">
+
+            <div class="stats-grid">
+
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <span class="stat-label">Active Events</span>
+                        <div class="stat-icon" style="background: #eff6ff; color: #2563eb;"><i class="fa-solid fa-calendar-check"></i></div>
+                    </div>
+                    <h2>4</h2>
+                    <span class="stat-delta positive"><i class="fa-solid fa-arrow-up"></i> 1 new this month</span>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <span class="stat-label">Pending Applications</span>
+                        <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-clock"></i></div>
+                    </div>
+                    <h2 id="pendingMetric">18</h2>
+                    <span class="stat-delta positive"><i class="fa-solid fa-arrow-up"></i> +5 today</span>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <span class="stat-label">Allocated Stalls</span>
+                        <div class="stat-icon" style="background: #ecfdf5; color: #059669;"><i class="fa-solid fa-store"></i></div>
+                    </div>
+                    <h2>142 / 170</h2>
+                    <span class="stat-delta neutral"><i class="fa-solid fa-chart-simple"></i> 83.5% capacity</span>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-box-header">
+                        <span class="stat-label">Event Revenue (ZAR)</span>
+                        <div class="stat-icon" style="background: #f0fdf4; color: #16a34a;"><i class="fa-solid fa-wallet"></i></div>
+                    </div>
+                    <h2>R82,450</h2>
+                    <span class="stat-delta positive"><i class="fa-solid fa-arrow-up"></i> +12% from last season</span>
+                </div>
+
+            </div>
+
+            <div class="dashboard-grid-split">
+
+                <!-- Upcoming Events with Stall Limits -->
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <h3>Upcoming Markets and Stall Inventory</h3>
+                        <button class="action-btn outline" onclick="switchTab('eventsView')">View All</button>
+                    </div>
+
+                    <div class="data-table-wrap">
+                        <table class="dashboard-table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Event Details</th>
+                                <th scope="col">Date and Venue</th>
+                                <th scope="col">Stall Occupancy</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Cape Town Summer Market</strong><br>
+                                    <small style="color: #64748b;">R250 Stall Fee</small>
+                                </td>
+                                <td>20 Aug 2026<br><small>Green Point, CT</small></td>
+                                <td>
+                                    <strong>45 / 60 Stalls</strong>
+                                    <div class="occupancy-bar-wrap">
+                                        <div class="occupancy-bar" style="width: 75%;"></div>
+                                    </div>
+                                </td>
+                                <td><span class="badge-status open">15 Available</span></td>
+                                <td><button class="action-btn outline" onclick="switchTab('eventsView')">Manage</button></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <strong>Joburg Street Food Carnival</strong><br>
+                                    <small style="color: #64748b;">R450 Bay Fee</small>
+                                </td>
+                                <td>4 Sep 2026<br><small>Rosebank Mall, JHB</small></td>
+                                <td>
+                                    <strong>36 / 40 Stalls</strong>
+                                    <div class="occupancy-bar-wrap">
+                                        <div class="occupancy-bar warning" style="width: 90%;"></div>
+                                    </div>
+                                </td>
+                                <td><span class="badge-status open">4 Available</span></td>
+                                <td><button class="action-btn outline" onclick="switchTab('eventsView')">Manage</button></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <strong>Umhlanga Artisan Craft Fair</strong><br>
+                                    <small style="color: #64748b;">R180 Stall Fee</small>
+                                </td>
+                                <td>12 Sep 2026<br><small>Promenade, Durban</small></td>
+                                <td>
+                                    <strong>50 / 50 Stalls</strong>
+                                    <div class="occupancy-bar-wrap">
+                                        <div class="occupancy-bar full" style="width: 100%;"></div>
+                                    </div>
+                                </td>
+                                <td><span class="badge-status full">Fully Booked</span></td>
+                                <td><button class="action-btn outline" onclick="switchTab('eventsView')">Roster</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Application Queue -->
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <h3>Recent Applications</h3>
+                        <button class="action-btn outline" onclick="switchTab('applicationsView')">Full Review</button>
+                    </div>
+
+                    <div class="feed-list">
+
+                        <div class="feed-item" id="appCard1">
+                            <div class="feed-item-left">
+                                <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=150&q=80" alt="Lisa's Artisan Coffee">
+                                <div class="feed-item-details">
+                                    <h4>Lisa's Artisan Coffee</h4>
+                                    <p><i class="fa-solid fa-mug-saucer"></i> CT Summer Market (3m Gazebo)</p>
+                                </div>
+                            </div>
+                            <div class="feed-actions">
+                                <button class="action-btn approve" aria-label="Approve Lisa's Artisan Coffee" onclick="handleDecision('appCard1', 'Lisa\'s Artisan Coffee', true)"><i class="fa-solid fa-check"></i></button>
+                                <button class="action-btn reject" aria-label="Reject Lisa's Artisan Coffee" onclick="handleDecision('appCard1', 'Lisa\'s Artisan Coffee', false)"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="feed-item" id="appCard2">
+                            <div class="feed-item-left">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" alt="Kasi Braai Express">
+                                <div class="feed-item-details">
+                                    <h4>Kasi Braai Express</h4>
+                                    <p><i class="fa-solid fa-fire-burner"></i> Joburg Carnival (Truck Bay)</p>
+                                </div>
+                            </div>
+                            <div class="feed-actions">
+                                <button class="action-btn approve" aria-label="Approve Kasi Braai Express" onclick="handleDecision('appCard2', 'Kasi Braai Express', true)"><i class="fa-solid fa-check"></i></button>
+                                <button class="action-btn reject" aria-label="Reject Kasi Braai Express" onclick="handleDecision('appCard2', 'Kasi Braai Express', false)"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="feed-item" id="appCard3">
+                            <div class="feed-item-left">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Zulu Beadwork and Gems">
+                                <div class="feed-item-details">
+                                    <h4>Zulu Beadwork and Gems</h4>
+                                    <p><i class="fa-solid fa-gem"></i> Umhlanga Fair (Table)</p>
+                                </div>
+                            </div>
+                            <div class="feed-actions">
+                                <button class="action-btn approve" aria-label="Approve Zulu Beadwork and Gems" onclick="handleDecision('appCard3', 'Zulu Beadwork and Gems', true)"><i class="fa-solid fa-check"></i></button>
+                                <button class="action-btn reject" aria-label="Reject Zulu Beadwork and Gems" onclick="handleDecision('appCard3', 'Zulu Beadwork and Gems', false)"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== TAB 2: EVENTS MANAGEMENT VIEW ==================== -->
+        <section id="eventsView" class="tab-view">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3>All Created Events and Capacity Control</h3>
+                    <button class="primary-btn" onclick="openCreateEventModal()"><i class="fa-solid fa-plus"></i> Create Market</button>
+                </div>
+
+                <div class="data-table-wrap">
+                    <table class="dashboard-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Total Stalls</th>
+                            <th scope="col">Booked</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">Stall Fee</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Settings</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><strong>Cape Town Summer Market</strong></td>
+                            <td>Food and Craft</td>
+                            <td>Green Point, Western Cape</td>
+                            <td>60</td>
+                            <td>45</td>
+                            <td><strong>15</strong></td>
+                            <td>R250</td>
+                            <td><span class="badge-status open">Active</span></td>
+                            <td><button class="action-btn outline"><i class="fa-solid fa-pen-to-square"></i> Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Joburg Street Food Carnival</strong></td>
+                            <td>Food Truck Rally</td>
+                            <td>Rosebank, Gauteng</td>
+                            <td>40</td>
+                            <td>36</td>
+                            <td><strong>4</strong></td>
+                            <td>R450</td>
+                            <td><span class="badge-status open">Active</span></td>
+                            <td><button class="action-btn outline"><i class="fa-solid fa-pen-to-square"></i> Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Umhlanga Artisan Craft Fair</strong></td>
+                            <td>Handmade Arts</td>
+                            <td>Umhlanga, KwaZulu-Natal</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td><strong style="color: #ef4444;">0</strong></td>
+                            <td>R180</td>
+                            <td><span class="badge-status full">Fully Booked</span></td>
+                            <td><button class="action-btn outline"><i class="fa-solid fa-pen-to-square"></i> Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pretoria Twilight Fest</strong></td>
+                            <td>Night Market</td>
+                            <td>Menlyn, Gauteng</td>
+                            <td>40</td>
+                            <td>30</td>
+                            <td><strong>10</strong></td>
+                            <td>R320</td>
+                            <td><span class="badge-status open">Active</span></td>
+                            <td><button class="action-btn outline"><i class="fa-solid fa-pen-to-square"></i> Edit</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: APPLICATIONS REVIEW VIEW ==================== -->
+        <section id="applicationsView" class="tab-view">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3>Full Vendor Application Review Queue</h3>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label for="eventFilterSelect" style="font-size: 0.88rem; font-weight: 600; color: #475569;">Filter by event:</label>
+                        <select class="sort-select" id="eventFilterSelect">
+                            <option value="all">All Events</option>
+                            <option value="ct">Cape Town Summer Market</option>
+                            <option value="joburg">Joburg Street Food Carnival</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="data-table-wrap">
+                    <table class="dashboard-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Vendor Business</th>
+                            <th scope="col">Event Applied For</th>
+                            <th scope="col">Stall Type Required</th>
+                            <th scope="col">Power and Water</th>
+                            <th scope="col">Trading Documents</th>
+                            <th scope="col">Submission Date</th>
+                            <th scope="col">Decision</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <strong>Lisa's Artisan Coffee</strong><br>
+                                <small>Lisa Van Wyk &bull; lisacoffee@gmail.com</small>
+                            </td>
+                            <td>Cape Town Summer Market</td>
+                            <td>3m x 3m Gazebo</td>
+                            <td>220V Electricity Required</td>
+                            <td><a href="#" style="color: #2563eb;"><i class="fa-solid fa-file-pdf"></i> Health_Cert.pdf</a></td>
+                            <td>Today, 08:30</td>
+                            <td>
+                                <button class="action-btn approve" onclick="alert('Lisa\'s Artisan Coffee has been approved. Stall allocated.')">Approve</button>
+                                <button class="action-btn reject" onclick="alert('Application rejected.')">Reject</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Kasi Braai Express</strong><br>
+                                <small>Sipho Sithole &bull; sipho@kasibraai.co.za</small>
+                            </td>
+                            <td>Joburg Street Food Carnival</td>
+                            <td>Dedicated Food Truck Bay</td>
+                            <td>Gas and Potable Water</td>
+                            <td><a href="#" style="color: #2563eb;"><i class="fa-solid fa-file-pdf"></i> Food_Hygiene.pdf</a></td>
+                            <td>Yesterday, 16:15</td>
+                            <td>
+                                <button class="action-btn approve" onclick="alert('Kasi Braai Express approved.')">Approve</button>
+                                <button class="action-btn reject" onclick="alert('Application rejected.')">Reject</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: VENDORS ROSTER VIEW ==================== -->
+        <section id="vendorsView" class="tab-view">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3>Approved and Trading Vendor Directory</h3>
+                    <button class="action-btn outline"><i class="fa-solid fa-download"></i> Export Roster (CSV)</button>
+                </div>
+
+                <div class="data-table-wrap">
+                    <table class="dashboard-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Business Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Contact Person</th>
+                            <th scope="col">Phone and Email</th>
+                            <th scope="col">Events Attended</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><strong>Mama's Vintage Threads</strong></td>
+                            <td>Fashion and Apparel</td>
+                            <td>Nandi Mthembu</td>
+                            <td>+27 82 456 7890 &bull; nandi@vintage.co.za</td>
+                            <td>6 Markets</td>
+                            <td><span class="badge-status open">Verified Trader</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cape Olive Groves</strong></td>
+                            <td>Organic Produce</td>
+                            <td>Pieter De Villiers</td>
+                            <td>+27 83 111 2233 &bull; pieter@capeolives.co.za</td>
+                            <td>12 Markets</td>
+                            <td><span class="badge-status open">Verified Trader</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: REPORTS & REVENUE VIEW ==================== -->
+        <section id="reportsView" class="tab-view">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Total Season Revenue</span>
+                    <h2>R182,450</h2>
+                    <span class="stat-delta positive"><i class="fa-solid fa-wallet"></i> Gross Stall Inflows</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Average Stall Utilization</span>
+                    <h2>89.2%</h2>
+                    <span class="stat-delta positive"><i class="fa-solid fa-arrow-up"></i> High Efficiency</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Applications Evaluated</span>
+                    <h2>468</h2>
+                    <span class="stat-delta neutral">Across 4 Events</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Platform Service Fees</span>
+                    <h2>R499 / mo</h2>
+                    <span class="stat-delta neutral">Pro Operator Tier</span>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3>Revenue Breakdown by Event</h3>
+                </div>
+                <div class="data-table-wrap">
+                    <table class="dashboard-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Event</th>
+                            <th scope="col">Stalls Sold</th>
+                            <th scope="col">Fee per Stall</th>
+                            <th scope="col">Gross Inflows</th>
+                            <th scope="col">Payout Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Cape Town Summer Market</td>
+                            <td>45</td>
+                            <td>R250</td>
+                            <td>R11,250</td>
+                            <td><span class="badge-status open">Settled</span></td>
+                        </tr>
+                        <tr>
+                            <td>Joburg Street Food Carnival</td>
+                            <td>36</td>
+                            <td>R450</td>
+                            <td>R16,200</td>
+                            <td><span class="badge-status open">Settled</span></td>
+                        </tr>
+                        <tr>
+                            <td>Umhlanga Artisan Craft Fair</td>
+                            <td>50</td>
+                            <td>R180</td>
+                            <td>R9,000</td>
+                            <td><span class="badge-status open">Settled</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: SETTINGS VIEW ==================== -->
+        <section id="settingsView" class="tab-view">
+            <div class="panel-card" style="max-width: 800px;">
+                <div class="panel-card-header">
+                    <h3>Organizer Profile and Governance Settings</h3>
+                </div>
+
+                <form id="organizerSettingsForm">
+                    <div style="margin-bottom: 20px;">
+                        <label for="orgNameInput" style="display: block; font-weight: 600; margin-bottom: 8px;">Organization or Business Name</label>
+                        <input id="orgNameInput" type="text" value="Cape Markets and Festival Co." style="width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="orgEmailInput" style="display: block; font-weight: 600; margin-bottom: 8px;">Contact Email for Stalls</label>
+                        <input id="orgEmailInput" type="email" value="organizer@capemarkets.co.za" style="width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="orgPhoneInput" style="display: block; font-weight: 600; margin-bottom: 8px;">Contact Telephone Number</label>
+                        <input id="orgPhoneInput" type="text" value="+27 21 555 0123" style="width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <span style="display: block; font-weight: 600; margin-bottom: 8px;">Automated Capacity Notification</span>
+                        <label for="capacityAlertCheckbox" style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
+                            <input id="capacityAlertCheckbox" type="checkbox" checked>
+                            <span>When stalls drop below 5 remaining, send an automated alert.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="primary-btn">Save Changes</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Interactive JavaScript Controller -->
+<script>
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+    const tabViews = document.querySelectorAll('.tab-view');
+    const pageHeading = document.getElementById('pageHeading');
+    const pageSubHeading = document.getElementById('pageSubHeading');
+
+    const tabDescriptions = {
+      dashboardView: { title: "Dashboard Overview", subtitle: "Monitor your market stall capacity, vendor bookings, and revenue streams." },
+      eventsView: { title: "Event Management", subtitle: "Configure stall quotas, fee schedules, and market locations." },
+      applicationsView: { title: "Vendor Applications", subtitle: "Review trading credentials and manage approval queues." },
+      vendorsView: { title: "Approved Vendor Directory", subtitle: "Direct contact roster of all vendors cleared to trade at your events." },
+      reportsView: { title: "Financial and Occupancy Analytics", subtitle: "Deep dive into stall fees generated and occupancy metrics." },
+      settingsView: { title: "Organization Settings", subtitle: "Manage your host profile, contact information, and capacity thresholds." }
+    };
+
+    function switchTab(targetId) {
+      navItems.forEach(item => {
+        if (item.dataset.target === targetId) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      tabViews.forEach(view => {
+        if (view.id === targetId) {
+          view.classList.add('active-view');
+        } else {
+          view.classList.remove('active-view');
+        }
+      });
+
+      if (tabDescriptions[targetId]) {
+        pageHeading.textContent = tabDescriptions[targetId].title;
+        pageSubHeading.textContent = tabDescriptions[targetId].subtitle;
+      }
+    }
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        switchTab(item.dataset.target);
+      });
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          switchTab(item.dataset.target);
+        }
+      });
+    });
+
+    function handleDecision(cardId, vendorName, isApproved) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+
+      const action = isApproved ? 'APPROVED' : 'REJECTED';
+      const color = isApproved ? '#10b981' : '#ef4444';
+
+      card.innerHTML = `
+        <div style="width: 100%; text-align: center; padding: 10px; font-weight: 600; color: ${color};">
+          <i class="fa-solid ${isApproved ? 'fa-check-circle' : 'fa-circle-xmark'}"></i>
+          ${vendorName} ${action}
+        </div>
+      `;
+
+      setTimeout(() => {
+        card.style.display = 'none';
+        const metric = document.getElementById('pendingMetric');
+        if (metric) {
+          const current = parseInt(metric.textContent, 10);
+          if (current > 0) metric.textContent = String(current - 1);
+        }
+      }, 1500);
+    }
+
+    function openCreateEventModal() {
+      switchTab('eventsView');
+      alert("Opening New Market Creator: Configure event name, location, stall capacity limit, and stall fees.");
+    }
+
+    document.getElementById('openCreateBtn').addEventListener('click', openCreateEventModal);
+
+    document.getElementById('organizerSettingsForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert("Organizer settings saved successfully.");
+    });
+</script>
+</body>
 </html>

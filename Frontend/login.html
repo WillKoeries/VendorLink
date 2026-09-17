@@ -79,4 +79,197 @@
 <script src="js/auth.js"></script>
 </body>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | VendorLink</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<header>
+    <div class="container navbar">
+        <div class="logo">
+            <h2>Vendor<span>Link</span></h2>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-events.html">Browse Events</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="buttons">
+            <a href="login.html" class="login-btn active">Login</a>
+            <a href="register.html" class="register-btn">Join as Vendor</a>
+        </div>
+    </div>
+</header>
+
+<main class="auth-wrapper">
+    <div class="auth-card">
+
+        <!-- Left Moving Visual Stage -->
+        <section class="auth-stage">
+            <div class="stage-slides">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" class="slide-img active" alt="Cape Town Summer Market">
+                <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Joburg Street Food Stalls">
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Artisan Craft Expo">
+                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="Twilight Night Market">
+            </div>
+            <div class="stage-overlay"></div>
+
+            <div class="stage-content">
+                <span class="stage-badge"><i class="fa-solid fa-store"></i> Market Community</span>
+                <h1 class="stage-headline" id="stageTitle">Connecting Vendors with Local Events</h1>
+                <p class="stage-desc">
+                    Discover opportunities, reserve market stalls, and manage applications seamlessly across South Africa.
+                </p>
+            </div>
+
+            <div class="stage-footer">
+                <div class="stage-indicators">
+                    <span class="stage-dot active"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Form Panel -->
+        <section class="auth-panel">
+
+            <div id="authAlert" class="auth-alert">
+                <i id="alertIcon" class="fa-solid fa-circle-exclamation"></i>
+                <span id="alertMsg"></span>
+            </div>
+
+            <div class="auth-title">
+                <h2>Login as Vendor and Admin</h2>
+                <p>Enter your account credentials to continue.</p>
+            </div>
+
+            <form id="loginForm" class="form-box" novalidate>
+                <div class="input-field-wrap">
+                    <label for="loginEmail">Email Address</label>
+                    <div class="input-icon-box">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email Address" required>
+                    </div>
+                </div>
+
+                <div class="input-field-wrap">
+                    <label for="loginPassword">Password</label>
+                    <div class="input-icon-box">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label for="rememberMe">
+                        <input type="checkbox" id="rememberMe"> Remember Me
+                    </label>
+                    <a href="#" onclick="alert('Password reset link has been dispatched to your email address.'); return false;">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <span>Login</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <p class="auth-toggle-link">
+                Don't have an account? <a href="register.html">Register here</a>
+            </p>
+
+        </section>
+
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Rotating Background Visuals
+      const slides = document.querySelectorAll('.slide-img');
+      const dots = document.querySelectorAll('.stage-dot');
+      let currentSlide = 0;
+
+      setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+      }, 4000);
+
+      // Alert Notification Helper
+      const authAlert = document.getElementById('authAlert');
+      const alertIcon = document.getElementById('alertIcon');
+      const alertMsg = document.getElementById('alertMsg');
+
+      function showAlert(type, message) {
+        authAlert.className = `auth-alert ${type}`;
+        authAlert.style.display = 'flex';
+        alertIcon.className = type === 'error' ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
+        alertMsg.textContent = message;
+      }
+
+      // Unified Login Authentication & Auto-Routing
+      const loginForm = document.getElementById('loginForm');
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+          showAlert('error', 'Please provide both email address and password.');
+          return;
+        }
+
+        // Built-in Default Test Users
+        const defaultAccounts = [
+          { email: 'admin@vendorlink.co.za', password: 'password123', role: 'ADMIN' },
+          { email: 'organizer@vendorlink.co.za', password: 'password123', role: 'ADMIN' },
+          { email: 'vendor@vendorlink.co.za', password: 'password123', role: 'VENDOR' }
+        ];
+
+        // Retrieve any newly registered users from storage
+        const localAccounts = JSON.parse(localStorage.getItem('vendorlink_users') || '[]');
+        const accountsPool = [...defaultAccounts, ...localAccounts];
+
+        // Match user by email & password
+        const user = accountsPool.find(acc => acc.email === email && acc.password === password);
+
+        if (user) {
+          showAlert('success', 'Login successful. Redirecting to your portal...');
+          sessionStorage.setItem('vendorlink_session', JSON.stringify(user));
+
+          setTimeout(() => {
+            // Automatically route by user role
+            if (user.role === 'ADMIN' || user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ORGANIZER') {
+              window.location.href = 'organizer-dashboard.html';
+            } else {
+              window.location.href = 'browse-events.html';
+            }
+          }, 900);
+        } else {
+          showAlert('error', 'Invalid email address or password.');
+        }
+      });
+    });
+</script>
+
+</body>
 </html>
