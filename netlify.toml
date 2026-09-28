@@ -1,0 +1,13 @@
+# Netlify configuration for VendorLink
+#
+# The site is a plain static HTML/CSS project committed under `VendorLink/`.
+# `base` is set explicitly so that it overrides any stale "Base directory"
+# value configured in the Netlify UI, which previously pointed at a directory
+# that does not exist in this repository and broke config parsing.
+#
+# `publish` is relative to `base`, so "." publishes `VendorLink/` itself.
+# There is no build step: the HTML is served exactly as committed.
+
+[build]
+  base = "VendorLink"
+  publish = "."
