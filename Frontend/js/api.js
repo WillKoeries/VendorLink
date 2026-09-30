@@ -4,7 +4,7 @@
  */
 
 // Base API URL configuration
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = window.API_BASE_URL || '/api';
 
 // Create dedicated Axios instance
 const apiClient = axios.create({
@@ -191,7 +191,6 @@ function formatDate(dateString) {
     }
 }
 
-// Attach to window object for global script access
 window.apiClient = apiClient;
 window.authAPI = authAPI;
 window.eventsAPI = eventsAPI;

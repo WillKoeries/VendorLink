@@ -49,8 +49,6 @@ public class EventRequest {
     @Min(value = 1, message = "Total stalls must be at least 1")
     private Integer totalStalls;
 
-    private Integer availableStalls;
-
     private String expectedVisitors;
 
     private String requirements;
