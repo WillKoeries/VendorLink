@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Events | VendorLink</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/browse.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <h2>Vendor<span>Link</span></h2>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="browse-events.html" class="active">Browse Events</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                </ul>
+            </nav>
+
+            <div class="buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="register-btn">Join as Vendor</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="browse">
+        <div class="container">
+            <div class="browse-header">
+                <h1>Browse Events</h1>
+                <p>Discover markets and festivals currently accepting vendor applications.</p>
+            </div>
+
+            <div class="browse-layout">
+                <!-- FILTERS -->
+                <aside class="filters">
+                    <h3>Filters</h3>
+
+                    <label for="filter-search">Search</label>
+                    <input type="text" id="filter-search" placeholder="Event keyword...">
+
+                    <label for="filter-category">Category</label>
+                    <select id="filter-category">
+                        <option value="">All Categories</option>
+                    </select>
+
+                    <label for="filter-province">Province</label>
+                    <select id="filter-province">
+                        <option value="">All Provinces</option>
+                        <option value="Western Cape">Western Cape</option>
+                        <option value="Gauteng">Gauteng</option>
+                        <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                        <option value="Eastern Cape">Eastern Cape</option>
+                        <option value="Free State">Free State</option>
+                    </select>
+
+                    <label for="filter-city">City</label>
+                    <input type="text" id="filter-city" placeholder="e.g. Cape Town">
+
+                    <label for="filter-date">Date</label>
+                    <input type="date" id="filter-date">
+
+                    <button type="button" class="filter-btn" id="filter-btn">
+                        Apply Filters
+                    </button>
+                </aside>
+
+                <!-- EVENTS CONTAINER -->
+                <div class="events" id="events-container">
+                    <!-- Loaded dynamically via Axios / browse.js -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer">
+            <div>
+                <h2>VendorLink</h2>
+                <p>Connecting vendors with organisers across South Africa.</p>
+            </div>
+
+            <div>
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="browse-events.html">Browse Events</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/browse.js"></script>
+</body>
+
+</html>
