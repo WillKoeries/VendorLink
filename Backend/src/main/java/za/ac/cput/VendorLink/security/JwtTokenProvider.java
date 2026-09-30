@@ -20,10 +20,10 @@ public class JwtTokenProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${app.jwt.secret:vendorlink-secret-key-that-is-long-enough-for-hs256-hmac-sha-algorithm-at-least-32-bytes}")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${app.jwt.ttl-seconds:86400}")
+    @Value("${app.jwt.ttl-seconds}")
     private long jwtTtlSeconds;
 
     @PostConstruct

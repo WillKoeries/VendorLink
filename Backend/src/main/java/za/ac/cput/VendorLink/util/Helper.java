@@ -113,4 +113,10 @@ public class Helper {
                 .createdAt(notification.getCreatedAt())
                 .build();
     }
+
+    public static PublicVendorResponse toPublicVendorResponse(VendorProfile p) {
+        return p == null ? null : new PublicVendorResponse(p.getId(), p.getBusinessName(), p.getDescription(),
+                p.getCategory(), p.getWebsite(), p.getCity(), p.getProvince(), p.getProfileImageUrl());
+    }
+
 }
