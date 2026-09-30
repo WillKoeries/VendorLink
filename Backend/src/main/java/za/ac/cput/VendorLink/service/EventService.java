@@ -41,7 +41,7 @@ public class EventService {
         }
 
         int totalStalls = request.getTotalStalls();
-        int availableStalls = request.getAvailableStalls() != null ? request.getAvailableStalls() : totalStalls;
+        int availableStalls = request.getTotalStalls();
 
         Event event = Event.builder()
                 .title(request.getTitle().trim())
@@ -93,8 +93,8 @@ public class EventService {
         event.setProvince(request.getProvince());
         event.setStallFee(request.getStallFee());
         event.setTotalStalls(request.getTotalStalls());
-        if (request.getAvailableStalls() != null) {
-            event.setAvailableStalls(request.getAvailableStalls());
+        if (request.getTotalStalls() != null) {
+            event.setAvailableStalls(request.getTotalStalls());
         }
         event.setExpectedVisitors(request.getExpectedVisitors());
         event.setRequirements(request.getRequirements());

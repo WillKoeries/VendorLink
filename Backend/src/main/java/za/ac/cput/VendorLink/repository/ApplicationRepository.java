@@ -1,6 +1,10 @@
 package za.ac.cput.VendorLink.repository;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import za.ac.cput.VendorLink.domain.Application;
 import za.ac.cput.VendorLink.domain.ApplicationStatus;
@@ -28,4 +32,10 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
        long countByEvent_Organizer_Id(Long organizerId);
 
        long countByEvent_Organizer_IdAndStatus(Long organizerId, ApplicationStatus status);
+
+       @Lock(LockModeType.PESSIMISTIC_WRITE)
+       @Query("SELECT a FROM Application a WHERE a.id = :id")
+       Optional<Application> findByIdForUpdate(@Param("id") Long id);
+
+       long countByEventIdAndStatus(Long eventId, ApplicationStatus status);
 }
