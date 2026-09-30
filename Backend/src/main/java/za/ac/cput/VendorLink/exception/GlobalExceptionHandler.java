@@ -1,8 +1,12 @@
-package za.ac.cput.VendorLink.config;
+package za.ac.cput.VendorLink.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,9 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import za.ac.cput.VendorLink.dto.response.ErrorResponse;
-import za.ac.cput.VendorLink.exception.ResourceNotFoundException;
-import za.ac.cput.VendorLink.exception.UnauthorizedAccessException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,6 +23,25 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+        private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+        private ResponseEntity<ErrorResponse> build(HttpStatus status, String error, String message, HttpServletRequest request) {
+                return ResponseEntity.status(status).body(ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now()).status(status.value()).error(error)
+                        .message(message).path(request.getRequestURI()).build());
+        }
+
+        @ExceptionHandler(DataIntegrityViolationException.class)
+        public ResponseEntity<ErrorResponse> handleIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
+                log.warn("Data integrity violation on {}: {}", request.getRequestURI(), ex.getMostSpecificCause().getMessage());
+                return build(HttpStatus.CONFLICT, "Conflict", "The request conflicts with existing data", request);
+        }
+
+        @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+        public ResponseEntity<ErrorResponse> handleUnreadable(Exception ex, HttpServletRequest request) {
+                return build(HttpStatus.BAD_REQUEST, "Bad Request", "Malformed request or invalid parameter value", request);
+        }
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ErrorResponse> handleValidationExceptions(
@@ -150,6 +172,8 @@ public class GlobalExceptionHandler {
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ErrorResponse> handleGeneralException(
                         Exception ex, HttpServletRequest request) {
+
+                log.error("Unhandled exception on {}: {}", request.getRequestURI(), ex.getMessage());
 
                 ErrorResponse response = ErrorResponse.builder()
                                 .timestamp(LocalDateTime.now())

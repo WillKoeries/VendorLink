@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import za.ac.cput.VendorLink.domain.*;
 import za.ac.cput.VendorLink.dto.request.ApplicationRequest;
 import za.ac.cput.VendorLink.dto.response.ApplicationResponse;
+import za.ac.cput.VendorLink.exception.ResourceNotFoundException;
+import za.ac.cput.VendorLink.exception.UnauthorizedAccessException;
 import za.ac.cput.VendorLink.repository.ApplicationRepository;
 import za.ac.cput.VendorLink.repository.EventRepository;
 import za.ac.cput.VendorLink.repository.UserRepository;
@@ -105,45 +107,42 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationResponse updateApplicationStatus(
-            Long applicationId,
-            Long organizerId,
-            ApplicationStatus newStatus,
-            String reviewNotes) {
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Application not found with ID: " + applicationId));
+    public ApplicationResponse updateApplicationStatus(Long applicationId, Long organizerId,
+                                                       ApplicationStatus newStatus, String reviewNotes) {
+        Application application = applicationRepository.findByIdForUpdate(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
 
         Event event = application.getEvent();
         if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new IllegalArgumentException("You are not authorized to review this application");
+            throw new UnauthorizedAccessException("review", "application");
         }
 
-        ApplicationStatus previousStatus = application.getStatus();
+        ApplicationStatus previous = application.getStatus();
+        if (previous == newStatus) {
+            return Helper.toApplicationResponse(application);           // idempotent retry
+        }
+        if (!previous.organizerMayMoveTo(newStatus)) {
+            throw new IllegalStateException("Cannot change an application from " + previous + " to " + newStatus);
+        }
 
-        if (newStatus == ApplicationStatus.APPROVED && previousStatus != ApplicationStatus.APPROVED) {
-            if (event.getAvailableStalls() <= 0) {
-                throw new IllegalStateException("Cannot approve: No stalls available for this event");
+        if (newStatus == ApplicationStatus.APPROVED) {
+            if (event.getStatus() == EventStatus.CANCELLED || event.getStatus() == EventStatus.COMPLETED) {
+                throw new IllegalStateException("Cannot approve applications for a " + event.getStatus() + " event");
             }
-            event.setAvailableStalls(event.getAvailableStalls() - 1);
-            if (event.getAvailableStalls() == 0) {
-                event.setStatus(EventStatus.CLOSED);
+            if (eventRepository.claimStall(event.getId()) == 0) {
+                throw new IllegalStateException("Cannot approve: no stalls available for this event");
             }
-            eventRepository.save(event);
-        } else if (previousStatus == ApplicationStatus.APPROVED && newStatus != ApplicationStatus.APPROVED) {
-            event.setAvailableStalls(event.getAvailableStalls() + 1);
-            if (event.getStatus() == EventStatus.CLOSED) {
-                event.setStatus(EventStatus.OPEN);
-            }
-            eventRepository.save(event);
+            eventRepository.closeIfFull(event.getId(), EventStatus.OPEN, EventStatus.CLOSED);
+        } else if (previous == ApplicationStatus.APPROVED) {
+            eventRepository.releaseStall(event.getId());
+            eventRepository.reopenIfSpace(event.getId(), EventStatus.CLOSED, EventStatus.OPEN);
         }
 
         application.setStatus(newStatus);
         application.setReviewNotes(reviewNotes);
         application.setReviewedAt(LocalDateTime.now());
-
         Application updated = applicationRepository.save(application);
 
-        // Notify vendor
         notificationService.createNotification(
                 application.getVendor(),
                 "Application " + newStatus.name(),
