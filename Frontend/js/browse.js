@@ -104,16 +104,16 @@ async function loadEvents() {
             eventsContainer.innerHTML = events.map(eventCardHtml).join('');
         } else {
             eventsContainer.innerHTML = events.map(event => {
-                const imageUrl = event.bannerImageUrl || 'images/market1.png';
+                const imageUrl = (typeof eventImageUrl === 'function' ? eventImageUrl(event) : event.bannerImageUrl) || 'images/marketplace-fallback.jpg';
                 const formattedDate = typeof formatDate === 'function' ? formatDate(event.date) : (event.date || 'TBA');
                 const fee = typeof formatCurrency === 'function' ? formatCurrency(event.stallFee) : `R${event.stallFee || 0}`;
-                const stalls = event.availableStalls !== null && event.availableStalls !== undefined 
-                    ? `${event.availableStalls} Stalls Available` 
+                const stalls = event.availableStalls !== null && event.availableStalls !== undefined
+                    ? `${event.availableStalls} Stalls Available`
                     : 'Stalls Available';
 
                 return `
                     <div class="event-card">
-                        <img src="${imageUrl}" alt="${event.title || 'Event'}" onerror="this.src='images/market1.png'">
+                        <img src="${imageUrl}" alt="${event.title || 'Event'}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/marketplace-fallback.jpg'">
                         <div class="event-content">
                             <h3>${event.title || 'Untitled Event'}</h3>
                             <p>📍 ${event.city ? event.city + (event.province ? ', ' + event.province : '') : (event.location || '')}</p>

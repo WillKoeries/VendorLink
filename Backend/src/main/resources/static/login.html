@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,138 +8,157 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
 </head>
+
 <body data-page="login">
 
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="siteHeader"></header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
 
-<main class="page-main auth-wrapper" id="main">
-    <div class="auth-card">
+    <main class="page-main auth-wrapper" id="main">
+        <div class="auth-card">
 
-        <!-- Decorative image panel -->
-        <section class="auth-stage" aria-hidden="true">
-            <div class="stage-slides">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" class="slide-img is-active" alt="" data-fallback="event">
-                <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="" data-fallback="event">
-                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="" data-fallback="event">
-                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="" data-fallback="event">
-            </div>
-            <div class="stage-overlay"></div>
-            <div class="stage-content">
-                <span class="stage-badge"><i class="fa-solid fa-store"></i> Market community</span>
-                <h2 class="stage-headline">Connecting vendors with local events</h2>
-                <p class="stage-desc">Discover opportunities, apply for market stalls and manage your applications in one place.</p>
-            </div>
-            <div class="stage-footer">
-                <span class="stage-dot is-active"></span>
-                <span class="stage-dot"></span>
-                <span class="stage-dot"></span>
-                <span class="stage-dot"></span>
-            </div>
-        </section>
+            <!-- Decorative image panel -->
+            <section class="auth-stage" aria-hidden="true">
+                <div class="stage-slides">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img is-active" alt="" data-fallback="event">
+                    <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img" alt="" data-fallback="event">
+                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img" alt="" data-fallback="event">
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img" alt="" data-fallback="event">
+                </div>
+                <div class="stage-overlay"></div>
+                <div class="stage-content">
+                    <span class="stage-badge"><i class="fa-solid fa-store"></i> Market community</span>
+                    <h2 class="stage-headline">Connecting vendors with local events</h2>
+                    <p class="stage-desc">Discover opportunities, apply for market stalls and manage your applications
+                        in one place.</p>
+                </div>
+                <div class="stage-footer">
+                    <span class="stage-dot is-active"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                </div>
+            </section>
 
-        <section class="auth-panel">
+            <section class="auth-panel">
 
-            <!-- Login -->
-            <div id="loginView" class="form-stack">
-                <div class="auth-title">
-                    <h1>Welcome back</h1>
-                    <p>Log in to manage your stalls, applications and events.</p>
+                <!-- Login -->
+                <div id="loginView" class="form-stack">
+                    <div class="auth-title">
+                        <h1>Welcome back</h1>
+                        <p>Log in to manage your stalls, applications and events.</p>
+                    </div>
+
+                    <div class="alert" id="loginAlert" role="alert" hidden></div>
+
+                    <form id="loginForm" class="form-stack" novalidate>
+                        <div class="form-group">
+                            <label class="form-label" for="loginEmail">Email address</label>
+                            <div class="input-icon">
+                                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                                <input class="form-control" type="email" id="loginEmail" name="email"
+                                    autocomplete="email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="loginPassword">Password</label>
+                            <div class="input-with-action">
+                                <input class="form-control" type="password" id="loginPassword" name="password"
+                                    autocomplete="current-password" required>
+                                <button type="button" class="input-action" data-toggle-password="loginPassword"
+                                    aria-label="Show password">
+                                    <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox" for="rememberMe">
+                                <input type="checkbox" id="rememberMe" name="remember"> Remember me
+                            </label>
+                            <button type="button" class="link-button" id="showForgotBtn">Forgot password?</button>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginSubmitBtn">
+                            Log in <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </form>
+
+                    <!-- Only shown in demo mode -->
+                    <div class="demo-accounts" id="demoAccounts" hidden>
+                        <h2><i class="fa-solid fa-flask" aria-hidden="true"></i> Try a demo account</h2>
+                        <div class="demo-buttons">
+                            <button type="button" class="btn btn-secondary btn-sm" data-demo-role="VENDOR"><i
+                                    class="fa-solid fa-store" aria-hidden="true"></i> Vendor</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-demo-role="ORGANIZER"><i
+                                    class="fa-regular fa-calendar-check" aria-hidden="true"></i> Organizer</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-demo-role="ADMIN"><i
+                                    class="fa-solid fa-user-shield" aria-hidden="true"></i> Admin</button>
+                        </div>
+                        <p>Demo mode: passwords are not checked and nothing is sent to a server. Real sign-in will use
+                            Supabase Auth.</p>
+                    </div>
+
+                    <p class="auth-switch">Don't have an account? <a href="register.html" id="registerLink">Create one
+                            for free</a></p>
                 </div>
 
-                <div class="alert" id="loginAlert" role="alert" hidden></div>
-
-                <form id="loginForm" class="form-stack" novalidate>
-                    <div class="form-group">
-                        <label class="form-label" for="loginEmail">Email address</label>
-                        <div class="input-icon">
-                            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
-                            <input class="form-control" type="email" id="loginEmail" name="email" autocomplete="email" placeholder="you@example.com" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="loginPassword">Password</label>
-                        <div class="input-with-action">
-                            <input class="form-control" type="password" id="loginPassword" name="password" autocomplete="current-password" required>
-                            <button type="button" class="input-action" data-toggle-password="loginPassword" aria-label="Show password">
-                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-options">
-                        <label class="checkbox" for="rememberMe">
-                            <input type="checkbox" id="rememberMe" name="remember"> Remember me
-                        </label>
-                        <button type="button" class="link-button" id="showForgotBtn">Forgot password?</button>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginSubmitBtn">
-                        Log in <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                <!-- Forgot password -->
+                <div id="forgotView" class="form-stack" hidden>
+                    <button type="button" class="link-button back-link" id="backToLoginBtn">
+                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to login
                     </button>
-                </form>
-
-                <!-- Only shown in demo mode -->
-                <div class="demo-accounts" id="demoAccounts" hidden>
-                    <h2><i class="fa-solid fa-flask" aria-hidden="true"></i> Try a demo account</h2>
-                    <div class="demo-buttons">
-                        <button type="button" class="btn btn-secondary btn-sm" data-demo-role="VENDOR"><i class="fa-solid fa-store" aria-hidden="true"></i> Vendor</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-demo-role="ORGANIZER"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> Organizer</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-demo-role="ADMIN"><i class="fa-solid fa-user-shield" aria-hidden="true"></i> Admin</button>
+                    <div class="auth-title">
+                        <h1>Reset your password</h1>
+                        <p>Enter the email address you signed up with and we'll send you a link to choose a new
+                            password.</p>
                     </div>
-                    <p>Demo mode: passwords are not checked and nothing is sent to a server. Real sign-in will use Supabase Auth.</p>
-                </div>
 
-                <p class="auth-switch">Don't have an account? <a href="register.html" id="registerLink">Create one for free</a></p>
-            </div>
+                    <div class="alert" id="forgotAlert" role="status" hidden></div>
 
-            <!-- Forgot password -->
-            <div id="forgotView" class="form-stack" hidden>
-                <button type="button" class="link-button back-link" id="backToLoginBtn">
-                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to login
-                </button>
-                <div class="auth-title">
-                    <h1>Reset your password</h1>
-                    <p>Enter the email address you signed up with and we'll send you a link to choose a new password.</p>
-                </div>
-
-                <div class="alert" id="forgotAlert" role="status" hidden></div>
-
-                <form id="forgotForm" class="form-stack" novalidate>
-                    <div class="form-group">
-                        <label class="form-label" for="forgotEmail">Email address</label>
-                        <div class="input-icon">
-                            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
-                            <input class="form-control" type="email" id="forgotEmail" name="email" autocomplete="email" placeholder="you@example.com" required>
+                    <form id="forgotForm" class="form-stack" novalidate>
+                        <div class="form-group">
+                            <label class="form-label" for="forgotEmail">Email address</label>
+                            <div class="input-icon">
+                                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                                <input class="form-control" type="email" id="forgotEmail" name="email"
+                                    autocomplete="email" placeholder="you@example.com" required>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="forgotSubmitBtn">Send reset link</button>
-                </form>
-            </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" id="forgotSubmitBtn">Send reset
+                            link</button>
+                    </form>
+                </div>
 
-        </section>
-    </div>
-</main>
+            </section>
+        </div>
+    </main>
 
-<footer class="site-footer" id="siteFooter"></footer>
+    <footer class="site-footer" id="siteFooter"></footer>
 
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script type="module" src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<script src="js/pages/login.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/login.js"></script>
 </body>
+
 </html>

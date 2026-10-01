@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,183 +9,207 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/about.css">
 </head>
+
 <body data-page="about">
 
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="siteHeader"></header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
 
-<main class="page-main" id="main">
+    <main class="page-main" id="main">
 
-    <!-- 3D hero (the network animation is drawn by Three.js in js/pages/about.js) -->
-    <section class="about-hero">
-        <div id="threeCanvasContainer" class="about-canvas" aria-hidden="true"></div>
-        <div class="container">
-          <div class="about-hero-content">
-            <span class="about-badge"><i class="fa-solid fa-cubes" aria-hidden="true"></i> Digital marketplace ecosystem</span>
-            <h1>Empowering Africa's <span>community commerce</span></h1>
-            <p>
-                VendorLink is a central platform that connects small stallholders, informal traders and
-                festival organisers across South Africa in one transparent place.
-            </p>
-            <p class="canvas-hint" id="canvasHint" hidden>
-                <i class="fa-solid fa-arrows-up-down-left-right" aria-hidden="true"></i> Drag the background to explore the vendor network
-            </p>
-          </div>
-        </div>
-    </section>
+        <!-- 3D hero (the network animation is drawn by Three.js in js/pages/about.js) -->
+        <section class="about-hero">
+            <div id="threeCanvasContainer" class="about-canvas" aria-hidden="true"></div>
+            <div class="container">
+                <div class="about-hero-content">
+                    <span class="about-badge"><i class="fa-solid fa-cubes" aria-hidden="true"></i> Digital marketplace
+                        ecosystem</span>
+                    <h1>Empowering Africa's <span>community commerce</span></h1>
+                    <p>
+                        VendorLink is a central platform that connects small stallholders, informal traders and
+                        festival organisers across South Africa in one transparent place.
+                    </p>
+                    <p class="canvas-hint" id="canvasHint" hidden>
+                        <i class="fa-solid fa-arrows-up-down-left-right" aria-hidden="true"></i> Drag the background to
+                        explore the vendor network
+                    </p>
+                </div>
+            </div>
+        </section>
 
-    <!-- Our story -->
-    <section class="section section-white">
-        <div class="container story-grid">
-            <div class="story-text">
-                <h2>Bridging the gap in local markets</h2>
-                <p>
-                    Small vendors in South Africa have always found weekend trading spots through WhatsApp groups,
-                    Facebook posts and word of mouth. Organisers spend hours going through paper forms and
-                    double-booked stalls.
-                </p>
-                <p>
-                    VendorLink puts both sides on one platform: organisers publish events with live stall numbers,
-                    and local businesses apply for stalls knowing exactly what's available.
-                </p>
-                <div class="story-points">
-                    <div>
-                        <h3>Clear stall numbers</h3>
-                        <p>Every event shows how many stalls are left, updated with each approval.</p>
+        <!-- Our story -->
+        <section class="section section-white">
+            <div class="container story-grid">
+                <div class="story-text">
+                    <h2>Bridging the gap in local markets</h2>
+                    <p>
+                        Small vendors in South Africa have always found weekend trading spots through WhatsApp groups,
+                        Facebook posts and word of mouth. Organisers spend hours going through paper forms and
+                        double-booked stalls.
+                    </p>
+                    <p>
+                        VendorLink puts both sides on one platform: organisers publish events with live stall numbers,
+                        and local businesses apply for stalls knowing exactly what's available.
+                    </p>
+                    <div class="story-points">
+                        <div>
+                            <h3>Clear stall numbers</h3>
+                            <p>Every event shows how many stalls are left, updated with each approval.</p>
+                        </div>
+                        <div>
+                            <h3>No overbooking</h3>
+                            <p>When the last stall is allocated, the event closes to new applications.</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3>No overbooking</h3>
-                        <p>When the last stall is allocated, the event closes to new applications.</p>
+                </div>
+
+                <div class="tilt-wrap">
+                    <div class="tilt-card" id="storyTiltCard">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+                            alt="Stallholders and shoppers at a busy South African market" data-fallback="event">
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="tilt-wrap">
-                <div class="tilt-card" id="storyTiltCard">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
-                         alt="Stallholders and shoppers at a busy South African market" data-fallback="event">
+        <!-- Pillars -->
+        <section class="section">
+            <div class="container">
+                <div class="section-head">
+                    <h2>What we stand for</h2>
+                    <p>The principles behind every feature we build.</p>
+                </div>
+
+                <div class="pillars-grid">
+                    <article class="pillar-card">
+                        <div class="pillar-bg pillar-connect" aria-hidden="true"></div>
+                        <div class="pillar-content">
+                            <div class="pillar-icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></div>
+                            <h3>Connect</h3>
+                            <p>Bringing independent market organisers and quality local stallholders together across
+                                South Africa's cities and towns.</p>
+                        </div>
+                    </article>
+                    <article class="pillar-card">
+                        <div class="pillar-bg pillar-grow" aria-hidden="true"></div>
+                        <div class="pillar-content">
+                            <div class="pillar-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+                            <h3>Empower &amp; grow</h3>
+                            <p>Giving informal traders and micro-entrepreneurs a digital profile, a record of the
+                                markets they've traded at and more visibility.</p>
+                        </div>
+                    </article>
+                    <article class="pillar-card">
+                        <div class="pillar-bg pillar-transparency" aria-hidden="true"></div>
+                        <div class="pillar-content">
+                            <div class="pillar-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
+                            <h3>Transparency</h3>
+                            <p>Real-time stall counts, upfront stall fees and clear application decisions, with no
+                                hidden surprises.</p>
+                        </div>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Pillars -->
-    <section class="section">
-        <div class="container">
-            <div class="section-head">
-                <h2>What we stand for</h2>
-                <p>The principles behind every feature we build.</p>
+        <!-- Context numbers -->
+        <section class="scope-strip" aria-label="Informal trade in South Africa">
+            <div class="container scope-grid">
+                <div class="scope-item"><strong>1.9M+</strong><span>Informal businesses operating in South Africa</span>
+                </div>
+                <div class="scope-item"><strong>19.5%</strong><span>Of the national workforce employed in informal
+                        trade</span></div>
+                <div class="scope-item"><strong>3 metros</strong><span>Launching first in Cape Town, Johannesburg &amp;
+                        Durban</span></div>
             </div>
+        </section>
 
-            <div class="pillars-grid">
-                <article class="pillar-card">
-                    <div class="pillar-bg pillar-connect" aria-hidden="true"></div>
-                    <div class="pillar-content">
-                        <div class="pillar-icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></div>
-                        <h3>Connect</h3>
-                        <p>Bringing independent market organisers and quality local stallholders together across South Africa's cities and towns.</p>
-                    </div>
-                </article>
-                <article class="pillar-card">
-                    <div class="pillar-bg pillar-grow" aria-hidden="true"></div>
-                    <div class="pillar-content">
-                        <div class="pillar-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
-                        <h3>Empower &amp; grow</h3>
-                        <p>Giving informal traders and micro-entrepreneurs a digital profile, a record of the markets they've traded at and more visibility.</p>
-                    </div>
-                </article>
-                <article class="pillar-card">
-                    <div class="pillar-bg pillar-transparency" aria-hidden="true"></div>
-                    <div class="pillar-content">
-                        <div class="pillar-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
-                        <h3>Transparency</h3>
-                        <p>Real-time stall counts, upfront stall fees and clear application decisions, with no hidden surprises.</p>
-                    </div>
-                </article>
+        <!-- Team -->
+        <section class="section section-white">
+            <div class="container">
+                <div class="section-head">
+                    <h2>Meet our engineering team</h2>
+                    <p>The core team architecting the VendorLink platform.</p>
+                </div>
+
+                <div class="team-grid">
+                    <article class="team-card">
+                        <div class="team-banner"><span class="team-orb orb-blue"></span><span class="team-glyph"><i
+                                    class="fa-solid fa-compass-drafting" aria-hidden="true"></i></span></div>
+                        <div class="team-info">
+                            <h3>Lisakhanya</h3>
+                            <p class="team-role">Project Lead &amp; Architect</p>
+                            <p>Directs overall architecture, release milestones, and platform system specifications.</p>
+                            <div class="tag-row"><span class="tech-tag">Architecture</span><span class="tech-tag">System
+                                    Design</span></div>
+                        </div>
+                    </article>
+                    <article class="team-card">
+                        <div class="team-banner"><span class="team-orb orb-green"></span><span class="team-glyph"><i
+                                    class="fa-solid fa-code" aria-hidden="true"></i></span></div>
+                        <div class="team-info">
+                            <h3>Tshegofatso</h3>
+                            <p class="team-role">Lead Frontend Engineer</p>
+                            <p>Develops responsive user interfaces, interactive 3D WebGL scenes, and client state
+                                workflows.</p>
+                            <div class="tag-row"><span class="tech-tag">JavaScript</span><span
+                                    class="tech-tag">Three.js</span><span class="tech-tag">CSS3</span></div>
+                        </div>
+                    </article>
+                    <article class="team-card">
+                        <div class="team-banner"><span class="team-orb orb-purple"></span><span class="team-glyph"><i
+                                    class="fa-solid fa-server" aria-hidden="true"></i></span></div>
+                        <div class="team-info">
+                            <h3>Wazeer</h3>
+                            <p class="team-role">Backend Engineer</p>
+                            <p>Builds RESTful endpoints, relational schemas, and server-side business constraint
+                                validations.</p>
+                            <div class="tag-row"><span class="tech-tag">Spring Boot</span><span
+                                    class="tech-tag">Java</span><span class="tech-tag">MySQL</span></div>
+                        </div>
+                    </article>
+                    <article class="team-card">
+                        <div class="team-banner"><span class="team-orb orb-amber"></span><span class="team-glyph"><i
+                                    class="fa-solid fa-shield-virus" aria-hidden="true"></i></span></div>
+                        <div class="team-info">
+                            <h3>Will</h3>
+                            <p class="team-role">Security &amp; QA Lead</p>
+                            <p>Audits JWT authentication, role authorization boundaries, and automated test coverage.
+                            </p>
+                            <div class="tag-row"><span class="tech-tag">Spring Security</span><span
+                                    class="tech-tag">JWT</span><span class="tech-tag">QA</span></div>
+                        </div>
+                    </article>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Context numbers -->
-    <section class="scope-strip" aria-label="Informal trade in South Africa">
-        <div class="container scope-grid">
-            <div class="scope-item"><strong>1.9M+</strong><span>Informal businesses operating in South Africa</span></div>
-            <div class="scope-item"><strong>19.5%</strong><span>Of the national workforce employed in informal trade</span></div>
-            <div class="scope-item"><strong>3 metros</strong><span>Launching first in Cape Town, Johannesburg &amp; Durban</span></div>
-        </div>
-    </section>
+    </main>
 
-    <!-- Team -->
-    <section class="section section-white">
-        <div class="container">
-            <div class="section-head">
-                <h2>Meet our engineering team</h2>
-                <p>The core team architecting the VendorLink platform.</p>
-            </div>
+    <footer class="site-footer" id="siteFooter"></footer>
 
-            <div class="team-grid">
-                <article class="team-card">
-                    <div class="team-banner"><span class="team-orb orb-blue"></span><span class="team-glyph"><i class="fa-solid fa-compass-drafting" aria-hidden="true"></i></span></div>
-                    <div class="team-info">
-                        <h3>Lisakhanya</h3>
-                        <p class="team-role">Project Lead &amp; Architect</p>
-                        <p>Directs overall architecture, release milestones, and platform system specifications.</p>
-                        <div class="tag-row"><span class="tech-tag">Architecture</span><span class="tech-tag">System Design</span></div>
-                    </div>
-                </article>
-                <article class="team-card">
-                    <div class="team-banner"><span class="team-orb orb-green"></span><span class="team-glyph"><i class="fa-solid fa-code" aria-hidden="true"></i></span></div>
-                    <div class="team-info">
-                        <h3>Tshegofatso</h3>
-                        <p class="team-role">Lead Frontend Engineer</p>
-                        <p>Develops responsive user interfaces, interactive 3D WebGL scenes, and client state workflows.</p>
-                        <div class="tag-row"><span class="tech-tag">JavaScript</span><span class="tech-tag">Three.js</span><span class="tech-tag">CSS3</span></div>
-                    </div>
-                </article>
-                <article class="team-card">
-                    <div class="team-banner"><span class="team-orb orb-purple"></span><span class="team-glyph"><i class="fa-solid fa-server" aria-hidden="true"></i></span></div>
-                    <div class="team-info">
-                        <h3>Wazeer</h3>
-                        <p class="team-role">Backend Engineer</p>
-                        <p>Builds RESTful endpoints, relational schemas, and server-side business constraint validations.</p>
-                        <div class="tag-row"><span class="tech-tag">Spring Boot</span><span class="tech-tag">Java</span><span class="tech-tag">MySQL</span></div>
-                    </div>
-                </article>
-                <article class="team-card">
-                    <div class="team-banner"><span class="team-orb orb-amber"></span><span class="team-glyph"><i class="fa-solid fa-shield-virus" aria-hidden="true"></i></span></div>
-                    <div class="team-info">
-                        <h3>Will</h3>
-                        <p class="team-role">Security &amp; QA Lead</p>
-                        <p>Audits JWT authentication, role authorization boundaries, and automated test coverage.</p>
-                        <div class="tag-row"><span class="tech-tag">Spring Security</span><span class="tech-tag">JWT</span><span class="tech-tag">QA</span></div>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-</main>
-
-<footer class="site-footer" id="siteFooter"></footer>
-
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script type="module" src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<!-- Three.js draws the 3D network in the hero -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/pages/about.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <!-- Three.js draws the 3D network in the hero -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/pages/about.js"></script>
 </body>
+
+</html>
+
 </html>

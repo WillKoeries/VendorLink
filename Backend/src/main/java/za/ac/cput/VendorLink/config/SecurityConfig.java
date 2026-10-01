@@ -52,6 +52,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
+                                "/uploads/**",
                                 "/favicon.ico"
                         ).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -62,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
 
                         // Role-specific endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/events/upload-image").hasAnyRole("ORGANIZER", "ADMIN")
                         .requestMatchers("/api/events/organizer/**").hasRole("ORGANIZER")
                         .requestMatchers(HttpMethod.POST, "/api/events").hasRole("ORGANIZER")
                         .requestMatchers(HttpMethod.PUT, "/api/events/**").hasRole("ORGANIZER")

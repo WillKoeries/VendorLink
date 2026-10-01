@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,141 +8,167 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
 </head>
+
 <body data-page="register">
 
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="siteHeader"></header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
 
-<main class="page-main auth-wrapper" id="main">
-    <div class="auth-card">
+    <main class="page-main auth-wrapper" id="main">
+        <div class="auth-card">
 
-        <!-- Decorative image panel -->
-        <section class="auth-stage" aria-hidden="true">
-            <div class="stage-slides">
-                <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=800&q=80" class="slide-img is-active" alt="" data-fallback="event">
-                <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="" data-fallback="event">
-                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="" data-fallback="event">
-                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80" class="slide-img" alt="" data-fallback="event">
-            </div>
-            <div class="stage-overlay"></div>
-            <div class="stage-content">
-                <span class="stage-badge"><i class="fa-solid fa-user-plus"></i> Get started</span>
-                <h2 class="stage-headline">Join South Africa's market network</h2>
-                <p class="stage-desc">One free account for everything you do on VendorLink.</p>
-                <ul class="stage-list">
-                    <li><i class="fa-solid fa-check"></i> Vendors: find events and apply for stalls in minutes</li>
-                    <li><i class="fa-solid fa-check"></i> Organisers: list events and review applications</li>
-                    <li><i class="fa-solid fa-check"></i> Everyone: live stall numbers and instant notifications</li>
-                </ul>
-            </div>
-            <div class="stage-footer">
-                <span class="stage-dot is-active"></span>
-                <span class="stage-dot"></span>
-                <span class="stage-dot"></span>
-                <span class="stage-dot"></span>
-            </div>
-        </section>
+            <!-- Decorative image panel -->
+            <section class="auth-stage" aria-hidden="true">
+                <div class="stage-slides">
+                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img is-active" alt="" data-fallback="event">
+                    <img src="https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img" alt="" data-fallback="event">
+                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img" alt="" data-fallback="event">
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80"
+                        class="slide-img" alt="" data-fallback="event">
+                </div>
+                <div class="stage-overlay"></div>
+                <div class="stage-content">
+                    <span class="stage-badge"><i class="fa-solid fa-user-plus"></i> Get started</span>
+                    <h2 class="stage-headline">Join South Africa's market network</h2>
+                    <p class="stage-desc">One free account for everything you do on VendorLink.</p>
+                    <ul class="stage-list">
+                        <li><i class="fa-solid fa-check"></i> Vendors: find events and apply for stalls in minutes</li>
+                        <li><i class="fa-solid fa-check"></i> Organisers: list events and review applications</li>
+                        <li><i class="fa-solid fa-check"></i> Everyone: live stall numbers and instant notifications
+                        </li>
+                    </ul>
+                </div>
+                <div class="stage-footer">
+                    <span class="stage-dot is-active"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                    <span class="stage-dot"></span>
+                </div>
+            </section>
 
-        <section class="auth-panel">
-            <div class="auth-title">
-                <h1>Create your account</h1>
-                <p>It's free. Choose how you'll use VendorLink.</p>
-            </div>
-
-            <div class="alert" id="registerAlert" role="alert" hidden></div>
-
-            <form id="registerForm" class="form-stack" novalidate>
-                <fieldset class="role-field">
-                    <legend class="form-label">I want to register as</legend>
-                    <div class="role-toggle">
-                        <label class="role-option">
-                            <input type="radio" name="role" value="VENDOR" checked>
-                            <span><i class="fa-solid fa-store" aria-hidden="true"></i> Vendor</span>
-                        </label>
-                        <label class="role-option">
-                            <input type="radio" name="role" value="ORGANIZER">
-                            <span><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> Event organiser</span>
-                        </label>
-                    </div>
-                </fieldset>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="regFullName">Full name <span class="required">*</span></label>
-                        <input class="form-control" type="text" id="regFullName" name="fullName" autocomplete="name" maxlength="80" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="regPhone">Phone <span class="text-muted">(optional)</span></label>
-                        <input class="form-control" type="tel" id="regPhone" name="phone" autocomplete="tel" placeholder="+27 82 123 4567" maxlength="20">
-                    </div>
+            <section class="auth-panel">
+                <div class="auth-title">
+                    <h1>Create your account</h1>
+                    <p>It's free. Choose how you'll use VendorLink.</p>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="regEmail">Email address <span class="required">*</span></label>
-                    <input class="form-control" type="email" id="regEmail" name="email" autocomplete="email" placeholder="you@example.com" maxlength="120" required>
-                </div>
+                <div class="alert" id="registerAlert" role="alert" hidden></div>
 
-                <div class="form-group">
-                    <label class="form-label" for="regBusinessName" id="regBusinessLabel">Business name <span class="required">*</span></label>
-                    <input class="form-control" type="text" id="regBusinessName" name="businessName" autocomplete="organization" maxlength="100" placeholder="e.g. Mama's Authentic Bakes" required>
-                </div>
+                <form id="registerForm" class="form-stack" novalidate>
+                    <fieldset class="role-field">
+                        <legend class="form-label">I want to register as</legend>
+                        <div class="role-toggle">
+                            <label class="role-option">
+                                <input type="radio" name="role" value="VENDOR" checked>
+                                <span><i class="fa-solid fa-store" aria-hidden="true"></i> Vendor</span>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="role" value="ORGANIZER">
+                                <span><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> Event
+                                    organiser</span>
+                            </label>
+                        </div>
+                    </fieldset>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="regPassword">Password <span class="required">*</span></label>
-                        <div class="input-with-action">
-                            <input class="form-control" type="password" id="regPassword" name="password" autocomplete="new-password" minlength="8" required aria-describedby="passwordRules">
-                            <button type="button" class="input-action" data-toggle-password="regPassword" aria-label="Show password">
-                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                            </button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="regFullName">Full name <span
+                                    class="required">*</span></label>
+                            <input class="form-control" type="text" id="regFullName" name="fullName" autocomplete="name"
+                                maxlength="80" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regPhone">Phone <span
+                                    class="text-muted">(optional)</span></label>
+                            <input class="form-control" type="tel" id="regPhone" name="phone" autocomplete="tel"
+                                placeholder="+27 82 123 4567" maxlength="20">
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="form-label" for="regConfirm">Confirm password <span class="required">*</span></label>
-                        <input class="form-control" type="password" id="regConfirm" name="confirmPassword" autocomplete="new-password" required>
+                        <label class="form-label" for="regEmail">Email address <span class="required">*</span></label>
+                        <input class="form-control" type="email" id="regEmail" name="email" autocomplete="email"
+                            placeholder="you@example.com" maxlength="120" required>
                     </div>
-                </div>
-                <p class="password-rules" id="passwordRules">At least 8 characters, with at least one letter and one number.</p>
 
-                <div class="form-group">
-                    <label class="checkbox" for="regTerms">
-                        <input type="checkbox" id="regTerms" name="terms" required>
-                        <span>I agree to the <a href="legal.html#terms" target="_blank">Terms &amp; Conditions</a> and <a href="legal.html#privacy" target="_blank">Privacy Policy</a></span>
-                    </label>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regBusinessName" id="regBusinessLabel">Business name <span
+                                class="required">*</span></label>
+                        <input class="form-control" type="text" id="regBusinessName" name="businessName"
+                            autocomplete="organization" maxlength="100" placeholder="e.g. Mama's Authentic Bakes"
+                            required>
+                    </div>
 
-                <button type="submit" class="btn btn-primary btn-lg btn-block" id="registerSubmitBtn">
-                    Create account <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
-                </button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="regPassword">Password <span class="required">*</span></label>
+                            <div class="input-with-action">
+                                <input class="form-control" type="password" id="regPassword" name="password"
+                                    autocomplete="new-password" minlength="8" required aria-describedby="passwordRules">
+                                <button type="button" class="input-action" data-toggle-password="regPassword"
+                                    aria-label="Show password">
+                                    <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regConfirm">Confirm password <span
+                                    class="required">*</span></label>
+                            <input class="form-control" type="password" id="regConfirm" name="confirmPassword"
+                                autocomplete="new-password" required>
+                        </div>
+                    </div>
+                    <p class="password-rules" id="passwordRules">At least 8 characters, with at least one letter and one
+                        number.</p>
 
-                <p class="form-hint text-center" id="demoRegisterNote" hidden>
-                    Demo mode: your account is only kept in this browser tab, and your password is not saved anywhere.
-                </p>
-            </form>
+                    <div class="form-group">
+                        <label class="checkbox" for="regTerms">
+                            <input type="checkbox" id="regTerms" name="terms" required>
+                            <span>I agree to the <a href="legal.html#terms" target="_blank">Terms &amp; Conditions</a>
+                                and <a href="legal.html#privacy" target="_blank">Privacy Policy</a></span>
+                        </label>
+                    </div>
 
-            <p class="auth-switch">Already have an account? <a href="login.html" id="loginLink">Log in</a></p>
-        </section>
-    </div>
-</main>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="registerSubmitBtn">
+                        Create account <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                    </button>
 
-<footer class="site-footer" id="siteFooter"></footer>
+                    <p class="form-hint text-center" id="demoRegisterNote" hidden>
+                        Demo mode: your account is only kept in this browser tab, and your password is not saved
+                        anywhere.
+                    </p>
+                </form>
 
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script type="module" src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<script src="js/pages/register.js"></script>
+                <p class="auth-switch">Already have an account? <a href="login.html" id="loginLink">Log in</a></p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer" id="siteFooter"></footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/register.js"></script>
 </body>
+
+</html>
+
 </html>

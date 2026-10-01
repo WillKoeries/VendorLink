@@ -20,3 +20,7 @@ Thumbs.db
 !*.env.example
 application-local.properties
 **/src/main/resources/application-local.properties
+
+# Uploads
+uploads/
+**/uploads/

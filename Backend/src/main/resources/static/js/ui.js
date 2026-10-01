@@ -17,12 +17,19 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-/** Only allow http(s) links (blocks javascript: and data: URLs). Returns '' if unsafe. */
+/** Only allow http(s), relative paths and data image links. Returns '' if unsafe. */
 function safeUrl(value) {
   if (!value) return '';
+  const trimmed = String(value).trim();
+  if (trimmed.startsWith('images/') || trimmed.startsWith('./') || trimmed.startsWith('/') || trimmed.startsWith('uploads/')) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('data:image/')) {
+    return trimmed;
+  }
   try {
-    const url = new URL(String(value).trim(), window.location.href);
-    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+    const url = new URL(trimmed, window.location.href);
+    return ['http:', 'https:', 'file:'].includes(url.protocol) ? url.href : '';
   } catch (err) {
     return '';
   }
@@ -134,7 +141,7 @@ function debounce(fn, delay = 250) {
 
 // ============ Images ============
 const FALLBACK_IMAGES = {
-  event: 'images/placeholder-event.svg',
+  event: 'images/marketplace-fallback.jpg',
   avatar: 'images/placeholder-avatar.svg'
 };
 
@@ -219,7 +226,7 @@ function eventCardHtml(event) {
   return `
     <article class="event-card">
       <a class="event-card-media" href="${detailsUrl}" tabindex="-1" aria-hidden="true">
-        <img src="${escapeHtml(eventImageUrl(event))}" alt="" loading="lazy" data-fallback="event">
+        <img src="${escapeHtml(eventImageUrl(event))}" alt="" loading="lazy" data-fallback="event" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/marketplace-fallback.jpg'">
         <span class="badge badge-overlay event-card-tag">${escapeHtml(categoryName)}</span>
         <span class="event-card-status">${eventStatusBadge(event)}</span>
       </a>

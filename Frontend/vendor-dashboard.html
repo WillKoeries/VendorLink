@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,210 +8,234 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
+
 <body data-page="vendor-dashboard" data-layout="dashboard">
 
-<a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-<div class="dashboard">
+    <div class="dashboard">
 
-    <!-- Sidebar (becomes a top bar on small screens) -->
-    <aside class="dash-sidebar">
-        <div class="dash-brand">
-            <a href="index.html" class="logo">Vendor<span>Link</span></a>
-            <span class="dash-role">Vendor</span>
-        </div>
-
-        <nav class="dash-nav" aria-label="Dashboard">
-            <a href="#overview" class="dash-nav-item" data-tab="overview"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Overview</a>
-            <a href="#applications" class="dash-nav-item" data-tab="applications"><i class="fa-solid fa-file-signature" aria-hidden="true"></i> My applications</a>
-            <a href="#notifications" class="dash-nav-item" data-tab="notifications">
-                <i class="fa-solid fa-bell" aria-hidden="true"></i> Notifications
-                <span class="nav-count" id="navUnreadCount" hidden></span>
-            </a>
-            <a href="#profile" class="dash-nav-item" data-tab="profile"><i class="fa-solid fa-user" aria-hidden="true"></i> Profile</a>
-        </nav>
-
-        <div class="dash-sidebar-foot">
-            <a href="browse-events.html" class="dash-nav-item"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Browse events</a>
-            <button type="button" class="dash-nav-item is-danger" data-action="logout"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
-        </div>
-    </aside>
-
-    <div class="dash-main">
-        <header class="dash-topbar">
-            <div>
-                <h1 id="pageHeading">Overview</h1>
-                <p id="pageSubheading"></p>
+        <!-- Sidebar (becomes a top bar on small screens) -->
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <a href="index.html" class="logo">Vendor<span>Link</span></a>
+                <span class="dash-role">Vendor</span>
             </div>
-            <div class="dash-topbar-actions">
-                <a href="browse-events.html" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Find events</a>
-                <div id="topbarNotifications"></div>
-                <div id="topbarUserMenu"></div>
+
+            <nav class="dash-nav" aria-label="Dashboard">
+                <a href="#overview" class="dash-nav-item" data-tab="overview"><i class="fa-solid fa-chart-pie"
+                        aria-hidden="true"></i> Overview</a>
+                <a href="#applications" class="dash-nav-item" data-tab="applications"><i
+                        class="fa-solid fa-file-signature" aria-hidden="true"></i> My applications</a>
+                <a href="#notifications" class="dash-nav-item" data-tab="notifications">
+                    <i class="fa-solid fa-bell" aria-hidden="true"></i> Notifications
+                    <span class="nav-count" id="navUnreadCount" hidden></span>
+                </a>
+                <a href="#profile" class="dash-nav-item" data-tab="profile"><i class="fa-solid fa-user"
+                        aria-hidden="true"></i> Profile</a>
+            </nav>
+
+            <div class="dash-sidebar-foot">
+                <a href="browse-events.html" class="dash-nav-item"><i class="fa-solid fa-magnifying-glass"
+                        aria-hidden="true"></i> Browse events</a>
+                <button type="button" class="dash-nav-item is-danger" data-action="logout"><i
+                        class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
             </div>
-        </header>
+        </aside>
 
-        <main class="dash-content" id="main">
+        <div class="dash-main">
+            <header class="dash-topbar">
+                <div>
+                    <h1 id="pageHeading">Overview</h1>
+                    <p id="pageSubheading"></p>
+                </div>
+                <div class="dash-topbar-actions">
+                    <a href="browse-events.html" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"
+                            aria-hidden="true"></i> Find events</a>
+                    <div id="topbarNotifications"></div>
+                    <div id="topbarUserMenu"></div>
+                </div>
+            </header>
 
-            <div id="dashboardError"></div>
+            <main class="dash-content" id="main">
 
-            <!-- ========== Overview ========== -->
-            <section class="dash-view" data-view="overview" hidden>
-                <div id="profilePrompt"></div>
-                <div class="stats-row" id="overviewStats"></div>
+                <div id="dashboardError"></div>
 
-                <div class="dash-split">
-                    <div class="panel">
-                        <div class="panel-head">
-                            <h2>Your upcoming markets</h2>
-                            <a href="#applications" class="btn btn-secondary btn-sm">All applications</a>
-                        </div>
-                        <div id="upcomingApproved"></div>
-                    </div>
+                <!-- ========== Overview ========== -->
+                <section class="dash-view" data-view="overview" hidden>
+                    <div id="profilePrompt"></div>
+                    <div class="stats-row" id="overviewStats"></div>
 
-                    <div class="dash-view">
+                    <div class="dash-split">
                         <div class="panel">
                             <div class="panel-head">
-                                <h2>Latest notifications</h2>
-                                <a href="#notifications" class="btn btn-secondary btn-sm">View all</a>
+                                <h2>Your upcoming markets</h2>
+                                <a href="#applications" class="btn btn-secondary btn-sm">All applications</a>
                             </div>
-                            <div id="latestNotifications"></div>
+                            <div id="upcomingApproved"></div>
                         </div>
-                        <div class="panel cta-panel">
-                            <h2>Find your next market</h2>
-                            <p>New events are added all the time. Filter by category, province and stall fee.</p>
-                            <a href="browse-events.html" class="btn btn-light btn-sm">Browse events <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+
+                        <div class="dash-view">
+                            <div class="panel">
+                                <div class="panel-head">
+                                    <h2>Latest notifications</h2>
+                                    <a href="#notifications" class="btn btn-secondary btn-sm">View all</a>
+                                </div>
+                                <div id="latestNotifications"></div>
+                            </div>
+                            <div class="panel cta-panel">
+                                <h2>Find your next market</h2>
+                                <p>New events are added all the time. Filter by category, province and stall fee.</p>
+                                <a href="browse-events.html" class="btn btn-light btn-sm">Browse events <i
+                                        class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- ========== My applications ========== -->
-            <section class="dash-view" data-view="applications" hidden>
-                <div class="status-tabs" id="applicationStatusTabs" role="group" aria-label="Filter by status"></div>
-                <div id="applicationsList"></div>
-            </section>
-
-            <!-- ========== Notifications ========== -->
-            <section class="dash-view" data-view="notifications" hidden>
-                <div class="panel">
-                    <div class="panel-head">
-                        <div>
-                            <h2>All notifications</h2>
-                            <p>Decisions on your applications and updates from organisers.</p>
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-sm" id="markAllReadBtn">
-                            <i class="fa-solid fa-check-double" aria-hidden="true"></i> Mark all as read
-                        </button>
+                <!-- ========== My applications ========== -->
+                <section class="dash-view" data-view="applications" hidden>
+                    <div class="status-tabs" id="applicationStatusTabs" role="group" aria-label="Filter by status">
                     </div>
-                    <div id="notificationsList"></div>
-                </div>
-            </section>
+                    <div id="applicationsList"></div>
+                </section>
 
-            <!-- ========== Profile ========== -->
-            <section class="dash-view" data-view="profile" hidden>
-                <div class="settings-grid">
-                    <form class="panel" id="profileForm" novalidate>
-                        <div class="alert alert-error" id="profileAlert" hidden></div>
+                <!-- ========== Notifications ========== -->
+                <section class="dash-view" data-view="notifications" hidden>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h2>All notifications</h2>
+                                <p>Decisions on your applications and updates from organisers.</p>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="markAllReadBtn">
+                                <i class="fa-solid fa-check-double" aria-hidden="true"></i> Mark all as read
+                            </button>
+                        </div>
+                        <div id="notificationsList"></div>
+                    </div>
+                </section>
 
-                        <div class="form-section">
-                            <h3>Business profile</h3>
-                            <div class="form-stack">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label" for="pfBusinessName">Business name <span class="required">*</span></label>
-                                        <input class="form-control" id="pfBusinessName" name="businessName" maxlength="100" autocomplete="organization">
+                <!-- ========== Profile ========== -->
+                <section class="dash-view" data-view="profile" hidden>
+                    <div class="settings-grid">
+                        <form class="panel" id="profileForm" novalidate>
+                            <div class="alert alert-error" id="profileAlert" hidden></div>
+
+                            <div class="form-section">
+                                <h3>Business profile</h3>
+                                <div class="form-stack">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfBusinessName">Business name <span
+                                                    class="required">*</span></label>
+                                            <input class="form-control" id="pfBusinessName" name="businessName"
+                                                maxlength="100" autocomplete="organization">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfCategory">Category</label>
+                                            <select class="form-control" id="pfCategory" name="category"></select>
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" for="pfCategory">Category</label>
-                                        <select class="form-control" id="pfCategory" name="category"></select>
+                                        <label class="form-label" for="pfDescription">About your business</label>
+                                        <textarea class="form-control" id="pfDescription" name="description" rows="3"
+                                            maxlength="600"
+                                            placeholder="What do you sell, and what makes it special?"></textarea>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="pfDescription">About your business</label>
-                                    <textarea class="form-control" id="pfDescription" name="description" rows="3" maxlength="600"
-                                              placeholder="What do you sell, and what makes it special?"></textarea>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label" for="pfWebsite">Website or social page</label>
-                                        <input class="form-control" type="url" id="pfWebsite" name="website" placeholder="https://" maxlength="200">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label" for="pfImage">Profile image link</label>
-                                        <input class="form-control" type="url" id="pfImage" name="profileImageUrl" placeholder="https://" maxlength="500">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="pfAddress">Address</label>
-                                    <input class="form-control" id="pfAddress" name="address" maxlength="160" autocomplete="street-address">
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label" for="pfCity">City</label>
-                                        <input class="form-control" id="pfCity" name="city" maxlength="80" autocomplete="address-level2">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfWebsite">Website or social page</label>
+                                            <input class="form-control" type="url" id="pfWebsite" name="website"
+                                                placeholder="https://" maxlength="200">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfImage">Profile image link</label>
+                                            <input class="form-control" type="url" id="pfImage" name="profileImageUrl"
+                                                placeholder="https://" maxlength="500">
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" for="pfProvince">Province</label>
-                                        <select class="form-control" id="pfProvince" name="province"></select>
+                                        <label class="form-label" for="pfAddress">Address</label>
+                                        <input class="form-control" id="pfAddress" name="address" maxlength="160"
+                                            autocomplete="street-address">
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfCity">City</label>
+                                            <input class="form-control" id="pfCity" name="city" maxlength="80"
+                                                autocomplete="address-level2">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfProvince">Province</label>
+                                            <select class="form-control" id="pfProvince" name="province"></select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-section">
-                            <h3>Your account</h3>
-                            <div class="form-stack">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label" for="pfFullName">Full name <span class="required">*</span></label>
-                                        <input class="form-control" id="pfFullName" name="fullName" maxlength="80" autocomplete="name">
+                            <div class="form-section">
+                                <h3>Your account</h3>
+                                <div class="form-stack">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfFullName">Full name <span
+                                                    class="required">*</span></label>
+                                            <input class="form-control" id="pfFullName" name="fullName" maxlength="80"
+                                                autocomplete="name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="pfPhone">Phone</label>
+                                            <input class="form-control" type="tel" id="pfPhone" name="phone"
+                                                maxlength="20" autocomplete="tel">
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" for="pfPhone">Phone</label>
-                                        <input class="form-control" type="tel" id="pfPhone" name="phone" maxlength="20" autocomplete="tel">
+                                        <label class="form-label" for="pfEmail">Email</label>
+                                        <input class="form-control" id="pfEmail" readonly>
+                                        <p class="form-hint">Changing your login email will be handled by Supabase Auth.
+                                        </p>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="pfEmail">Email</label>
-                                    <input class="form-control" id="pfEmail" readonly>
-                                    <p class="form-hint">Changing your login email will be handled by Supabase Auth.</p>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary" id="profileSubmitBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Save profile</button>
-                        </div>
-                    </form>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="profileSubmitBtn"><i
+                                        class="fa-solid fa-check" aria-hidden="true"></i> Save profile</button>
+                            </div>
+                        </form>
 
-                    <aside class="panel profile-preview" id="profilePreview" aria-label="Profile preview"></aside>
-                </div>
-            </section>
-        </main>
+                        <aside class="panel profile-preview" id="profilePreview" aria-label="Profile preview"></aside>
+                    </div>
+                </section>
+            </main>
 
-        <footer class="dash-footer">
-            <span>&copy; <span id="footerYear"></span> VendorLink</span>
-            <span><a href="pricing.html#faq">Help</a><a href="legal.html#privacy">Privacy</a><a href="legal.html#terms">Terms</a></span>
-        </footer>
+            <footer class="dash-footer">
+                <span>&copy; <span id="footerYear"></span> VendorLink</span>
+                <span><a href="pricing.html#faq">Help</a><a href="legal.html#privacy">Privacy</a><a
+                        href="legal.html#terms">Terms</a></span>
+            </footer>
+        </div>
     </div>
-</div>
 
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script type="module" src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<script src="js/pages/vendor-dashboard.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/vendor-dashboard.js"></script>
 </body>
+
 </html>
