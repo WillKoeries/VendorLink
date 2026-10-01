@@ -3,39 +3,8 @@
  * Handles HTTP requests, JWT authentication, and centralized error handling.
  */
 
-// Base API URL configuration: supports custom host override, Netlify /api proxy, and local dev
-const API_BASE_URL = window.API_BASE_URL 
-    || localStorage.getItem('vendorlink_api_url') 
-    || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '8080'
-        ? 'http://localhost:8080/api'
-        : '/api');
-
-/**
- * Escape untrusted user input before rendering in innerHTML to prevent Stored XSS
- */
-function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, c =>
-        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
-/**
- * Validate redirect URLs to ensure they only redirect to same-origin paths, preventing Open Redirects
- */
-function safeRedirect(target, fallback) {
-    if (!target) return fallback;
-    try {
-        const url = new URL(target, window.location.origin);
-        if (url.origin === window.location.origin) {
-            return url.pathname + url.search + url.hash;
-        }
-    } catch {
-        /* invalid URL: fall through */
-    }
-    return fallback;
-}
-
-window.escapeHtml = escapeHtml;
-window.safeRedirect = safeRedirect;
+// Base API URL configuration
+const API_BASE_URL = window.API_BASE_URL || '/api';
 
 // Create dedicated Axios instance
 const apiClient = axios.create({
@@ -222,7 +191,6 @@ function formatDate(dateString) {
     }
 }
 
-// Attach to window object for global script access
 window.apiClient = apiClient;
 window.authAPI = authAPI;
 window.eventsAPI = eventsAPI;

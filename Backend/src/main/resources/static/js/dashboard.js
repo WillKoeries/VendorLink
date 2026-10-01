@@ -112,9 +112,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                                     🏪
                                 </div>
                                 <div style="flex: 1;">
-                                    <h3>${escapeHtml(app.businessName) || 'Vendor'}</h3>
-                                    <p style="margin-bottom: 2px;"><strong>Event:</strong> ${escapeHtml(app.eventTitle) || 'Event'}</p>
-                                    <p style="font-size: 0.85rem; color: #64748b;">${escapeHtml(app.productsDescription) || 'No description provided'}</p>
+                                    <h3>${app.businessName || (app.vendor ? app.vendor.businessName : 'Vendor')}</h3>
+                                    <p style="margin-bottom: 2px;"><strong>Event:</strong> ${app.eventTitle || 'Event'}</p>
+                                    <p style="font-size: 0.85rem; color: #64748b;">${app.productsDescription || 'No description provided'}</p>
                                 </div>
                                 <div style="display:flex; gap: 8px; align-items:center;">
                                     ${actionsHtml}
@@ -144,108 +144,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             showToast('Failed to update status: ' + err.message, 'error');
         }
     };
-
-    // 6. Handle Create New Event Modal & Submission
-    const createEventModal = document.getElementById('create-event-modal');
-    const btnCreateEvent = document.getElementById('btn-create-event');
-    const modalCloseBtn = document.getElementById('create-event-modal-close');
-    const modalCancelBtn = document.getElementById('create-event-cancel');
-    const createEventForm = document.getElementById('create-event-form');
-    const categorySelect = document.getElementById('event-category');
-
-    async function loadCategoriesIntoSelect() {
-        if (!categorySelect) return;
-        try {
-            const categories = await categoriesAPI.getAll();
-            categorySelect.innerHTML = '<option value="">Select Category</option>';
-            categories.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat.id;
-                opt.textContent = cat.name;
-                categorySelect.appendChild(opt);
-            });
-        } catch (err) {
-            console.error('Failed to load categories for modal:', err);
-        }
-    }
-
-    const openCreateModal = () => {
-        if (createEventModal) {
-            createEventModal.classList.add('active');
-            loadCategoriesIntoSelect();
-        }
-    };
-
-    const closeCreateModal = () => {
-        if (createEventModal) {
-            createEventModal.classList.remove('active');
-        }
-    };
-
-    if (btnCreateEvent) btnCreateEvent.addEventListener('click', openCreateModal);
-    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeCreateModal);
-    if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeCreateModal);
-    if (createEventModal) {
-        createEventModal.addEventListener('click', (e) => {
-            if (e.target === createEventModal) closeCreateModal();
-        });
-    }
-
-    if (createEventForm) {
-        createEventForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const submitBtn = document.getElementById('create-event-submit');
-            const title = document.getElementById('event-title').value.trim();
-            const categoryId = document.getElementById('event-category').value;
-            const date = document.getElementById('event-date').value;
-            const time = document.getElementById('event-time').value.trim() || '09:00 - 17:00';
-            const province = document.getElementById('event-province').value;
-            const location = document.getElementById('event-location').value.trim();
-            const city = document.getElementById('event-city').value.trim();
-            const totalStalls = parseInt(document.getElementById('event-stalls').value, 10);
-            const stallFee = parseFloat(document.getElementById('event-fee').value);
-            const description = document.getElementById('event-desc').value.trim();
-            const requirements = document.getElementById('event-reqs').value.trim();
-
-            if (!title || !date || !location || !city || isNaN(totalStalls) || isNaN(stallFee)) {
-                showToast('Please fill in all required event details.', 'warning');
-                return;
-            }
-
-            const origText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span> Publishing...';
-
-            try {
-                await eventsAPI.createEvent({
-                    title,
-                    categoryId: categoryId ? Number(categoryId) : null,
-                    date,
-                    time,
-                    province,
-                    location,
-                    city,
-                    totalStalls,
-                    stallFee,
-                    description: description || undefined,
-                    requirements: requirements || undefined,
-                    bannerImageUrl: 'images/market1.png',
-                    status: 'OPEN'
-                });
-
-                showToast('Event created and published successfully!', 'success', 4000);
-                createEventForm.reset();
-                closeCreateModal();
-                await loadDashboardStats();
-            } catch (err) {
-                showToast(err.message, 'error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = origText;
-            }
-        });
-    }
 
     await loadDashboardStats();
 });

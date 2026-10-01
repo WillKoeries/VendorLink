@@ -22,18 +22,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ? `${evt.availableStalls} Stalls Available` 
                     : 'Stalls Available';
 
-                const escapedTitle = escapeHtml(evt.title);
-                const locationText = escapeHtml(evt.city || evt.location);
-
                 return `
                     <div class="event-card">
-                        <img src="${escapeHtml(img)}" alt="${escapedTitle}" onerror="this.src='images/market1.png'">
+                        <img src="${img}" alt="${evt.title}" onerror="this.src='images/market1.png'">
                         <div class="event-content">
-                            <h3>${escapedTitle}</h3>
-                            <p>📍 ${locationText}</p>
+                            <h3>${evt.title}</h3>
+                            <p>📍 ${evt.city || evt.location}</p>
                             <p>📅 ${date}</p>
                             <p>${stalls}</p>
-                            <a href="event-details.html?id=${encodeURIComponent(evt.id)}">
+                            <a href="event-details.html?id=${evt.id}">
                                 View Details
                             </a>
                         </div>

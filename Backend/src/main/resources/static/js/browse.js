@@ -82,19 +82,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ? `${event.availableStalls} Stalls Available` 
                     : 'Stalls Available';
 
-                const escapedTitle = escapeHtml(event.title);
-                const locationText = escapeHtml(event.city ? event.city + (event.province ? ', ' + event.province : '') : event.location);
-
                 return `
                     <div class="event-card">
-                        <img src="${escapeHtml(imageUrl)}" alt="${escapedTitle}" onerror="this.src='images/market1.png'">
+                        <img src="${imageUrl}" alt="${event.title}" onerror="this.src='images/market1.png'">
                         <div class="event-content">
-                            <h3>${escapedTitle}</h3>
-                            <p>📍 ${locationText}</p>
+                            <h3>${event.title}</h3>
+                            <p>📍 ${event.city ? event.city + (event.province ? ', ' + event.province : '') : event.location}</p>
                             <p>📅 ${formattedDate}</p>
                             <p>💰 ${fee} Stall Fee</p>
                             <p>${stalls}</p>
-                            <a href="event-details.html?id=${encodeURIComponent(event.id)}" class="primary-btn">
+                            <a href="event-details.html?id=${event.id}" class="primary-btn">
                                 Apply Now
                             </a>
                         </div>
@@ -112,19 +109,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Attach Filter Event Listeners
+    // Attach Filter Event
     if (filterBtn) {
         filterBtn.addEventListener('click', (e) => {
             e.preventDefault();
             loadEvents();
         });
     }
-
-    if (categorySelect) categorySelect.addEventListener('change', loadEvents);
-    if (provinceSelect) provinceSelect.addEventListener('change', loadEvents);
-    if (searchInput) searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loadEvents(); });
-    if (cityInput) cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loadEvents(); });
-    if (dateInput) dateInput.addEventListener('change', loadEvents);
 
     // Initial Execution
     await loadCategories();

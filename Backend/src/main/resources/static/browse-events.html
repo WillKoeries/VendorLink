@@ -1,124 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Browse Events | VendorLink</title>
+    <meta name="description" content="Find markets, festivals and pop-ups across South Africa that are accepting vendor applications.">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/browse.css">
-    <link rel="stylesheet" href="css/notifications.css">
 </head>
+<body data-page="browse">
 
-<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="siteHeader"></header>
 
-    <header>
-        <div class="container navbar">
-            <div class="logo">
-                <h2>Vendor<span>Link</span></h2>
-            </div>
+<main class="page-main browse-page" id="main">
+    <div class="container">
 
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="browse-events.html" class="active">Browse Events</a></li>
-                    <li><a href="pricing.html">Pricing</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                </ul>
-            </nav>
-
-            <div class="buttons">
-                <a href="login.html" class="login-btn">Login</a>
-                <a href="register.html" class="register-btn">Join as Vendor</a>
-            </div>
+        <div class="browse-header">
+            <h1>Discover markets, festivals &amp; pop&#8209;ups</h1>
+            <p>Find events across South Africa that are looking for vendors, and see how many stalls are left.</p>
         </div>
-    </header>
 
-    <section class="browse">
-        <div class="container">
-            <div class="browse-header">
-                <h1>Browse Events</h1>
-                <p>Discover markets and festivals currently accepting vendor applications.</p>
-            </div>
+        <!-- Search -->
+        <form class="search-bar" id="searchForm" role="search">
+            <label for="searchInput" class="visually-hidden">Search events</label>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="searchInput" name="search" placeholder="Search by event name, venue, city or description…" autocomplete="off">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
 
-            <div class="browse-layout">
-                <!-- FILTERS -->
-                <aside class="filters">
-                    <h3>Filters</h3>
+        <!-- Category pills (filled from the Category data) -->
+        <div class="pill-row category-pills" id="categoryPills" role="group" aria-label="Filter by category"></div>
 
-                    <label for="filter-search">Search</label>
-                    <input type="text" id="filter-search" placeholder="Event keyword...">
+        <!-- Shown on small screens only: opens the filters panel below it -->
+        <button type="button" class="btn btn-secondary filters-toggle" id="filtersToggle" aria-expanded="false" aria-controls="filtersPanel">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filters <span class="badge badge-primary" id="activeFilterCount" hidden></span>
+        </button>
 
-                    <label for="filter-category">Category</label>
-                    <select id="filter-category">
-                        <option value="">All Categories</option>
-                    </select>
+        <div class="browse-layout">
 
-                    <label for="filter-province">Province</label>
-                    <select id="filter-province">
-                        <option value="">All Provinces</option>
-                        <option value="Western Cape">Western Cape</option>
-                        <option value="Gauteng">Gauteng</option>
-                        <option value="KwaZulu-Natal">KwaZulu-Natal</option>
-                        <option value="Eastern Cape">Eastern Cape</option>
-                        <option value="Free State">Free State</option>
-                    </select>
-
-                    <label for="filter-city">City</label>
-                    <input type="text" id="filter-city" placeholder="e.g. Cape Town">
-
-                    <label for="filter-date">Date</label>
-                    <input type="date" id="filter-date">
-
-                    <button type="button" class="filter-btn" id="filter-btn">
-                        Apply Filters
-                    </button>
-                </aside>
-
-                <!-- EVENTS CONTAINER -->
-                <div class="events" id="events-container">
-                    <!-- Loaded dynamically via Axios / browse.js -->
+            <!-- Filters -->
+            <aside class="filters-panel" id="filtersPanel" aria-label="Filters">
+                <div class="filters-head">
+                    <h2>Filters</h2>
+                    <button type="button" class="link-button" id="clearFiltersBtn">Clear all</button>
                 </div>
-            </div>
+
+                <form id="filtersForm" class="form-stack">
+                    <div class="form-group">
+                        <label class="form-label" for="filterProvince"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Province</label>
+                        <select class="form-control" id="filterProvince" name="province"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="filterStatus"><i class="fa-solid fa-ticket" aria-hidden="true"></i> Event status</label>
+                        <select class="form-control" id="filterStatus" name="status">
+                            <option value="open">Open for applications</option>
+                            <option value="all">Any status</option>
+                            <option value="CLOSED">Applications closed</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="form-label"><i class="fa-solid fa-store" aria-hidden="true"></i> Stall availability</span>
+                        <label class="checkbox" for="filterAvailable">
+                            <input type="checkbox" id="filterAvailable" name="onlyAvailable">
+                            <span>Only events with stalls left</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="filterMaxFee"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Maximum stall fee</label>
+                        <input type="range" class="range-input" id="filterMaxFee" name="maxFee" min="0" max="1000" step="50" value="1000">
+                        <div class="range-labels">
+                            <span>R0</span>
+                            <strong id="maxFeeLabel">Any fee</strong>
+                        </div>
+                    </div>
+                </form>
+            </aside>
+
+            <!-- Results -->
+            <section aria-labelledby="resultsCount">
+                <div class="results-toolbar">
+                    <p class="results-count" id="resultsCount" aria-live="polite">Loading events…</p>
+                    <div class="sort-control">
+                        <label for="sortOrder">Sort by</label>
+                        <select class="form-control" id="sortOrder">
+                            <option value="date">Date (soonest first)</option>
+                            <option value="fee-asc">Stall fee: low to high</option>
+                            <option value="fee-desc">Stall fee: high to low</option>
+                            <option value="stalls">Most stalls available</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="events-grid" id="eventsGrid"></div>
+            </section>
+
         </div>
-    </section>
+    </div>
+</main>
 
-    <footer>
-        <div class="container footer">
-            <div>
-                <h2>VendorLink</h2>
-                <p>Connecting vendors with organisers across South Africa.</p>
-            </div>
+<footer class="site-footer" id="siteFooter"></footer>
 
-            <div>
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="browse-events.html">Browse Events</a></li>
-                    <li><a href="pricing.html">Pricing</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h3>Support</h3>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/browse.js"></script>
+<script src="js/config.js"></script>
+<script src="js/models.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/services/auth.js"></script>
+<script src="js/services/events.js"></script>
+<script src="js/services/applications.js"></script>
+<script src="js/services/profiles.js"></script>
+<script src="js/services/notifications.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/pages/browse.js"></script>
 </body>
-
 </html>
