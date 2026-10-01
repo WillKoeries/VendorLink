@@ -35,12 +35,18 @@ async function loadEvent() {
       showNotFound();
       return;
     }
-    myApplication = await getMyApplicationForEvent(currentEvent.id);
+    try {
+      myApplication = await getMyApplicationForEvent(currentEvent.id);
+    } catch (appErr) {
+      console.warn('Could not load application status for event:', appErr);
+      myApplication = null;
+    }
     stateEl.innerHTML = '';
     renderEvent(currentEvent);
     renderApplyAction();
     contentEl.hidden = false;
   } catch (err) {
+    console.error('Failed to load event:', err);
     renderError(stateEl, {
       title: 'Unable to load this event',
       message: 'Please check your connection and try again.',
