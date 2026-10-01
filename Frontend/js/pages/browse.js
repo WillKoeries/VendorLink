@@ -47,29 +47,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ---------- Data ----------
 async function loadEvents() {
-  renderSkeletonCards(els.grid, 4);
-  els.count.textContent = 'Loading events…';
+  if (els.grid) renderSkeletonCards(els.grid, 4);
+  if (els.count) els.count.textContent = 'Loading events…';
 
   try {
-    const [events, categories] = await Promise.all([getEvents(), getCategories()]);
-    allEvents = events;
+    const [events, categories] = await Promise.all([
+      getEvents(),
+      getCategories().catch(err => {
+        console.error('Failed to load categories:', err);
+        return [];
+      })
+    ]);
+
+    // Handle raw array directly
+    allEvents = Array.isArray(events) ? events : (events && Array.isArray(events.data) ? events.data : []);
+
+    renderCategoryPills(categories || []);
+
+    // If the array is empty ([]), show a clean empty state ("No events currently open") instead of the error state.
+    if (!allEvents.length) {
+      if (els.count) els.count.textContent = '0 events available';
+      if (els.grid) {
+        renderEmpty(els.grid, {
+          icon: 'fa-calendar-xmark',
+          title: 'No events currently open',
+          message: 'Check back soon for upcoming markets, festivals and pop-ups.',
+          action: { label: 'Refresh events', onClick: loadEvents, icon: 'fa-rotate-right' }
+        });
+      }
+      return;
+    }
 
     // Fee slider goes up to the most expensive event (rounded up to the next R100)
-    const highestFee = Math.max(0, ...events.map(e => Number(e.stallFee) || 0));
+    const highestFee = Math.max(0, ...allEvents.map(e => Number(e.stallFee) || 0));
     feeCeiling = Math.max(100, Math.ceil(highestFee / 100) * 100);
-    els.maxFee.max = feeCeiling;
+    if (els.maxFee) els.maxFee.max = feeCeiling;
 
-    renderCategoryPills(categories);
     filters = { ...DEFAULT_FILTERS, ...readFiltersFromUrl() };
     syncControls();
     renderEvents();
   } catch (err) {
-    els.count.textContent = '';
-    renderError(els.grid, {
-      title: 'Unable to load events',
-      message: 'Please check your connection and try again.',
-      onRetry: loadEvents
-    });
+    console.error('Failed to load events in browse page:', err);
+    if (els.count) els.count.textContent = '';
+    if (els.grid) {
+      renderError(els.grid, {
+        title: 'Unable to load events',
+        message: 'Please check your connection and try again.',
+        onRetry: loadEvents
+      });
+    }
   }
 }
 
@@ -86,8 +112,8 @@ function filterEvents(events, f) {
     }
     if (f.categoryId !== 'all' && String(event.categoryId) !== String(f.categoryId)) return false;
     if (f.province !== 'all' && event.province !== f.province) return false;
-    if (f.status === 'open' && event.status !== EventStatus.OPEN) return false;
-    if (!['open', 'all'].includes(f.status) && event.status !== f.status) return false;
+    if (f.status === 'open' && (event.status || '').toUpperCase() !== EventStatus.OPEN) return false;
+    if (!['open', 'all'].includes(f.status) && (event.status || '').toUpperCase() !== f.status.toUpperCase()) return false;
     if (f.onlyAvailable && !canApplyToEvent(event)) return false;
     if (f.maxFee !== null && Number(event.stallFee) > f.maxFee) return false;
     return true;
@@ -104,9 +130,24 @@ function sortEvents(events, sort) {
 
 // ---------- Rendering ----------
 function renderEvents() {
+  if (!els.grid) return;
+
+  if (!allEvents.length) {
+    if (els.count) els.count.textContent = '0 events available';
+    renderEmpty(els.grid, {
+      icon: 'fa-calendar-xmark',
+      title: 'No events currently open',
+      message: 'Check back soon for upcoming markets, festivals and pop-ups.',
+      action: { label: 'Refresh events', onClick: loadEvents, icon: 'fa-rotate-right' }
+    });
+    return;
+  }
+
   const results = sortEvents(filterEvents(allEvents, filters), filters.sort);
 
-  els.count.innerHTML = `Showing <strong>${results.length}</strong> of ${allEvents.length} event${allEvents.length === 1 ? '' : 's'}`;
+  if (els.count) {
+    els.count.innerHTML = `Showing <strong>${results.length}</strong> of ${allEvents.length} event${allEvents.length === 1 ? '' : 's'}`;
+  }
   updateActiveFilterCount();
   writeFiltersToUrl();
 
@@ -123,6 +164,7 @@ function renderEvents() {
 }
 
 function renderCategoryPills(categories) {
+  if (!els.pills) return;
   els.pills.innerHTML = [
     '<button type="button" class="pill" data-category="all"><i class="fa-solid fa-border-all" aria-hidden="true"></i> All categories</button>',
     ...categories.map(c => `<button type="button" class="pill" data-category="${c.id}">${categoryIconHtml(c)} ${escapeHtml(c.name)}</button>`)
@@ -131,21 +173,24 @@ function renderCategoryPills(categories) {
 
 /** Make every control show the current `filters` values. */
 function syncControls() {
-  els.search.value = filters.search;
-  els.province.value = filters.province;
-  els.status.value = filters.status;
-  els.available.checked = filters.onlyAvailable;
-  els.maxFee.value = filters.maxFee === null ? feeCeiling : filters.maxFee;
-  els.maxFeeLabel.textContent = filters.maxFee === null ? 'Any fee' : `Up to ${formatCurrency(filters.maxFee)}`;
-  els.sort.value = filters.sort;
-  els.pills.querySelectorAll('.pill').forEach(pill => {
-    const active = pill.dataset.category === String(filters.categoryId);
-    pill.classList.toggle('is-active', active);
-    pill.setAttribute('aria-pressed', String(active));
-  });
+  if (els.search) els.search.value = filters.search;
+  if (els.province) els.province.value = filters.province;
+  if (els.status) els.status.value = filters.status;
+  if (els.available) els.available.checked = filters.onlyAvailable;
+  if (els.maxFee) els.maxFee.value = filters.maxFee === null ? feeCeiling : filters.maxFee;
+  if (els.maxFeeLabel) els.maxFeeLabel.textContent = filters.maxFee === null ? 'Any fee' : `Up to ${formatCurrency(filters.maxFee)}`;
+  if (els.sort) els.sort.value = filters.sort;
+  if (els.pills) {
+    els.pills.querySelectorAll('.pill').forEach(pill => {
+      const active = pill.dataset.category === String(filters.categoryId);
+      pill.classList.toggle('is-active', active);
+      pill.setAttribute('aria-pressed', String(active));
+    });
+  }
 }
 
 function updateActiveFilterCount() {
+  if (!els.activeCount) return;
   const active = ['categoryId', 'province', 'status', 'onlyAvailable', 'maxFee']
     .filter(key => filters[key] !== DEFAULT_FILTERS[key]).length;
   els.activeCount.hidden = active === 0;
@@ -156,7 +201,7 @@ function clearFilters() {
   filters = { ...DEFAULT_FILTERS };
   syncControls();
   renderEvents();
-  els.search.focus();
+  if (els.search) els.search.focus();
 }
 
 // ---------- URL ----------
@@ -182,43 +227,64 @@ function writeFiltersToUrl() {
 
 // ---------- Listeners ----------
 function setupListeners() {
-  const onSearch = debounce(() => {
-    filters.search = els.search.value;
-    renderEvents();
-  }, 250);
-  els.search.addEventListener('input', onSearch);
+  if (els.search) {
+    const onSearch = debounce(() => {
+      filters.search = els.search.value;
+      renderEvents();
+    }, 250);
+    els.search.addEventListener('input', onSearch);
+  }
 
-  document.getElementById('searchForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    filters.search = els.search.value;
-    renderEvents();
-  });
+  const searchForm = document.getElementById('searchForm');
+  if (searchForm) {
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (els.search) filters.search = els.search.value;
+      renderEvents();
+    });
+  }
 
-  els.pills.addEventListener('click', (e) => {
-    const pill = e.target.closest('[data-category]');
-    if (!pill) return;
-    filters.categoryId = pill.dataset.category;
-    syncControls();
-    renderEvents();
-  });
+  if (els.pills) {
+    els.pills.addEventListener('click', (e) => {
+      const pill = e.target.closest('[data-category]');
+      if (!pill) return;
+      filters.categoryId = pill.dataset.category;
+      syncControls();
+      renderEvents();
+    });
+  }
 
-  els.province.addEventListener('change', () => { filters.province = els.province.value; renderEvents(); });
-  els.status.addEventListener('change', () => { filters.status = els.status.value; renderEvents(); });
-  els.available.addEventListener('change', () => { filters.onlyAvailable = els.available.checked; renderEvents(); });
-  els.sort.addEventListener('change', () => { filters.sort = els.sort.value; renderEvents(); });
+  if (els.province) els.province.addEventListener('change', () => { filters.province = els.province.value; renderEvents(); });
+  if (els.status) els.status.addEventListener('change', () => { filters.status = els.status.value; renderEvents(); });
+  if (els.available) els.available.addEventListener('change', () => { filters.onlyAvailable = els.available.checked; renderEvents(); });
+  if (els.sort) els.sort.addEventListener('change', () => { filters.sort = els.sort.value; renderEvents(); });
 
-  els.maxFee.addEventListener('input', () => {
-    const value = Number(els.maxFee.value);
-    filters.maxFee = value >= feeCeiling ? null : value;
-    els.maxFeeLabel.textContent = filters.maxFee === null ? 'Any fee' : `Up to ${formatCurrency(filters.maxFee)}`;
-    renderEvents();
-  });
+  if (els.maxFee) {
+    els.maxFee.addEventListener('input', () => {
+      const value = Number(els.maxFee.value);
+      filters.maxFee = value >= feeCeiling ? null : value;
+      if (els.maxFeeLabel) {
+        els.maxFeeLabel.textContent = filters.maxFee === null ? 'Any fee' : `Up to ${formatCurrency(filters.maxFee)}`;
+      }
+      renderEvents();
+    });
+  }
 
-  document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+  const clearBtn = document.getElementById('clearFiltersBtn');
+  if (clearBtn) clearBtn.addEventListener('click', clearFilters);
 
   // Small screens: show/hide the filters panel
-  els.toggle.addEventListener('click', () => {
-    const isOpen = els.panel.classList.toggle('is-open');
-    els.toggle.setAttribute('aria-expanded', String(isOpen));
-  });
+  if (els.toggle && els.panel) {
+    els.toggle.addEventListener('click', () => {
+      const isOpen = els.panel.classList.toggle('is-open');
+      els.toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+  }
 }
+
+// Global attachments for non-module script tags
+window.loadEvents = loadEvents;
+window.filterEvents = filterEvents;
+window.sortEvents = sortEvents;
+window.renderEvents = renderEvents;
+window.clearFilters = clearFilters;
