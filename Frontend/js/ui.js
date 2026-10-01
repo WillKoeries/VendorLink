@@ -17,11 +17,14 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-/** Only allow http(s), relative paths and local file paths (blocks javascript: and data: URLs). Returns '' if unsafe. */
+/** Only allow http(s), relative paths and data image links. Returns '' if unsafe. */
 function safeUrl(value) {
   if (!value) return '';
   const trimmed = String(value).trim();
-  if (trimmed.startsWith('images/') || trimmed.startsWith('./') || trimmed.startsWith('/')) {
+  if (trimmed.startsWith('images/') || trimmed.startsWith('./') || trimmed.startsWith('/') || trimmed.startsWith('uploads/')) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('data:image/')) {
     return trimmed;
   }
   try {
@@ -138,10 +141,8 @@ function debounce(fn, delay = 250) {
 
 // ============ Images ============
 const FALLBACK_IMAGES = {
-  event: 'images/market1.png',
-  avatar: 'images/profile.png',
-  hero: 'images/hero.png',
-  about: 'images/about.png'
+  event: 'images/marketplace-fallback.jpg',
+  avatar: 'images/placeholder-avatar.svg'
 };
 
 // If an image with data-fallback fails, swap in the local placeholder ONCE
@@ -154,21 +155,7 @@ document.addEventListener('error', (e) => {
 }, true);
 
 function eventImageUrl(event) {
-  if (!event) return FALLBACK_IMAGES.event;
-  const banner = event.bannerImageUrl ? String(event.bannerImageUrl).trim() : '';
-  if (banner === 'images/event-banner.jpg' || banner === 'event-banner.jpg') return 'images/market1.png';
-  if (banner === 'images/event2.jpg' || banner === 'event2.jpg') return 'images/market2.png';
-  if (banner === 'images/event3.jpg' || banner === 'event3.jpg') return 'images/market3.png';
-  if (banner === 'images/event4.jpg' || banner === 'event4.jpg') return 'images/market4.png';
-  if (banner.startsWith('images/market')) return banner;
-  if (banner.startsWith('market') && (banner.endsWith('.png') || banner.endsWith('.jpg'))) return `images/${banner}`;
-  if (banner) {
-    const safe = safeUrl(banner);
-    if (safe) return safe;
-  }
-  const marketImgs = ['images/market1.png', 'images/market2.png', 'images/market3.png', 'images/market4.png'];
-  const idx = (Math.abs(Number(event.id) || 1) - 1) % marketImgs.length;
-  return marketImgs[idx];
+  return safeUrl(event.bannerImageUrl) || FALLBACK_IMAGES.event;
 }
 
 /** Round avatar: the profile image if there is one, otherwise the person's initials. */
@@ -239,7 +226,7 @@ function eventCardHtml(event) {
   return `
     <article class="event-card">
       <a class="event-card-media" href="${detailsUrl}" tabindex="-1" aria-hidden="true">
-        <img src="${escapeHtml(eventImageUrl(event))}" alt="" loading="lazy" data-fallback="event" onerror="this.onerror=null;this.src='images/market1.png'">
+        <img src="${escapeHtml(eventImageUrl(event))}" alt="" loading="lazy" data-fallback="event" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/marketplace-fallback.jpg'">
         <span class="badge badge-overlay event-card-tag">${escapeHtml(categoryName)}</span>
         <span class="event-card-status">${eventStatusBadge(event)}</span>
       </a>

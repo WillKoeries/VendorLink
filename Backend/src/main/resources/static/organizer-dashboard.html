@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,309 +8,357 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
+
 <body data-page="organizer-dashboard" data-layout="dashboard">
 
-<a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-<div class="dashboard">
+    <div class="dashboard">
 
-    <!-- Sidebar (becomes a top bar on small screens) -->
-    <aside class="dash-sidebar">
-        <div class="dash-brand">
-            <a href="index.html" class="logo">Vendor<span>Link</span></a>
-            <span class="dash-role" id="roleTag">Organizer</span>
-        </div>
-
-        <nav class="dash-nav" aria-label="Dashboard">
-            <a href="#overview" class="dash-nav-item" data-tab="overview"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Overview</a>
-            <a href="#events" class="dash-nav-item" data-tab="events"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Events</a>
-            <a href="#applications" class="dash-nav-item" data-tab="applications">
-                <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i> Applications
-                <span class="nav-count" id="navPendingCount" hidden></span>
-            </a>
-            <a href="#vendors" class="dash-nav-item" data-tab="vendors"><i class="fa-solid fa-store" aria-hidden="true"></i> Vendors</a>
-            <a href="#revenue" class="dash-nav-item" data-tab="revenue"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Revenue</a>
-            <a href="#settings" class="dash-nav-item" data-tab="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
-        </nav>
-
-        <div class="dash-sidebar-foot">
-            <a href="browse-events.html" class="dash-nav-item"><i class="fa-solid fa-globe" aria-hidden="true"></i> View public site</a>
-            <button type="button" class="dash-nav-item is-danger" data-action="logout"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
-        </div>
-    </aside>
-
-    <div class="dash-main">
-        <header class="dash-topbar">
-            <div>
-                <h1 id="pageHeading">Overview</h1>
-                <p id="pageSubheading"></p>
+        <!-- Sidebar (becomes a top bar on small screens) -->
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <a href="index.html" class="logo">Vendor<span>Link</span></a>
+                <span class="dash-role" id="roleTag">Organizer</span>
             </div>
-            <div class="dash-topbar-actions">
-                <button type="button" class="btn btn-primary" id="newEventBtn">
-                    <i class="fa-solid fa-plus" aria-hidden="true"></i> New event
-                </button>
-                <div id="topbarNotifications"></div>
-                <div id="topbarUserMenu"></div>
+
+            <nav class="dash-nav" aria-label="Dashboard">
+                <a href="#overview" class="dash-nav-item" data-tab="overview"><i class="fa-solid fa-chart-pie"
+                        aria-hidden="true"></i> Overview</a>
+                <a href="#events" class="dash-nav-item" data-tab="events"><i class="fa-solid fa-calendar-days"
+                        aria-hidden="true"></i> Events</a>
+                <a href="#applications" class="dash-nav-item" data-tab="applications">
+                    <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i> Applications
+                    <span class="nav-count" id="navPendingCount" hidden></span>
+                </a>
+                <a href="#vendors" class="dash-nav-item" data-tab="vendors"><i class="fa-solid fa-store"
+                        aria-hidden="true"></i> Vendors</a>
+                <a href="#revenue" class="dash-nav-item" data-tab="revenue"><i class="fa-solid fa-chart-line"
+                        aria-hidden="true"></i> Revenue</a>
+                <a href="#settings" class="dash-nav-item" data-tab="settings"><i class="fa-solid fa-sliders"
+                        aria-hidden="true"></i> Settings</a>
+            </nav>
+
+            <div class="dash-sidebar-foot">
+                <a href="browse-events.html" class="dash-nav-item"><i class="fa-solid fa-globe" aria-hidden="true"></i>
+                    View public site</a>
+                <button type="button" class="dash-nav-item is-danger" data-action="logout"><i
+                        class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
             </div>
-        </header>
+        </aside>
 
-        <main class="dash-content" id="main">
+        <div class="dash-main">
+            <header class="dash-topbar">
+                <div>
+                    <h1 id="pageHeading">Overview</h1>
+                    <p id="pageSubheading"></p>
+                </div>
+                <div class="dash-topbar-actions">
+                    <button type="button" class="btn btn-primary" id="newEventBtn">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i> New event
+                    </button>
+                    <div id="topbarNotifications"></div>
+                    <div id="topbarUserMenu"></div>
+                </div>
+            </header>
 
-            <!-- Shown if the dashboard data can't be loaded -->
-            <div id="dashboardError"></div>
+            <main class="dash-content" id="main">
 
-            <!-- ========== Overview ========== -->
-            <section class="dash-view" data-view="overview" hidden>
-                <div class="stats-row" id="overviewStats"></div>
+                <!-- Shown if the dashboard data can't be loaded -->
+                <div id="dashboardError"></div>
 
-                <div class="dash-split">
+                <!-- ========== Overview ========== -->
+                <section class="dash-view" data-view="overview" hidden>
+                    <div class="stats-row" id="overviewStats"></div>
+
+                    <div class="dash-split">
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h2>Upcoming events</h2>
+                                <a href="#events" class="btn btn-secondary btn-sm">All events</a>
+                            </div>
+                            <div id="upcomingEvents"></div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h2>Waiting for review</h2>
+                                <a href="#applications" class="btn btn-secondary btn-sm">All applications</a>
+                            </div>
+                            <div id="pendingFeed"></div>
+                        </div>
+                    </div>
+
                     <div class="panel">
                         <div class="panel-head">
-                            <h2>Upcoming events</h2>
-                            <a href="#events" class="btn btn-secondary btn-sm">All events</a>
+                            <h2>Notifications</h2>
+                            <button type="button" class="link-button" id="markAllReadBtn">Mark all as read</button>
                         </div>
-                        <div id="upcomingEvents"></div>
+                        <div id="notificationsList"></div>
                     </div>
+                </section>
 
+                <!-- ========== Events ========== -->
+                <section class="dash-view" data-view="events" hidden>
                     <div class="panel">
                         <div class="panel-head">
-                            <h2>Waiting for review</h2>
-                            <a href="#applications" class="btn btn-secondary btn-sm">All applications</a>
+                            <div>
+                                <h2>Your events</h2>
+                                <p>Stall numbers update automatically as you approve vendors.</p>
+                            </div>
+                            <div class="panel-tools">
+                                <label for="eventsStatusFilter" class="visually-hidden">Filter events by status</label>
+                                <select class="form-control" id="eventsStatusFilter">
+                                    <option value="all">All statuses</option>
+                                    <option value="DRAFT">Draft</option>
+                                    <option value="OPEN">Open</option>
+                                    <option value="CLOSED">Closed</option>
+                                    <option value="COMPLETED">Completed</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                </select>
+                            </div>
                         </div>
-                        <div id="pendingFeed"></div>
+                        <div id="eventsTable"></div>
                     </div>
-                </div>
+                </section>
 
-                <div class="panel">
-                    <div class="panel-head">
-                        <h2>Notifications</h2>
-                        <button type="button" class="link-button" id="markAllReadBtn">Mark all as read</button>
-                    </div>
-                    <div id="notificationsList"></div>
-                </div>
-            </section>
-
-            <!-- ========== Events ========== -->
-            <section class="dash-view" data-view="events" hidden>
-                <div class="panel">
-                    <div class="panel-head">
-                        <div>
-                            <h2>Your events</h2>
-                            <p>Stall numbers update automatically as you approve vendors.</p>
+                <!-- ========== Applications ========== -->
+                <section class="dash-view" data-view="applications" hidden>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="status-tabs" id="applicationStatusTabs" role="group"
+                                aria-label="Filter by status"></div>
+                            <div class="panel-tools">
+                                <label for="applicationsEventFilter" class="visually-hidden">Filter applications by
+                                    event</label>
+                                <select class="form-control" id="applicationsEventFilter"></select>
+                            </div>
                         </div>
-                        <div class="panel-tools">
-                            <label for="eventsStatusFilter" class="visually-hidden">Filter events by status</label>
-                            <select class="form-control" id="eventsStatusFilter">
-                                <option value="all">All statuses</option>
-                                <option value="DRAFT">Draft</option>
-                                <option value="OPEN">Open</option>
-                                <option value="CLOSED">Closed</option>
-                                <option value="COMPLETED">Completed</option>
-                                <option value="CANCELLED">Cancelled</option>
-                            </select>
-                        </div>
+                        <div id="applicationsTable"></div>
                     </div>
-                    <div id="eventsTable"></div>
-                </div>
-            </section>
+                </section>
 
-            <!-- ========== Applications ========== -->
-            <section class="dash-view" data-view="applications" hidden>
-                <div class="panel">
-                    <div class="panel-head">
-                        <div class="status-tabs" id="applicationStatusTabs" role="group" aria-label="Filter by status"></div>
-                        <div class="panel-tools">
-                            <label for="applicationsEventFilter" class="visually-hidden">Filter applications by event</label>
-                            <select class="form-control" id="applicationsEventFilter"></select>
+                <!-- ========== Vendors ========== -->
+                <section class="dash-view" data-view="vendors" hidden>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h2>Approved vendors</h2>
+                                <p>Everyone approved to trade at one of your events.</p>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="exportVendorsBtn">
+                                <i class="fa-solid fa-download" aria-hidden="true"></i> Export CSV
+                            </button>
                         </div>
+                        <div id="vendorsTable"></div>
                     </div>
-                    <div id="applicationsTable"></div>
-                </div>
-            </section>
+                </section>
 
-            <!-- ========== Vendors ========== -->
-            <section class="dash-view" data-view="vendors" hidden>
-                <div class="panel">
-                    <div class="panel-head">
-                        <div>
-                            <h2>Approved vendors</h2>
-                            <p>Everyone approved to trade at one of your events.</p>
+                <!-- ========== Revenue ========== -->
+                <section class="dash-view" data-view="revenue" hidden>
+                    <div class="stats-row" id="revenueStats"></div>
+                    <div class="alert alert-info">
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                        <span>Revenue is worked out as <strong>stall fee × approved applications</strong>. Payments are
+                            not part of the data model yet, so these figures don't show whether a vendor has actually
+                            paid.</span>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>Stall fees by event</h2>
                         </div>
-                        <button type="button" class="btn btn-secondary btn-sm" id="exportVendorsBtn">
-                            <i class="fa-solid fa-download" aria-hidden="true"></i> Export CSV
-                        </button>
+                        <div id="revenueTable"></div>
                     </div>
-                    <div id="vendorsTable"></div>
-                </div>
-            </section>
+                </section>
 
-            <!-- ========== Revenue ========== -->
-            <section class="dash-view" data-view="revenue" hidden>
-                <div class="stats-row" id="revenueStats"></div>
-                <div class="alert alert-info">
-                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-                    <span>Revenue is worked out as <strong>stall fee × approved applications</strong>. Payments are not part of the data model yet, so these figures don't show whether a vendor has actually paid.</span>
-                </div>
-                <div class="panel">
-                    <div class="panel-head"><h2>Stall fees by event</h2></div>
-                    <div id="revenueTable"></div>
-                </div>
-            </section>
+                <!-- ========== Settings ========== -->
+                <section class="dash-view" data-view="settings" hidden>
+                    <div class="settings-grid">
+                        <form class="panel" id="settingsForm" novalidate>
+                            <div id="settingsFormBody"></div>
+                        </form>
+                        <aside class="panel profile-preview" id="settingsPreview"></aside>
+                    </div>
+                </section>
+            </main>
 
-            <!-- ========== Settings ========== -->
-            <section class="dash-view" data-view="settings" hidden>
-                <div class="settings-grid">
-                    <form class="panel" id="settingsForm" novalidate>
-                        <div id="settingsFormBody"></div>
-                    </form>
-                    <aside class="panel profile-preview" id="settingsPreview"></aside>
-                </div>
-            </section>
-        </main>
-
-        <footer class="dash-footer">
-            <span>&copy; <span id="footerYear"></span> VendorLink</span>
-            <span><a href="pricing.html#faq">Help</a><a href="legal.html#privacy">Privacy</a><a href="legal.html#terms">Terms</a></span>
-        </footer>
-    </div>
-</div>
-
-<!-- ========== Create / edit event modal ========== -->
-<div class="modal-overlay" id="eventModal">
-    <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
-        <div class="modal-header">
-            <div>
-                <h2 id="eventModalTitle">New event</h2>
-                <p id="eventModalSubtitle">Fields marked * are required.</p>
-            </div>
-            <button type="button" class="modal-close" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            <footer class="dash-footer">
+                <span>&copy; <span id="footerYear"></span> VendorLink</span>
+                <span><a href="pricing.html#faq">Help</a><a href="legal.html#privacy">Privacy</a><a
+                        href="legal.html#terms">Terms</a></span>
+            </footer>
         </div>
-        <form id="eventForm" novalidate>
-            <div class="modal-body form-stack">
-                <div class="alert alert-error" id="eventFormAlert" hidden></div>
-
-                <div class="form-group">
-                    <label class="form-label" for="evTitle">Event title <span class="required">*</span></label>
-                    <input class="form-control" id="evTitle" name="title" maxlength="120" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="evCategory">Category</label>
-                        <select class="form-control" id="evCategory" name="categoryId"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="evStatus">Status <span class="required">*</span></label>
-                        <select class="form-control" id="evStatus" name="status"></select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="evDescription">Description <span class="required">*</span></label>
-                    <textarea class="form-control" id="evDescription" name="description" rows="4" maxlength="2000" required></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="evDate">Start date <span class="required">*</span></label>
-                        <input class="form-control" type="date" id="evDate" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="evEndDate">End date</label>
-                        <input class="form-control" type="date" id="evEndDate" name="endDate">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="evTime">Trading hours</label>
-                        <input class="form-control" id="evTime" name="time" placeholder="e.g. 09:00 – 17:00" maxlength="40">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="evVisitors">Expected visitors</label>
-                        <input class="form-control" id="evVisitors" name="expectedVisitors" placeholder="e.g. 3,000+" maxlength="40">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="evLocation">Venue / address <span class="required">*</span></label>
-                    <input class="form-control" id="evLocation" name="location" maxlength="160" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="evCity">City <span class="required">*</span></label>
-                        <input class="form-control" id="evCity" name="city" maxlength="80" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="evProvince">Province <span class="required">*</span></label>
-                        <select class="form-control" id="evProvince" name="province" required></select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="evFee">Stall fee (R) <span class="required">*</span></label>
-                        <input class="form-control" type="number" id="evFee" name="stallFee" min="0" step="10" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="evTotal">Total stalls <span class="required">*</span></label>
-                        <input class="form-control" type="number" id="evTotal" name="totalStalls" min="1" step="1" required>
-                        <p class="form-hint" id="evStallsHint">Available stalls start at this number.</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="evRequirements">Trading requirements</label>
-                    <textarea class="form-control" id="evRequirements" name="requirements" rows="3" maxlength="2000"
-                              placeholder="One requirement per line"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="evBanner">Banner image link</label>
-                    <input class="form-control" type="url" id="evBanner" name="bannerImageUrl" placeholder="https://…" maxlength="500">
-                    <p class="form-hint">Image upload will use Supabase Storage. For now, paste a link to an image.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
-                <button type="submit" class="btn btn-primary" id="eventSubmitBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Save event</button>
-            </div>
-        </form>
     </div>
-</div>
 
-<!-- ========== Review application modal ========== -->
-<div class="modal-overlay" id="reviewModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
-        <div class="modal-header">
-            <div>
-                <h2 id="reviewModalTitle">Application</h2>
-                <p id="reviewModalSubtitle"></p>
+    <!-- ========== Create / edit event modal ========== -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+            <div class="modal-header">
+                <div>
+                    <h2 id="eventModalTitle">New event</h2>
+                    <p id="eventModalSubtitle">Fields marked * are required.</p>
+                </div>
+                <button type="button" class="modal-close" data-close-modal aria-label="Close"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </div>
-            <button type="button" class="modal-close" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            <form id="eventForm" novalidate>
+                <div class="modal-body form-stack">
+                    <div class="alert alert-error" id="eventFormAlert" hidden></div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="evTitle">Event title <span class="required">*</span></label>
+                        <input class="form-control" id="evTitle" name="title" maxlength="120" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="evCategory">Category</label>
+                            <select class="form-control" id="evCategory" name="categoryId"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evStatus">Status <span class="required">*</span></label>
+                            <select class="form-control" id="evStatus" name="status"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="evDescription">Description <span
+                                class="required">*</span></label>
+                        <textarea class="form-control" id="evDescription" name="description" rows="4" maxlength="2000"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="evDate">Start date <span class="required">*</span></label>
+                            <input class="form-control" type="date" id="evDate" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evEndDate">End date</label>
+                            <input class="form-control" type="date" id="evEndDate" name="endDate">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="evTime">Trading hours</label>
+                            <input class="form-control" id="evTime" name="time" placeholder="e.g. 09:00 – 17:00"
+                                maxlength="40">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evVisitors">Expected visitors</label>
+                            <input class="form-control" id="evVisitors" name="expectedVisitors"
+                                placeholder="e.g. 3,000+" maxlength="40">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="evLocation">Venue / address <span
+                                class="required">*</span></label>
+                        <input class="form-control" id="evLocation" name="location" maxlength="160" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="evCity">City <span class="required">*</span></label>
+                            <input class="form-control" id="evCity" name="city" maxlength="80" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evProvince">Province <span class="required">*</span></label>
+                            <select class="form-control" id="evProvince" name="province" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="evFee">Stall fee (R) <span class="required">*</span></label>
+                            <input class="form-control" type="number" id="evFee" name="stallFee" min="0" step="10"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="evTotal">Total stalls <span class="required">*</span></label>
+                            <input class="form-control" type="number" id="evTotal" name="totalStalls" min="1" step="1"
+                                required>
+                            <p class="form-hint" id="evStallsHint">Available stalls start at this number.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="evRequirements">Trading requirements</label>
+                        <textarea class="form-control" id="evRequirements" name="requirements" rows="3" maxlength="2000"
+                            placeholder="One requirement per line"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="evBannerFile">Event Banner Image</label>
+                        <div class="image-upload-wrapper">
+                            <div class="image-upload-zone" id="evBannerDropZone">
+                                <input type="file" id="evBannerFile" accept="image/png,image/jpeg,image/webp,image/gif" class="file-input-hidden">
+                                <div class="upload-prompt" id="evUploadPrompt">
+                                    <i class="fa-solid fa-cloud-arrow-up upload-icon" aria-hidden="true"></i>
+                                    <p><strong>Click to browse</strong> or drag and drop an image</p>
+                                    <small class="upload-hint">PNG, JPG, WebP up to 5MB</small>
+                                </div>
+                                <div class="banner-preview-box" id="evBannerPreviewBox" style="display:none;">
+                                    <img id="evBannerPreviewImg" src="" alt="Banner preview" referrerpolicy="no-referrer">
+                                    <button type="button" class="btn btn-sm btn-danger remove-preview-btn" id="evRemoveBannerBtn" title="Remove image">
+                                        <i class="fa-solid fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="evBanner" name="bannerImageUrl">
+                            <div class="url-fallback-toggle">
+                                <button type="button" class="btn-link" id="evToggleUrlInput">
+                                    <i class="fa-solid fa-link"></i> Or enter image URL directly
+                                </button>
+                                <input class="form-control" type="text" id="evBannerUrlDirect" placeholder="https://..." style="display:none; margin-top:0.5rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="eventSubmitBtn"><i class="fa-solid fa-check"
+                            aria-hidden="true"></i> Save event</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-body form-stack" id="reviewModalBody"></div>
-        <div class="modal-footer" id="reviewModalFooter"></div>
     </div>
-</div>
 
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script type="module" src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<script src="js/pages/organizer-dashboard.js"></script>
+    <!-- ========== Review application modal ========== -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+            <div class="modal-header">
+                <div>
+                    <h2 id="reviewModalTitle">Application</h2>
+                    <p id="reviewModalSubtitle"></p>
+                </div>
+                <button type="button" class="modal-close" data-close-modal aria-label="Close"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="modal-body form-stack" id="reviewModalBody"></div>
+            <div class="modal-footer" id="reviewModalFooter"></div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/organizer-dashboard.js"></script>
 </body>
+
 </html>

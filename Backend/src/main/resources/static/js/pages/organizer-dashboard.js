@@ -630,10 +630,13 @@ function openEventModal(eventId) {
     form.elements.totalStalls.value = event.totalStalls;
     form.elements.requirements.value = event.requirements || '';
     form.elements.bannerImageUrl.value = event.bannerImageUrl || '';
+    updateBannerPreview(event.bannerImageUrl || '');
     const booked = getBookedStalls(event);
     document.getElementById('evStallsHint').textContent = `${booked} already booked, so available stalls = total − ${booked}.`;
   } else {
     form.elements.status.value = EventStatus.DRAFT;
+    form.elements.bannerImageUrl.value = '';
+    updateBannerPreview('');
     document.getElementById('evStallsHint').textContent = 'Available stalls start at this number.';
   }
 
@@ -760,4 +763,114 @@ function setupListeners() {
       window.location.href = notification.getAttribute('href');
     }
   });
+
+  // Event banner image upload handlers
+  const bannerFile = document.getElementById('evBannerFile');
+  const dropZone = document.getElementById('evBannerDropZone');
+  const removeBtn = document.getElementById('evRemoveBannerBtn');
+  const toggleUrlBtn = document.getElementById('evToggleUrlInput');
+  const directUrlInput = document.getElementById('evBannerUrlDirect');
+
+  if (bannerFile) {
+    bannerFile.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleBannerFileSelected(e.target.files[0]);
+      }
+    });
+  }
+
+  if (dropZone) {
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('is-dragover');
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('is-dragover');
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('is-dragover');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleBannerFileSelected(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  if (removeBtn) {
+    removeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const bannerInput = document.getElementById('evBanner');
+      if (bannerInput) bannerInput.value = '';
+      updateBannerPreview('');
+    });
+  }
+
+  if (toggleUrlBtn && directUrlInput) {
+    toggleUrlBtn.addEventListener('click', () => {
+      const isHidden = directUrlInput.style.display === 'none';
+      directUrlInput.style.display = isHidden ? 'block' : 'none';
+      if (isHidden) directUrlInput.focus();
+    });
+
+    directUrlInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      const bannerInput = document.getElementById('evBanner');
+      if (bannerInput) bannerInput.value = val;
+      updateBannerPreview(val);
+    });
+  }
+}
+
+function updateBannerPreview(url) {
+  const previewBox = document.getElementById('evBannerPreviewBox');
+  const previewImg = document.getElementById('evBannerPreviewImg');
+  const prompt = document.getElementById('evUploadPrompt');
+  const fileInput = document.getElementById('evBannerFile');
+  const directInput = document.getElementById('evBannerUrlDirect');
+
+  if (url && String(url).trim()) {
+    const cleanUrl = String(url).trim();
+    if (previewImg) previewImg.src = cleanUrl;
+    if (previewBox) previewBox.style.display = 'block';
+    if (prompt) prompt.style.display = 'none';
+    if (directInput) directInput.value = cleanUrl;
+  } else {
+    if (previewImg) previewImg.src = '';
+    if (previewBox) previewBox.style.display = 'none';
+    if (prompt) prompt.style.display = 'flex';
+    if (fileInput) fileInput.value = '';
+    if (directInput) directInput.value = '';
+  }
+}
+
+async function handleBannerFileSelected(file) {
+  if (!file) return;
+  if (!file.type || !file.type.startsWith('image/')) {
+    showToast('Please select a valid image file (PNG, JPG, WebP)', 'error');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('Image size exceeds 5MB limit', 'error');
+    return;
+  }
+
+  // Instant local visual preview
+  const localUrl = URL.createObjectURL(file);
+  updateBannerPreview(localUrl);
+
+  try {
+    showToast('Uploading image…', 'info');
+    const result = typeof uploadEventImage === 'function' 
+      ? await uploadEventImage(file)
+      : { bannerImageUrl: localUrl };
+    const uploadedUrl = result.bannerImageUrl || result.imageUrl || localUrl;
+    const bannerInput = document.getElementById('evBanner');
+    if (bannerInput) bannerInput.value = uploadedUrl;
+    updateBannerPreview(uploadedUrl);
+    showToast('Image uploaded successfully!', 'success');
+  } catch (err) {
+    console.error('Image upload failed:', err);
+    showToast(`Upload failed: ${err.message}. You can still paste an image link.`, 'error');
+  }
 }

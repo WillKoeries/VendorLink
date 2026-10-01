@@ -49,21 +49,6 @@ function normalizeEvent(event) {
   const totalStalls = Number.isFinite(rawTotal) ? rawTotal : (Number.isFinite(rawAvail) ? rawAvail : 0);
   const availableStalls = Number.isFinite(rawAvail) ? rawAvail : totalStalls;
 
-  let bannerImageUrl = (event.bannerImageUrl || '').trim();
-  if (bannerImageUrl === 'images/event-banner.jpg' || bannerImageUrl === 'event-banner.jpg') {
-    bannerImageUrl = 'images/market1.png';
-  } else if (bannerImageUrl === 'images/event2.jpg' || bannerImageUrl === 'event2.jpg') {
-    bannerImageUrl = 'images/market2.png';
-  } else if (bannerImageUrl === 'images/event3.jpg' || bannerImageUrl === 'event3.jpg') {
-    bannerImageUrl = 'images/market3.png';
-  } else if (bannerImageUrl === 'images/event4.jpg' || bannerImageUrl === 'event4.jpg') {
-    bannerImageUrl = 'images/market4.png';
-  } else if (!bannerImageUrl) {
-    const marketImgs = ['images/market1.png', 'images/market2.png', 'images/market3.png', 'images/market4.png'];
-    const idx = (Math.abs(Number(event.id) || 1) - 1) % marketImgs.length;
-    bannerImageUrl = marketImgs[idx];
-  }
-
   return {
     ...event,
     id: Number(event.id),
@@ -80,7 +65,7 @@ function normalizeEvent(event) {
     location: event.location || '',
     city: event.city || '',
     province: event.province || '',
-    bannerImageUrl,
+    bannerImageUrl: event.bannerImageUrl || '',
     status: (event.status || EventStatus.OPEN).toUpperCase()
   };
 }
@@ -238,7 +223,7 @@ async function getCategories() {
     try {
       const db = getDemoDb();
       if (db && db.categories) return db.categories;
-    } catch (e) {}
+    } catch (e) { }
   }
   return [];
 }
@@ -322,8 +307,60 @@ function validateEventData(data, bookedStalls = 0) {
   } else if (total < bookedStalls) {
     errors.totalStalls = `${bookedStalls} stalls are already booked, so the total can’t be lower than that.`;
   }
-  if (data.bannerImageUrl && !safeUrl(data.bannerImageUrl)) errors.bannerImageUrl = 'Enter a full image link starting with https://';
+  if (data.bannerImageUrl) {
+    const trimmed = String(data.bannerImageUrl).trim();
+    const isSafe = trimmed.startsWith('images/') || trimmed.startsWith('uploads/') || trimmed.startsWith('/') || trimmed.startsWith('data:image/') || (typeof safeUrl === 'function' && safeUrl(trimmed));
+    if (!isSafe) {
+      errors.bannerImageUrl = 'Enter a valid image URL or upload an image file.';
+    }
+  }
   return errors;
+}
+
+/**
+ * Upload an event banner image file to the backend
+ * @param {File} file
+ * @returns {Promise<{ imageUrl: string, bannerImageUrl: string }>}
+ */
+async function uploadEventImage(file) {
+  if (!file) throw new Error('No file selected');
+  if (!file.type || !file.type.startsWith('image/')) throw new Error('Please select an image file (PNG, JPG, WebP, GIF)');
+  if (file.size > 5 * 1024 * 1024) throw new Error('Image size must be 5MB or less');
+
+  // In demo mode or offline without auth, read as Data URL
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve({ imageUrl: reader.result, bannerImageUrl: reader.result });
+      reader.onerror = () => reject(new Error('Failed to read image file'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const authHeaders = typeof getAuthHeaders === 'function' ? getAuthHeaders() : {};
+  // Remove Content-Type so browser sets multipart/form-data boundary automatically
+  delete authHeaders['Content-Type'];
+
+  const res = await fetch('/api/events/upload-image', {
+    method: 'POST',
+    headers: authHeaders,
+    body: formData
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.message || `Failed to upload image (HTTP ${res.status})`);
+  }
+
+  const result = await res.json();
+  const publicUrl = result.imageUrl || result.url || result.bannerImageUrl;
+  return {
+    imageUrl: publicUrl,
+    bannerImageUrl: publicUrl
+  };
 }
 
 function cleanEventData(data) {
