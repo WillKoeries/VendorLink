@@ -24,6 +24,13 @@ public class ApplicationResponse {
     private Long vendorId;
     private String vendorName;
     private String vendorEmail;
+    private String vendorPhone;
+    private String bannerImageUrl;
+    private String eventCity;
+    private String eventProvince;
+    private String eventStatus;
+    private Integer availableStalls;
+    private Integer totalStalls;
     private String businessName;
     private String productsDescription;
     private String specialRequirements;

@@ -2,8 +2,17 @@
  * Profiles service
  * ----------------
  * VendorProfile and Organizer records (plus the User's own name and phone).
- * Each profile belongs to exactly one User (UML: 0..1 — 1).
+ * Connected to Spring Boot endpoints: /api/vendor/profile and /api/users/me.
  */
+
+function getProfileAuthHeaders() {
+  const token = localStorage.getItem('token') || localStorage.getItem('vendorlink_token');
+  return {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+  };
+}
 
 function validateProfileData(data, nameField) {
   const errors = {};
@@ -29,18 +38,38 @@ async function getMyVendorProfile() {
   const session = getSession();
   if (!session) throw new Error('Please log in to see your profile.');
 
-  if (!APP_CONFIG.DEMO_MODE) {
-    // Supabase:
-    // const { data, error } = await supabaseClient.from('vendor_profiles').select('*').eq('user_id', session.userId).maybeSingle();
-    // if (error) throw error;
-    // return { user: await getCurrentUser(), profile: data };
-    throw backendNotConnected('getMyVendorProfile');
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    await demoDelay();
+    const db = getDemoDb();
+    return {
+      user: db.users.find(u => u.id === session.userId) || null,
+      profile: db.vendorProfiles ? (db.vendorProfiles.find(p => p.userId === session.userId) || null) : null
+    };
   }
-  await demoDelay();
-  const db = getDemoDb();
+
+  try {
+    const res = await fetch('/api/vendor/profile', {
+      headers: getProfileAuthHeaders()
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        user: {
+          id: data.userId || session.userId,
+          fullName: data.fullName || session.fullName,
+          email: data.email || session.email,
+          phone: data.phone || session.phone
+        },
+        profile: data
+      };
+    }
+  } catch (err) {
+    console.warn('Failed to fetch /api/vendor/profile:', err);
+  }
+
   return {
-    user: db.users.find(u => u.id === session.userId) || null,
-    profile: db.vendorProfiles.find(p => p.userId === session.userId) || null
+    user: session,
+    profile: null
   };
 }
 
@@ -48,36 +77,92 @@ async function updateMyVendorProfile(data) {
   const session = getSession();
   throwIfErrors(validateProfileData(data, 'businessName'));
 
-  if (!APP_CONFIG.DEMO_MODE) {
-    // Supabase:
-    // await supabaseClient.from('users').update({ full_name: data.fullName, phone: data.phone }).eq('id', session.userId);
-    // await supabaseClient.from('vendor_profiles').upsert({ user_id: session.userId, business_name: data.businessName, ... });
-    throw backendNotConnected('updateMyVendorProfile');
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    await demoDelay(400);
+    const db = getDemoDb();
+    const user = db.users.find(u => u.id === session.userId);
+    let profile = db.vendorProfiles ? db.vendorProfiles.find(p => p.userId === session.userId) : null;
+    if (!profile) {
+      profile = { id: nextDemoId(db.vendorProfiles || []), userId: session.userId };
+      if (!db.vendorProfiles) db.vendorProfiles = [];
+      db.vendorProfiles.push(profile);
+    }
+    if (user) {
+      user.fullName = data.fullName.trim();
+      user.phone = data.phone.trim();
+    }
+    Object.assign(profile, {
+      businessName: data.businessName.trim(),
+      description: (data.description || '').trim(),
+      category: data.category,
+      phone: data.phone.trim(),
+      website: (data.website || '').trim(),
+      city: (data.city || '').trim(),
+      province: data.province,
+      address: (data.address || '').trim(),
+      profileImageUrl: (data.profileImageUrl || '').trim()
+    });
+    saveDemoDb(db);
+    if (typeof updateSessionName === 'function') {
+      updateSessionName(user ? user.fullName : data.fullName.trim());
+    }
+    return { user, profile };
   }
-  await demoDelay(400);
-  const db = getDemoDb();
-  const user = db.users.find(u => u.id === session.userId);
-  let profile = db.vendorProfiles.find(p => p.userId === session.userId);
-  if (!profile) {
-    profile = { id: nextDemoId(db.vendorProfiles), userId: session.userId };
-    db.vendorProfiles.push(profile);
-  }
-  user.fullName = data.fullName.trim();
-  user.phone = data.phone.trim();
-  Object.assign(profile, {
-    businessName: data.businessName.trim(),
-    description: data.description.trim(),
-    category: data.category,
-    phone: data.phone.trim(),
-    website: data.website.trim(),
-    city: data.city.trim(),
-    province: data.province,
-    address: data.address.trim(),
-    profileImageUrl: data.profileImageUrl.trim()
+
+  // Update backend profile
+  const res = await fetch('/api/vendor/profile', {
+    method: 'PUT',
+    headers: getProfileAuthHeaders(),
+    body: JSON.stringify({
+      businessName: data.businessName.trim(),
+      description: (data.description || '').trim(),
+      category: data.category || '',
+      phone: (data.phone || '').trim(),
+      website: (data.website || '').trim(),
+      city: (data.city || '').trim(),
+      province: data.province || '',
+      address: (data.address || '').trim(),
+      profileImageUrl: (data.profileImageUrl || '').trim()
+    })
   });
-  saveDemoDb(db);
-  updateSessionName(user.fullName);
-  return { user, profile };
+
+  if (!res.ok) {
+    let errMsg = `Failed to update profile: HTTP ${res.status}`;
+    try {
+      const errJson = await res.json();
+      if (errJson.message) errMsg = errJson.message;
+    } catch (e) { }
+    throw new Error(errMsg);
+  }
+
+  const updatedProfile = await res.json();
+
+  // Also update user's fullName and phone on /api/users/me if available
+  if (data.fullName || data.phone) {
+    try {
+      await fetch('/api/users/me', {
+        method: 'PUT',
+        headers: getProfileAuthHeaders(),
+        body: JSON.stringify({
+          fullName: (data.fullName || '').trim(),
+          phone: (data.phone || '').trim()
+        })
+      });
+      if (typeof updateSessionName === 'function') {
+        updateSessionName(data.fullName.trim());
+      }
+    } catch (e) { }
+  }
+
+  return {
+    user: {
+      id: updatedProfile.userId || session.userId,
+      fullName: data.fullName || updatedProfile.fullName,
+      email: updatedProfile.email || session.email,
+      phone: updatedProfile.phone || data.phone
+    },
+    profile: updatedProfile
+  };
 }
 
 // ---------- Organizer profile ----------
@@ -85,56 +170,114 @@ async function getMyOrganizerProfile() {
   const session = getSession();
   if (!session) throw new Error('Please log in to see your profile.');
 
-  if (!APP_CONFIG.DEMO_MODE) {
-    // Supabase:
-    // const { data, error } = await supabaseClient.from('organizers').select('*').eq('user_id', session.userId).maybeSingle();
-    // if (error) throw error;
-    // return { user: await getCurrentUser(), profile: data };
-    throw backendNotConnected('getMyOrganizerProfile');
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    await demoDelay();
+    const db = getDemoDb();
+    return {
+      user: db.users.find(u => u.id === session.userId) || null,
+      profile: db.organizers ? (db.organizers.find(o => o.userId === session.userId) || null) : null
+    };
   }
-  await demoDelay();
-  const db = getDemoDb();
-  return {
-    user: db.users.find(u => u.id === session.userId) || null,
-    profile: db.organizers.find(o => o.userId === session.userId) || null
-  };
+
+  try {
+    const res = await fetch('/api/users/me', {
+      headers: getProfileAuthHeaders()
+    });
+    if (res.ok) {
+      const user = await res.json();
+      return {
+        user: {
+          id: user.id || session.userId,
+          fullName: user.fullName || session.fullName,
+          email: user.email || session.email,
+          phone: user.phone || session.phone
+        },
+        profile: {
+          organizationName: user.fullName,
+          phone: user.phone,
+          email: user.email
+        }
+      };
+    }
+  } catch (err) {
+    console.warn('Failed to fetch organizer profile:', err);
+  }
+
+  return { user: session, profile: null };
 }
 
 async function updateMyOrganizerProfile(data) {
   const session = getSession();
   const isAdmin = session && session.role === Role.ADMIN;
-  // Admins don't have an Organizer record, so only their name and phone are required.
   throwIfErrors(isAdmin
     ? validateProfileData({ ...data, organizationName: 'n/a' }, 'organizationName')
     : validateProfileData(data, 'organizationName'));
 
-  if (!APP_CONFIG.DEMO_MODE) {
-    // Supabase:
-    // await supabaseClient.from('users').update({ full_name: data.fullName, phone: data.phone }).eq('id', session.userId);
-    // await supabaseClient.from('organizers').upsert({ user_id: session.userId, organization_name: data.organizationName, ... });
-    throw backendNotConnected('updateMyOrganizerProfile');
-  }
-  await demoDelay(400);
-  const db = getDemoDb();
-  const user = db.users.find(u => u.id === session.userId);
-  user.fullName = data.fullName.trim();
-  user.phone = data.phone.trim();
-
-  let profile = db.organizers.find(o => o.userId === session.userId) || null;
-  if (!isAdmin) {
-    if (!profile) {
-      profile = { id: nextDemoId(db.organizers), userId: session.userId };
-      db.organizers.push(profile);
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    await demoDelay(400);
+    const db = getDemoDb();
+    const user = db.users.find(u => u.id === session.userId);
+    if (user) {
+      user.fullName = data.fullName.trim();
+      user.phone = data.phone.trim();
     }
-    Object.assign(profile, {
-      organizationName: data.organizationName.trim(),
-      description: data.description.trim(),
-      phone: data.phone.trim(),
-      website: data.website.trim(),
-      address: data.address.trim()
-    });
+    let profile = db.organizers ? db.organizers.find(o => o.userId === session.userId) : null;
+    if (!isAdmin) {
+      if (!profile) {
+        profile = { id: nextDemoId(db.organizers || []), userId: session.userId };
+        if (!db.organizers) db.organizers = [];
+        db.organizers.push(profile);
+      }
+      Object.assign(profile, {
+        organizationName: data.organizationName.trim(),
+        description: data.description ? data.description.trim() : '',
+        phone: data.phone.trim(),
+        website: data.website ? data.website.trim() : '',
+        address: data.address ? data.address.trim() : ''
+      });
+    }
+    saveDemoDb(db);
+    if (typeof updateSessionName === 'function') {
+      updateSessionName(user ? user.fullName : data.fullName.trim());
+    }
+    return { user, profile };
   }
-  saveDemoDb(db);
-  updateSessionName(user.fullName);
-  return { user, profile };
+
+  const res = await fetch('/api/users/me', {
+    method: 'PUT',
+    headers: getProfileAuthHeaders(),
+    body: JSON.stringify({
+      fullName: (data.organizationName || data.fullName || '').trim(),
+      phone: (data.phone || '').trim()
+    })
+  });
+
+  if (!res.ok) {
+    let errMsg = `Failed to update organizer profile: HTTP ${res.status}`;
+    try {
+      const errJson = await res.json();
+      if (errJson.message) errMsg = errJson.message;
+    } catch (e) { }
+    throw new Error(errMsg);
+  }
+
+  const updated = await res.json();
+  if (typeof updateSessionName === 'function') {
+    updateSessionName(updated.fullName);
+  }
+
+  return {
+    user: updated,
+    profile: {
+      organizationName: updated.fullName,
+      phone: updated.phone
+    }
+  };
 }
+
+// Global window assignments
+window.getMyVendorProfile = getMyVendorProfile;
+window.updateMyVendorProfile = updateMyVendorProfile;
+window.getMyOrganizerProfile = getMyOrganizerProfile;
+window.updateMyOrganizerProfile = updateMyOrganizerProfile;
+window.validateProfileData = validateProfileData;

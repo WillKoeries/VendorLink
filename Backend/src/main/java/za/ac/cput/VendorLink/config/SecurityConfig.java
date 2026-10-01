@@ -64,16 +64,19 @@ public class SecurityConfig {
 
                         // Role-specific endpoints
                         .requestMatchers(HttpMethod.POST, "/api/events/upload-image").hasAnyRole("ORGANIZER", "ADMIN")
-                        .requestMatchers("/api/events/organizer/**").hasRole("ORGANIZER")
-                        .requestMatchers(HttpMethod.POST, "/api/events").hasRole("ORGANIZER")
-                        .requestMatchers(HttpMethod.PUT, "/api/events/**").hasRole("ORGANIZER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole("ORGANIZER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/applications/*/status").hasRole("ORGANIZER")
-                        .requestMatchers(HttpMethod.GET, "/api/applications/event/*").hasRole("ORGANIZER")
+                        .requestMatchers("/api/events/organizer/**").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/events").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/events/**").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/applications/*/status").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/applications/organizer").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/applications/event/*/my").hasAnyRole("VENDOR", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/applications/event/*").hasAnyRole("ORGANIZER", "ADMIN")
 
-                        .requestMatchers("/api/vendor/**").hasRole("VENDOR")
-                        .requestMatchers(HttpMethod.POST, "/api/applications").hasRole("VENDOR")
-                        .requestMatchers(HttpMethod.GET, "/api/applications/my").hasRole("VENDOR")
+                        .requestMatchers("/api/vendor/**").hasAnyRole("VENDOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/applications").hasAnyRole("VENDOR", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/applications/my").hasAnyRole("VENDOR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/applications/*").hasAnyRole("VENDOR", "ADMIN")
 
                         // Authenticated requests
                         .anyRequest().authenticated()
