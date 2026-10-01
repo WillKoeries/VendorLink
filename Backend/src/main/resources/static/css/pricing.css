@@ -1,157 +1,346 @@
-/* ==========================
-PRICING HEADER
-========================== */
+/* =========================================================
+   Pricing page (pricing.html)
+   ========================================================= */
 
-.pricing-header{
-
-padding:90px 0 40px;
-text-align:center;
-
+.pricing-section {
+  padding: 56px 0 72px;
 }
 
-.pricing-header h1{
-
-font-size:52px;
-margin-bottom:20px;
-color:#0F172A;
-
+.pricing-head h1 {
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
 }
 
-.pricing-header p{
-
-max-width:650px;
-margin:auto;
-font-size:18px;
-color:#64748B;
-
+/* ---------- Controls ---------- */
+.pricing-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 44px;
 }
 
-/* ==========================
-CARDS
-========================== */
-
-.cards{
-
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:35px;
-margin-bottom:80px;
-
+.segmented {
+  display: flex;
+  max-width: 100%;
+  padding: 6px;
+  background: #ffffff;
+  border: 1.5px solid var(--slate-200);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
 }
 
-.price-card{
-
-background:white;
-padding:45px 35px;
-border-radius:20px;
-box-shadow:0 15px 35px rgba(0,0,0,.08);
-text-align:center;
-position:relative;
-transition:.3s;
-
+.segmented-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--slate-500);
+  font-weight: 600;
+  font-size: 0.93rem;
+  white-space: nowrap;
+  transition: all var(--transition);
 }
 
-.price-card:hover{
-
-transform:translateY(-10px);
-
+.segmented-btn.is-active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
-.featured{
-
-border:3px solid #2563EB;
-transform:scale(1.05);
-
+/* Monthly / annual switch */
+.billing-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  cursor: pointer;
 }
 
-.badge{
-
-position:absolute;
-top:-15px;
-left:50%;
-transform:translateX(-50%);
-background:#2563EB;
-color:white;
-padding:8px 20px;
-border-radius:30px;
-font-size:14px;
-
+.billing-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
 }
 
-.price-card h3{
-
-font-size:28px;
-
+.switch-track {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: var(--slate-300);
+  transition: background var(--transition);
 }
 
-.price-card h2{
-
-font-size:48px;
-margin:20px 0;
-color:#2563EB;
-
+.switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+  transition: transform var(--transition);
 }
 
-.price-card span{
-
-font-size:18px;
-
+.billing-switch input:checked + .switch-track {
+  background: var(--primary);
 }
 
-.small{
-
-margin-bottom:30px;
-
+.billing-switch input:checked + .switch-track .switch-thumb {
+  transform: translateX(20px);
 }
 
-.price-card ul{
-
-list-style:none;
-margin-bottom:35px;
-
+.billing-switch input:focus-visible + .switch-track {
+  box-shadow: var(--focus-ring);
 }
 
-.price-card ul li{
-
-padding:12px 0;
-border-bottom:1px solid #F1F5F9;
-
+/* ---------- Plan cards ---------- */
+.pricing-deck {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
 }
 
-.outline-btn{
-
-display:inline-block;
-padding:15px 35px;
-border:2px solid #2563EB;
-color:#2563EB;
-border-radius:12px;
-font-weight:600;
-
+.plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.outline-btn:hover{
-
-background:#2563EB;
-color:white;
-
+.plan-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* ==========================
-RESPONSIVE
-========================== */
-
-@media(max-width:1000px){
-
-.cards{
-
-grid-template-columns:1fr;
-
+.plan-card.is-featured {
+  border: 2px solid var(--primary);
+  box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.2);
 }
 
-.featured{
-
-transform:none;
-
+/* Soft blurred photo behind the top of each card */
+.plan-backdrop {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px);
+  opacity: 0.22;
+  transform: scale(1.15);
 }
 
+
+/* Blurred photo behind each plan (decorative) */
+.backdrop-produce { background-image: url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&q=60'); }
+.backdrop-market { background-image: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=60'); }
+.backdrop-night { background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=60'); }
+.backdrop-crafts { background-image: url('https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=60'); }
+.backdrop-food-trucks { background-image: url('https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=600&q=60'); }
+.backdrop-fashion { background-image: url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=60'); }
+
+.plan-card.is-featured .plan-backdrop {
+  opacity: 0.3;
+}
+
+.plan-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 34px 28px 28px;
+}
+
+.plan-card.is-featured .plan-content {
+  padding-top: 54px;
+}
+
+.plan-ribbon {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 1;
+  background: var(--primary);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.plan-name {
+  font-size: 1.35rem;
+  margin-bottom: 6px;
+}
+
+.plan-tagline {
+  font-size: 0.88rem;
+  color: var(--slate-500);
+  min-height: 42px;
+}
+
+.plan-price {
+  margin: 20px 0 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--slate-100);
+  color: var(--navy);
+}
+
+.price-currency {
+  font-size: 1.4rem;
+  font-weight: 700;
+  vertical-align: top;
+}
+
+.price-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+.price-custom {
+  font-size: 2.2rem;
+  margin-right: 6px;
+}
+
+.price-term {
+  font-size: 0.9rem;
+  color: var(--slate-500);
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.plan-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+  flex: 1;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--slate-700);
+}
+
+.plan-features li i {
+  color: var(--success-strong);
+  margin-top: 4px;
+}
+
+.plan-features li.is-muted {
+  color: var(--slate-400);
+}
+
+.plan-features li.is-muted i {
+  color: var(--slate-300);
+}
+
+.pricing-note {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 32px;
+  font-size: 0.85rem;
+  color: var(--slate-500);
+  text-align: center;
+}
+
+.pricing-note i {
+  margin-top: 3px;
+}
+
+/* ---------- FAQ ---------- */
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.faq-item {
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+}
+
+.faq-item summary {
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: '+';
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--primary);
+}
+
+.faq-item[open] summary::after {
+  content: '−';
+}
+
+.faq-item p {
+  margin-top: 10px;
+  color: var(--slate-500);
+  font-size: 0.92rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .pricing-deck {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .segmented-btn {
+    padding: 10px 14px;
+    font-size: 0.86rem;
+  }
+
+  .billing-switch {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

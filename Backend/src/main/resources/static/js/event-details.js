@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // Extract Event ID from URL query string
     const urlParams = new URLSearchParams(window.location.search);
-    const eventId = urlParams.get('id');
+    const eventId = urlParams.get('id') || 1;
 
     const bannerImg = document.querySelector('.event-details .banner');
     const titleEl = document.querySelector('.event-details .left h1');
@@ -20,13 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let currentEvent = null;
 
-    if (!eventId) {
-        showToast('No event ID specified in URL.', 'warning');
-        if (titleEl) titleEl.textContent = 'Event Not Found';
-        if (applyBtn) applyBtn.style.display = 'none';
-        return;
-    }
-
     // Load Event Details from Backend
     async function loadEventDetails() {
         try {
@@ -38,10 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (titleEl) {
                 titleEl.textContent = 'Event Not Found';
             }
-            if (applyBtn) {
-                applyBtn.disabled = true;
-                applyBtn.style.opacity = '0.5';
-            }
         }
     }
 
@@ -50,16 +39,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (bannerImg && event.bannerImageUrl) {
             bannerImg.src = event.bannerImageUrl;
-            bannerImg.alt = escapeHtml(event.title);
         }
 
         if (titleEl) titleEl.textContent = event.title;
 
-        const isAvailable = event.status === 'OPEN' && (event.availableStalls === null || event.availableStalls > 0);
-
         if (statusEl) {
-            statusEl.textContent = isAvailable ? 'Applications Open' : (event.status === 'OPEN' ? 'Sold Out' : 'Applications Closed');
-            statusEl.className = `status ${isAvailable ? 'open' : 'closed'}`;
+            statusEl.textContent = event.status === 'OPEN' ? 'Applications Open' : 'Applications Closed';
+            statusEl.className = `status ${event.status === 'OPEN' ? 'open' : 'closed'}`;
         }
 
         if (descEl && event.description) {
@@ -71,18 +57,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (infoList) {
-            const loc = escapeHtml(event.location);
-            const cityStr = event.city ? ', ' + escapeHtml(event.city) : '';
-            const timeStr = escapeHtml(event.time || '09:00 - 17:00');
-            const stallsStr = event.availableStalls !== null && event.availableStalls !== undefined ? event.availableStalls : 'N/A';
-            const visitorsStr = escapeHtml(event.expectedVisitors || '3,000+');
-
             infoList.innerHTML = `
                 <li>📅 <strong>Date:</strong> ${formatDate(event.date)}</li>
-                <li>📍 <strong>Location:</strong> ${loc}${cityStr}</li>
-                <li>🕘 <strong>Time:</strong> ${timeStr}</li>
-                <li>🏪 <strong>Available Stalls:</strong> ${stallsStr}</li>
-                <li>👥 <strong>Expected Visitors:</strong> ${visitorsStr}</li>
+                <li>📍 <strong>Location:</strong> ${event.location}${event.city ? ', ' + event.city : ''}</li>
+                <li>🕘 <strong>Time:</strong> ${event.time || '09:00 - 17:00'}</li>
+                <li>🏪 <strong>Available Stalls:</strong> ${event.availableStalls ?? 'N/A'}</li>
+                <li>👥 <strong>Expected Visitors:</strong> ${event.expectedVisitors || '3,000+'}</li>
                 <li>💰 <strong>Stall Fee:</strong> ${formatCurrency(event.stallFee)}</li>
             `;
         }
@@ -90,27 +70,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (requirementsList && event.requirements) {
             const reqs = event.requirements.split('\n').filter(r => r.trim().length > 0);
             if (reqs.length > 0) {
-                requirementsList.innerHTML = reqs.map(r => `<li>${escapeHtml(r)}</li>`).join('');
+                requirementsList.innerHTML = reqs.map(r => `<li>${r}</li>`).join('');
             }
         }
 
-        // Update Organizer Information using organizerName
-        if (organizerBox && event.organizerName) {
+        // Update Organizer Information if container exists
+        if (organizerBox && event.organizer) {
             const orgTitle = organizerBox.querySelector('h3');
             if (orgTitle) {
                 const orgParagraphs = organizerBox.querySelectorAll('p:not(.price + p)');
-                if (orgParagraphs.length >= 1) {
-                    orgParagraphs[0].textContent = event.organizerName;
+                if (orgParagraphs.length >= 2) {
+                    orgParagraphs[0].textContent = event.organizer.organizationName || event.organizer.fullName || 'VendorLink Events';
+                    orgParagraphs[1].textContent = event.organizer.email || 'events@vendorlink.co.za';
                 }
             }
-        }
-
-        // Disable Apply button if closed or sold out
-        if (applyBtn && !isAvailable) {
-            applyBtn.disabled = true;
-            applyBtn.textContent = event.status === 'OPEN' ? 'Sold Out' : 'Applications Closed';
-            applyBtn.style.opacity = '0.6';
-            applyBtn.style.pointerEvents = 'none';
         }
     }
 
@@ -184,14 +157,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
 
-                // Pre-fill business name from vendor profile if available
+                // Pre-fill business name if available
                 const businessInput = document.getElementById('app-business-name');
-                if (businessInput && !businessInput.value) {
-                    vendorsAPI.getMyProfile().then(profile => {
-                        if (profile && profile.businessName) {
-                            businessInput.value = profile.businessName;
-                        }
-                    }).catch(() => {});
+                if (businessInput && user && user.businessName) {
+                    businessInput.value = user.businessName;
                 }
 
                 modal.classList.add('active');
