@@ -34,25 +34,43 @@ async function loadStats() {
 // ---------- Featured events ----------
 async function loadFeaturedEvents() {
   const grid = document.getElementById('featuredGrid');
-  renderSkeletonCards(grid, 3);
+  if (grid) renderSkeletonCards(grid, 3);
 
   try {
-    const [events, categories] = await Promise.all([getEvents(), getCategories()]);
+    const [events, categories] = await Promise.all([
+      getEvents(),
+      getCategories().catch(err => {
+        console.error('Failed to load categories on home page:', err);
+        return [];
+      })
+    ]);
+    const rawList = Array.isArray(events) ? events : (events && Array.isArray(events.data) ? events.data : []);
+
     // Only events that can still take applications (open and not fully booked)
-    openEvents = events.filter(e => canApplyToEvent(e) && isUpcoming(e));
-    renderCategoryPills(categories);
+    const validEvents = rawList.filter(e => canApplyToEvent(e));
+    openEvents = validEvents.filter(isUpcoming);
+    // If upcoming filter leaves none (e.g. test data with past dates), keep valid open events
+    if (!openEvents.length && validEvents.length > 0) {
+      openEvents = validEvents;
+    }
+
+    renderCategoryPills(categories || []);
     renderFeaturedEvents();
   } catch (err) {
-    renderError(grid, {
-      title: 'Unable to load events',
-      message: 'Please check your connection and try again.',
-      onRetry: loadFeaturedEvents
-    });
+    console.error('Failed to load featured events on home page:', err);
+    if (grid) {
+      renderError(grid, {
+        title: 'Unable to load events',
+        message: 'Please check your connection and try again.',
+        onRetry: loadFeaturedEvents
+      });
+    }
   }
 }
 
 function renderCategoryPills(categories) {
   const container = document.getElementById('categoryPills');
+  if (!container) return;
   // Only show categories that currently have open events
   const used = categories.filter(c => openEvents.some(e => e.categoryId === c.id));
 
@@ -80,16 +98,33 @@ function renderCategoryPills(categories) {
 function renderFeaturedEvents() {
   const grid = document.getElementById('featuredGrid');
   const browseLink = document.getElementById('browseAllLink');
+  if (!grid) return;
+
+  if (!openEvents.length) {
+    if (browseLink) {
+      browseLink.href = 'browse-events.html';
+      browseLink.innerHTML = `Browse all events <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>`;
+    }
+    renderEmpty(grid, {
+      icon: 'fa-calendar-xmark',
+      title: 'No events currently open',
+      message: 'Check back soon for upcoming markets and pop-ups.',
+      action: { label: 'Browse all events', href: 'browse-events.html?status=all' }
+    });
+    return;
+  }
 
   const matching = selectedCategoryId === 'all'
     ? openEvents
     : openEvents.filter(e => String(e.categoryId) === selectedCategoryId);
 
   // Link to the browse page with the same category selected
-  browseLink.href = selectedCategoryId === 'all'
-    ? 'browse-events.html'
-    : `browse-events.html?category=${encodeURIComponent(selectedCategoryId)}`;
-  browseLink.innerHTML = `Browse all ${matching.length} open event${matching.length === 1 ? '' : 's'} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>`;
+  if (browseLink) {
+    browseLink.href = selectedCategoryId === 'all'
+      ? 'browse-events.html'
+      : `browse-events.html?category=${encodeURIComponent(selectedCategoryId)}`;
+    browseLink.innerHTML = `Browse all ${matching.length} open event${matching.length === 1 ? '' : 's'} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>`;
+  }
 
   if (!matching.length) {
     renderEmpty(grid, {
@@ -145,3 +180,7 @@ function updateCtaForSession() {
   button.href = getDashboardUrl(session.role);
   button.innerHTML = 'Go to your dashboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
 }
+
+// Global window attachments
+window.loadFeaturedEvents = loadFeaturedEvents;
+
