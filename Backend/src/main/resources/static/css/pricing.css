@@ -1,0 +1,157 @@
+/* ==========================
+PRICING HEADER
+========================== */
+
+.pricing-header{
+
+padding:90px 0 40px;
+text-align:center;
+
+}
+
+.pricing-header h1{
+
+font-size:52px;
+margin-bottom:20px;
+color:#0F172A;
+
+}
+
+.pricing-header p{
+
+max-width:650px;
+margin:auto;
+font-size:18px;
+color:#64748B;
+
+}
+
+/* ==========================
+CARDS
+========================== */
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:35px;
+margin-bottom:80px;
+
+}
+
+.price-card{
+
+background:white;
+padding:45px 35px;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+text-align:center;
+position:relative;
+transition:.3s;
+
+}
+
+.price-card:hover{
+
+transform:translateY(-10px);
+
+}
+
+.featured{
+
+border:3px solid #2563EB;
+transform:scale(1.05);
+
+}
+
+.badge{
+
+position:absolute;
+top:-15px;
+left:50%;
+transform:translateX(-50%);
+background:#2563EB;
+color:white;
+padding:8px 20px;
+border-radius:30px;
+font-size:14px;
+
+}
+
+.price-card h3{
+
+font-size:28px;
+
+}
+
+.price-card h2{
+
+font-size:48px;
+margin:20px 0;
+color:#2563EB;
+
+}
+
+.price-card span{
+
+font-size:18px;
+
+}
+
+.small{
+
+margin-bottom:30px;
+
+}
+
+.price-card ul{
+
+list-style:none;
+margin-bottom:35px;
+
+}
+
+.price-card ul li{
+
+padding:12px 0;
+border-bottom:1px solid #F1F5F9;
+
+}
+
+.outline-btn{
+
+display:inline-block;
+padding:15px 35px;
+border:2px solid #2563EB;
+color:#2563EB;
+border-radius:12px;
+font-weight:600;
+
+}
+
+.outline-btn:hover{
+
+background:#2563EB;
+color:white;
+
+}
+
+/* ==========================
+RESPONSIVE
+========================== */
+
+@media(max-width:1000px){
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+.featured{
+
+transform:none;
+
+}
+
+}

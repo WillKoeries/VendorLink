@@ -118,5 +118,4 @@ public class Helper {
         return p == null ? null : new PublicVendorResponse(p.getId(), p.getBusinessName(), p.getDescription(),
                 p.getCategory(), p.getWebsite(), p.getCity(), p.getProvince(), p.getProfileImageUrl());
     }
-
 }
