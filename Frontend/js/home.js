@@ -15,8 +15,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Take up to 3 featured events
             const featured = events.slice(0, 3);
 
-            eventGrid.innerHTML = featured.map(evt => {
-                const img = evt.bannerImageUrl || 'images/market1.png';
+            eventGrid.innerHTML = featured.map((evt, idx) => {
+                let img = evt.bannerImageUrl || '';
+                if (img === 'images/event-banner.jpg' || img === 'event-banner.jpg') img = 'images/market1.png';
+                else if (img === 'images/event2.jpg' || img === 'event2.jpg') img = 'images/market2.png';
+                else if (img === 'images/event3.jpg' || img === 'event3.jpg') img = 'images/market3.png';
+                else if (img === 'images/event4.jpg' || img === 'event4.jpg') img = 'images/market4.png';
+                if (!img) {
+                    const fallbackList = ['images/market1.png', 'images/market2.png', 'images/market3.png', 'images/market4.png'];
+                    img = fallbackList[idx % fallbackList.length];
+                }
                 const date = formatDate(evt.date);
                 const stalls = evt.availableStalls !== null && evt.availableStalls !== undefined 
                     ? `${evt.availableStalls} Stalls Available` 

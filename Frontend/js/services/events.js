@@ -49,6 +49,21 @@ function normalizeEvent(event) {
   const totalStalls = Number.isFinite(rawTotal) ? rawTotal : (Number.isFinite(rawAvail) ? rawAvail : 0);
   const availableStalls = Number.isFinite(rawAvail) ? rawAvail : totalStalls;
 
+  let bannerImageUrl = (event.bannerImageUrl || '').trim();
+  if (bannerImageUrl === 'images/event-banner.jpg' || bannerImageUrl === 'event-banner.jpg') {
+    bannerImageUrl = 'images/market1.png';
+  } else if (bannerImageUrl === 'images/event2.jpg' || bannerImageUrl === 'event2.jpg') {
+    bannerImageUrl = 'images/market2.png';
+  } else if (bannerImageUrl === 'images/event3.jpg' || bannerImageUrl === 'event3.jpg') {
+    bannerImageUrl = 'images/market3.png';
+  } else if (bannerImageUrl === 'images/event4.jpg' || bannerImageUrl === 'event4.jpg') {
+    bannerImageUrl = 'images/market4.png';
+  } else if (!bannerImageUrl) {
+    const marketImgs = ['images/market1.png', 'images/market2.png', 'images/market3.png', 'images/market4.png'];
+    const idx = (Math.abs(Number(event.id) || 1) - 1) % marketImgs.length;
+    bannerImageUrl = marketImgs[idx];
+  }
+
   return {
     ...event,
     id: Number(event.id),
@@ -65,7 +80,7 @@ function normalizeEvent(event) {
     location: event.location || '',
     city: event.city || '',
     province: event.province || '',
-    bannerImageUrl: event.bannerImageUrl || '',
+    bannerImageUrl,
     status: (event.status || EventStatus.OPEN).toUpperCase()
   };
 }

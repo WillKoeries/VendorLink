@@ -103,8 +103,16 @@ async function loadEvents() {
         if (typeof eventCardHtml === 'function') {
             eventsContainer.innerHTML = events.map(eventCardHtml).join('');
         } else {
-            eventsContainer.innerHTML = events.map(event => {
-                const imageUrl = event.bannerImageUrl || 'images/market1.png';
+            eventsContainer.innerHTML = events.map((event, idx) => {
+                let imageUrl = (event.bannerImageUrl || '').trim();
+                if (imageUrl === 'images/event-banner.jpg' || imageUrl === 'event-banner.jpg') imageUrl = 'images/market1.png';
+                else if (imageUrl === 'images/event2.jpg' || imageUrl === 'event2.jpg') imageUrl = 'images/market2.png';
+                else if (imageUrl === 'images/event3.jpg' || imageUrl === 'event3.jpg') imageUrl = 'images/market3.png';
+                else if (imageUrl === 'images/event4.jpg' || imageUrl === 'event4.jpg') imageUrl = 'images/market4.png';
+                if (!imageUrl) {
+                    const fallbackList = ['images/market1.png', 'images/market2.png', 'images/market3.png', 'images/market4.png'];
+                    imageUrl = fallbackList[idx % fallbackList.length];
+                }
                 const formattedDate = typeof formatDate === 'function' ? formatDate(event.date) : (event.date || 'TBA');
                 const fee = typeof formatCurrency === 'function' ? formatCurrency(event.stallFee) : `R${event.stallFee || 0}`;
                 const stalls = event.availableStalls !== null && event.availableStalls !== undefined 
