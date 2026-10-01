@@ -18,7 +18,7 @@ const apiClient = axios.create({
 // Request Interceptor: Attach JWT Token if available
 apiClient.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('vendorlink_token');
+        const token = localStorage.getItem('token') || localStorage.getItem('vendorlink_token');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
@@ -49,8 +49,10 @@ apiClient.interceptors.response.use(
 
             // Handle 401 Unauthorized
             if (error.response.status === 401) {
-                const hadToken = !!localStorage.getItem('vendorlink_token');
+                const hadToken = !!(localStorage.getItem('token') || localStorage.getItem('vendorlink_token'));
+                localStorage.removeItem('token');
                 localStorage.removeItem('vendorlink_token');
+                localStorage.removeItem('user');
                 localStorage.removeItem('vendorlink_user');
                 
                 // If user was logged in and their session expired

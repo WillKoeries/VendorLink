@@ -1,143 +1,110 @@
 /**
- * Login page
- * ----------
- * Login → session saved → role worked out → sent to the right dashboard
- * (or back to the page they came from, if it's one of our own pages).
+ * Page controller for login.html
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  startImageCarousel(document.querySelector('.auth-stage'));
+    // Start carousel if available
+    if (typeof startImageCarousel === 'function') {
+        const stage = document.querySelector('.auth-stage');
+        if (stage) startImageCarousel(stage);
+    }
 
-  const loginForm = document.getElementById('loginForm');
-  const forgotForm = document.getElementById('forgotForm');
+    // Toggle between login and forgot password views
+    const showForgotBtn = document.getElementById('showForgotBtn');
+    const backToLoginBtn = document.getElementById('backToLoginBtn');
+    const loginView = document.getElementById('loginView');
+    const forgotView = document.getElementById('forgotView');
+    if (showForgotBtn && loginView && forgotView) {
+        showForgotBtn.addEventListener('click', () => {
+            loginView.hidden = true;
+            forgotView.hidden = false;
+            const forgotEmail = document.getElementById('forgotEmail');
+            const loginEmail = document.getElementById('loginEmail') || document.getElementById('email');
+            if (forgotEmail && loginEmail) forgotEmail.value = loginEmail.value;
+        });
+    }
+    if (backToLoginBtn && loginView && forgotView) {
+        backToLoginBtn.addEventListener('click', () => {
+            forgotView.hidden = true;
+            loginView.hidden = false;
+        });
+    }
 
-  // Keep ?redirect= when switching to the register page
-  const redirect = getQueryParam('redirect');
-  if (redirect) {
-    document.getElementById('registerLink').href = `register.html?redirect=${encodeURIComponent(redirect)}`;
-  }
+    // Keep ?redirect= when switching to register page
+    const params = new URLSearchParams(window.location.search);
+    const redirectParam = params.get('redirect');
+    const registerLink = document.getElementById('registerLink');
+    if (redirectParam && registerLink) {
+        registerLink.href = `register.html?redirect=${encodeURIComponent(redirectParam)}`;
+    }
 
-  if (APP_CONFIG.DEMO_MODE) {
-    document.getElementById('demoAccounts').hidden = false;
-  }
+    // If the user is already logged in, redirect them directly to their dashboard
+    const existingSession = window.getSession ? window.getSession() : null;
+    if (existingSession) {
+        window.location.href = existingSession.isOrganizer 
+            ? 'organizer-dashboard.html' 
+            : 'browse-events.html';
+        return;
+    }
 
-  showStartMessage();
+    const form = document.getElementById('loginForm') 
+              || document.getElementById('login-form') 
+              || document.querySelector('form');
 
-  loginForm.addEventListener('submit', handleLogin);
-  forgotForm.addEventListener('submit', handleForgotPassword);
+    if (!form) return;
 
-  document.querySelectorAll('[data-demo-role]').forEach(button => {
-    button.addEventListener('click', () => handleDemoLogin(button));
-  });
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-  document.getElementById('showForgotBtn').addEventListener('click', () => {
-    document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value;
-    toggleView('forgot');
-  });
-  document.getElementById('backToLoginBtn').addEventListener('click', () => toggleView('login'));
+        const emailInput = document.getElementById('email') 
+                        || document.getElementById('loginEmail')
+                        || form.querySelector('input[type="email"]');
+        const passwordInput = document.getElementById('password') 
+                           || document.getElementById('loginPassword')
+                           || form.querySelector('input[type="password"]');
+        const submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('button');
+        const errorBanner = document.getElementById('errorBanner') 
+                         || document.getElementById('loginAlert')
+                         || document.querySelector('.error-message');
+
+        const email = emailInput?.value.trim() || '';
+        const password = passwordInput?.value || '';
+
+        if (errorBanner) {
+            errorBanner.style.display = 'none';
+            errorBanner.hidden = true;
+        }
+
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Signing in...';
+
+        try {
+            // Invoke the canonical global function
+            const result = await window.signIn(email, password);
+
+            // Handle redirect query parameter if one was provided
+            const redirectUrl = params.get('redirect');
+
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else if (result.user && result.user.role === 'ORGANIZER') {
+                window.location.href = 'organizer-dashboard.html';
+            } else {
+                window.location.href = 'browse-events.html';
+            }
+        } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+
+            if (errorBanner) {
+                errorBanner.textContent = err.message;
+                errorBanner.style.display = 'block';
+                errorBanner.hidden = false;
+                errorBanner.className = 'alert alert-error';
+            } else {
+                alert(err.message);
+            }
+        }
+    });
 });
-
-function showStartMessage() {
-  const session = getSession();
-  if (session) {
-    showAlert('loginAlert', 'info',
-      `You're already logged in as ${session.fullName} (${ROLE_LABELS[session.role]}). Log in below to switch accounts, or go to your dashboard.`);
-    return;
-  }
-  if (getQueryParam('reason') === 'auth') {
-    showAlert('loginAlert', 'info', 'Please log in to continue.');
-  }
-}
-
-function toggleView(view) {
-  document.getElementById('loginView').hidden = view !== 'login';
-  document.getElementById('forgotView').hidden = view !== 'forgot';
-  document.getElementById(view === 'login' ? 'loginEmail' : 'forgotEmail').focus();
-}
-
-function showAlert(id, type, message) {
-  const alert = document.getElementById(id);
-  const icons = { error: 'fa-circle-exclamation', success: 'fa-circle-check', info: 'fa-circle-info' };
-  alert.className = `alert alert-${type}`;
-  alert.innerHTML = `<i class="fa-solid ${icons[type]}" aria-hidden="true"></i><span></span>`;
-  alert.querySelector('span').textContent = message;
-  alert.hidden = false;
-}
-
-function goToNextPage(session) {
-  const fallback = getDashboardUrl(session.role);
-  const next = getSafeRedirect(getQueryParam('redirect'), fallback);
-  setTimeout(() => { window.location.href = next; }, 600);
-}
-
-// ---------- Email + password ----------
-async function handleLogin(e) {
-  e.preventDefault();
-  const form = e.target;
-  const submitBtn = document.getElementById('loginSubmitBtn');
-  document.getElementById('loginAlert').hidden = true;
-
-  const email = form.elements.email.value.trim();
-  const password = form.elements.password.value;
-
-  const errors = {};
-  if (!email) errors.email = 'Enter your email address.';
-  else if (!isValidEmail(email)) errors.email = 'Enter a valid email address, e.g. name@example.com.';
-  if (!password) errors.password = 'Enter your password.';
-  if (Object.keys(errors).length) {
-    showFieldErrors(form, errors);
-    return;
-  }
-  clearFieldErrors(form);
-
-  setButtonLoading(submitBtn, true, 'Logging in…');
-  try {
-    const session = await signIn(email, password, form.elements.remember.checked);
-    showAlert('loginAlert', 'success', `Welcome back, ${session.fullName}! Taking you to your dashboard…`);
-    goToNextPage(session);
-  } catch (err) {
-    showAlert('loginAlert', 'error', err.message || 'Login failed. Please try again.');
-    setButtonLoading(submitBtn, false);
-  }
-}
-
-// ---------- Demo accounts ----------
-async function handleDemoLogin(button) {
-  setButtonLoading(button, true, 'Opening…');
-  try {
-    const session = await signInAsDemo(button.dataset.demoRole);
-    showAlert('loginAlert', 'success', `Logged in as the demo ${ROLE_LABELS[session.role].toLowerCase()} (${session.fullName}).`);
-    goToNextPage(session);
-  } catch (err) {
-    showAlert('loginAlert', 'error', err.message);
-    setButtonLoading(button, false);
-  }
-}
-
-// ---------- Forgot password ----------
-async function handleForgotPassword(e) {
-  e.preventDefault();
-  const form = e.target;
-  const submitBtn = document.getElementById('forgotSubmitBtn');
-  const email = form.elements.email.value.trim();
-
-  if (!isValidEmail(email)) {
-    showFieldErrors(form, { email: 'Enter a valid email address.' });
-    return;
-  }
-  clearFieldErrors(form);
-
-  setButtonLoading(submitBtn, true, 'Sending…');
-  try {
-    await requestPasswordReset(email);
-    // Same message whether or not the account exists, so emails can't be guessed
-    const message = `If an account exists for ${email}, a password reset link is on its way.`
-      + (APP_CONFIG.DEMO_MODE ? ' (Demo mode: no email was actually sent.)' : '');
-    showAlert('forgotAlert', 'success', message);
-    form.reset();
-  } catch (err) {
-    showAlert('forgotAlert', 'error', 'We couldn’t send the reset link. Please try again.');
-  } finally {
-    setButtonLoading(submitBtn, false);
-  }
-}

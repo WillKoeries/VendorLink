@@ -149,7 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
 
             try {
-                const response = await authAPI.login({ email, password });
+                const response = typeof window.signIn === 'function'
+                    ? await window.signIn(email, password)
+                    : await authAPI.login({ email, password });
 
                 authService.setToken(response.token);
                 authService.setUser(response.user);
@@ -219,14 +221,23 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner"></span> Creating Account...';
 
             try {
-                const response = await authAPI.register({
-                    fullName,
-                    email,
-                    password,
-                    role,
-                    phone: phone || undefined,
-                    businessName: businessName || undefined
-                });
+                const response = typeof window.registerAccount === 'function'
+                    ? await window.registerAccount({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        phone: phone || undefined,
+                        businessName: businessName || undefined
+                    })
+                    : await authAPI.register({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        phone: phone || undefined,
+                        businessName: businessName || undefined
+                    });
 
                 authService.setToken(response.token);
                 authService.setUser(response.user);

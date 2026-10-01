@@ -1,107 +1,158 @@
 /**
- * Register page
- * -------------
- * Vendors and organisers can sign up. ?role=ORGANIZER pre-selects the
- * organiser option (used by the Pricing page).
+ * Page controller for register.html
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  startImageCarousel(document.querySelector('.auth-stage'));
+    // Start carousel if available
+    if (typeof startImageCarousel === 'function') {
+        const stage = document.querySelector('.auth-stage');
+        if (stage) startImageCarousel(stage);
+    }
 
-  const form = document.getElementById('registerForm');
+    const form = document.getElementById('registerForm') 
+              || document.getElementById('register-form') 
+              || document.querySelector('form');
 
-  // Pre-select the role from the URL
-  const roleFromUrl = getQueryParam('role');
-  if (roleFromUrl === Role.ORGANIZER || roleFromUrl === Role.VENDOR) {
-    form.querySelector(`input[name="role"][value="${roleFromUrl}"]`).checked = true;
-  }
-  updateBusinessLabel();
+    if (!form) return;
 
-  // Keep ?redirect= when switching to the login page
-  const redirect = getQueryParam('redirect');
-  if (redirect) {
-    document.getElementById('loginLink').href = `login.html?redirect=${encodeURIComponent(redirect)}`;
-  }
+    // Handle role pre-selection from URL (?role=ORGANIZER)
+    const params = new URLSearchParams(window.location.search);
+    const roleFromUrl = params.get('role');
+    if (roleFromUrl) {
+        const radio = form.querySelector(`input[name="role"][value="${roleFromUrl}"]`);
+        if (radio) radio.checked = true;
+    }
 
-  if (APP_CONFIG.DEMO_MODE) document.getElementById('demoRegisterNote').hidden = false;
+    // Dynamic business/organisation label update
+    const updateBusinessLabel = () => {
+        const selectedRadio = form.querySelector('input[name="role"]:checked');
+        const isOrganizer = selectedRadio ? selectedRadio.value === 'ORGANIZER' : false;
+        const label = document.getElementById('regBusinessLabel');
+        const input = document.getElementById('regBusinessName') || document.getElementById('businessName');
+        if (label) {
+            label.innerHTML = `${isOrganizer ? 'Organisation name' : 'Business name'} <span class="required">*</span>`;
+        }
+        if (input) {
+            input.placeholder = isOrganizer ? 'e.g. Cape Markets & Festivals Co.' : "e.g. Mama's Authentic Bakes";
+        }
+    };
+    form.querySelectorAll('input[name="role"]').forEach(r => r.addEventListener('change', updateBusinessLabel));
+    updateBusinessLabel();
 
-  form.querySelectorAll('input[name="role"]').forEach(radio => radio.addEventListener('change', updateBusinessLabel));
-  form.addEventListener('submit', handleRegister);
+    // Keep ?redirect= when switching to login page
+    const redirectParam = params.get('redirect');
+    const loginLink = document.getElementById('loginLink');
+    if (redirectParam && loginLink) {
+        loginLink.href = `login.html?redirect=${encodeURIComponent(redirectParam)}`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const fullName = (document.getElementById('fullName') 
+                       || document.getElementById('regFullName') 
+                       || form.querySelector('input[name="fullName"]'))?.value.trim();
+        const email = (document.getElementById('email') 
+                    || document.getElementById('regEmail') 
+                    || form.querySelector('input[type="email"]'))?.value.trim();
+        const password = (document.getElementById('password') 
+                       || document.getElementById('regPassword') 
+                       || form.querySelector('input[name="password"]'))?.value;
+        const confirmPassword = (document.getElementById('confirmPassword') 
+                              || document.getElementById('regConfirm') 
+                              || form.querySelector('input[name="confirmPassword"]'))?.value;
+        const role = (document.getElementById('role') 
+                   || form.querySelector('select[name="role"]') 
+                   || form.querySelector('input[name="role"]:checked'))?.value || 'VENDOR';
+        const businessName = (document.getElementById('businessName') 
+                           || document.getElementById('regBusinessName') 
+                           || form.querySelector('input[name="businessName"]'))?.value.trim();
+        const phone = (document.getElementById('phone') 
+                    || document.getElementById('regPhone') 
+                    || form.querySelector('input[name="phone"]'))?.value.trim();
+
+        const submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('button');
+        const errorBanner = document.getElementById('errorBanner') 
+                         || document.getElementById('registerAlert') 
+                         || document.querySelector('.error-message');
+
+        if (errorBanner) {
+            errorBanner.style.display = 'none';
+            errorBanner.hidden = true;
+        }
+
+        if (password !== confirmPassword) {
+            if (errorBanner) {
+                errorBanner.textContent = 'Passwords do not match.';
+                errorBanner.style.display = 'block';
+                errorBanner.hidden = false;
+                errorBanner.className = 'alert alert-error';
+            } else {
+                alert('Passwords do not match.');
+            }
+            return;
+        }
+
+        if (!password || password.length < 6) {
+            if (errorBanner) {
+                errorBanner.textContent = 'Password must be at least 6 characters long.';
+                errorBanner.style.display = 'block';
+                errorBanner.hidden = false;
+                errorBanner.className = 'alert alert-error';
+            } else {
+                alert('Password must be at least 6 characters long.');
+            }
+            return;
+        }
+
+        const termsCheckbox = document.getElementById('regTerms') || form.querySelector('input[name="terms"]');
+        if (termsCheckbox && !termsCheckbox.checked) {
+            if (errorBanner) {
+                errorBanner.textContent = 'Please accept the Terms & Conditions and Privacy Policy.';
+                errorBanner.style.display = 'block';
+                errorBanner.hidden = false;
+                errorBanner.className = 'alert alert-error';
+            } else {
+                alert('Please accept the Terms & Conditions and Privacy Policy.');
+            }
+            return;
+        }
+
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Creating Account...';
+
+        try {
+            // Invoke the canonical global function
+            const result = await window.registerAccount({
+                fullName,
+                email,
+                password,
+                role,
+                businessName,
+                phone
+            });
+
+            const redirectUrl = params.get('redirect');
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else if (result.user && result.user.role === 'ORGANIZER') {
+                window.location.href = 'organizer-dashboard.html';
+            } else {
+                window.location.href = 'browse-events.html';
+            }
+        } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+
+            if (errorBanner) {
+                errorBanner.textContent = err.message;
+                errorBanner.style.display = 'block';
+                errorBanner.hidden = false;
+                errorBanner.className = 'alert alert-error';
+            } else {
+                alert(err.message);
+            }
+        }
+    });
 });
-
-function selectedRole() {
-  return document.querySelector('input[name="role"]:checked').value;
-}
-
-// "Business name" for vendors, "Organisation name" for organisers
-function updateBusinessLabel() {
-  const isOrganizer = selectedRole() === Role.ORGANIZER;
-  document.getElementById('regBusinessLabel').innerHTML =
-    `${isOrganizer ? 'Organisation name' : 'Business name'} <span class="required">*</span>`;
-  document.getElementById('regBusinessName').placeholder = isOrganizer
-    ? 'e.g. Cape Markets & Festivals Co.'
-    : "e.g. Mama's Authentic Bakes";
-}
-
-function validateRegistration(data) {
-  const errors = {};
-  if (data.fullName.trim().length < 2) errors.fullName = 'Enter your full name.';
-  if (!isValidEmail(data.email)) errors.email = 'Enter a valid email address, e.g. name@example.com.';
-  if (data.phone.trim() && !isValidPhone(data.phone)) errors.phone = 'Enter a valid phone number, e.g. +27 82 123 4567.';
-  if (data.businessName.trim().length < 2) {
-    errors.businessName = data.role === Role.ORGANIZER ? 'Enter your organisation name.' : 'Enter your business name.';
-  }
-  if (data.password.length < 8 || !/[A-Za-z]/.test(data.password) || !/\d/.test(data.password)) {
-    errors.password = 'Use at least 8 characters, including a letter and a number.';
-  }
-  if (!data.confirmPassword) errors.confirmPassword = 'Type your password again.';
-  else if (data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords don’t match.';
-  if (!data.terms) errors.terms = 'Please accept the terms to continue.';
-  return errors;
-}
-
-async function handleRegister(e) {
-  e.preventDefault();
-  const form = e.target;
-  const alert = document.getElementById('registerAlert');
-  const submitBtn = document.getElementById('registerSubmitBtn');
-  alert.hidden = true;
-
-  const data = {
-    role: selectedRole(),
-    fullName: form.elements.fullName.value,
-    email: form.elements.email.value.trim(),
-    phone: form.elements.phone.value,
-    businessName: form.elements.businessName.value,
-    password: form.elements.password.value,
-    confirmPassword: form.elements.confirmPassword.value,
-    terms: form.elements.terms.checked
-  };
-
-  const errors = validateRegistration(data);
-  if (Object.keys(errors).length) {
-    showFieldErrors(form, errors);
-    return;
-  }
-  clearFieldErrors(form);
-
-  setButtonLoading(submitBtn, true, 'Creating account…');
-  try {
-    const session = await registerAccount(data);
-    form.elements.password.value = '';
-    form.elements.confirmPassword.value = '';
-    alert.className = 'alert alert-success';
-    alert.innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i><span></span>';
-    alert.querySelector('span').textContent = `Welcome to VendorLink, ${session.fullName}! Setting up your dashboard…`;
-    alert.hidden = false;
-
-    const next = getSafeRedirect(getQueryParam('redirect'), `${getDashboardUrl(session.role)}?welcome=1`);
-    setTimeout(() => { window.location.href = next; }, 900);
-  } catch (err) {
-    alert.className = 'alert alert-error';
-    alert.innerHTML = '<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span>';
-    alert.querySelector('span').textContent = err.message || 'We couldn’t create your account. Please try again.';
-    alert.hidden = false;
-    setButtonLoading(submitBtn, false);
-  }
-}
