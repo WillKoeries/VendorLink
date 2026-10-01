@@ -1,28 +1,28 @@
-/**
- * Auth service
- * ------------
- * One place that knows who is logged in. Pages and the navbar only use
- * these functions, never localStorage directly.
- *
- * What is stored in the browser: { userId, fullName, email, role }.
- * Passwords and tokens are NEVER stored by this code.
- *
- * DEMO MODE: sign-in finds the account by email in the demo data. Passwords
- * are not checked (there are none to check against). Real password checks
- * happen in Supabase Auth once it is connected.
- */
-
+const API_URL = 'http://localhost:8080/api/auth';
 const SESSION_KEY = 'vendorlink_session';
 
 // ---------- Session (who is logged in) ----------
 function getSession() {
   try {
     const raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    const session = JSON.parse(raw);
-    // Ignore anything that doesn't look like a valid session
-    if (!session || !session.userId || !Object.values(Role).includes(session.role)) return null;
-    return session;
+    if (raw) {
+      const session = JSON.parse(raw);
+      if (session && session.userId && Object.values(Role).includes(session.role)) return session;
+    }
+    const userRaw = localStorage.getItem('vendorlink_user');
+    if (userRaw) {
+      const parsed = JSON.parse(userRaw);
+      const u = parsed.user || parsed;
+      if (u && (u.role || u.userId || u.id)) {
+        return {
+          userId: u.id || u.userId,
+          fullName: u.fullName,
+          email: u.email,
+          role: u.role
+        };
+      }
+    }
+    return null;
   } catch (err) {
     return null;
   }
@@ -39,6 +39,8 @@ function saveSession(user, remember) {
 function clearSession() {
   sessionStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem('vendorlink_token');
+  localStorage.removeItem('vendorlink_user');
 }
 
 // Keep the stored name in sync after a profile edit
@@ -69,23 +71,37 @@ async function getCurrentUser() {
 }
 
 // ---------- Sign in / out ----------
-async function signIn(email, password, remember = false) {
-  if (!APP_CONFIG.DEMO_MODE) {
-    // Supabase:
-    // const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    // if (error) throw new Error('Incorrect email or password.');
-    // const user = await getCurrentUser();   // loads the users row (with role)
-    // return saveSession(user, remember);
-    throw backendNotConnected('signIn');
+export async function signIn({ email, password }) {
+  const response = await fetch(`${API_URL}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || 'Invalid email or password');
   }
 
-  await demoDelay(400);
-  const db = getDemoDb();
-  const user = db.users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
-  if (!user) {
-    throw new Error('No account found with that email address.');
+  const data = await response.json(); // returns { token, user: { id, email, role, ... } }
+  localStorage.setItem('vendorlink_token', data.token);
+  localStorage.setItem('vendorlink_user', JSON.stringify(data.user || data));
+  return data;
+}
+
+export async function signUp({ fullName, email, password, role }) {
+  const response = await fetch(`${API_URL}/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fullName, email, password, role })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || 'Registration failed');
   }
-  return saveSession(user, remember);
+
+  return await response.json();
 }
 
 async function signInAsDemo(role) {
@@ -113,61 +129,7 @@ async function signOut() {
  * @param {{role:string, fullName:string, email:string, phone:string, businessName:string, password:string}} data
  */
 async function registerAccount(data) {
-  // Only vendors and organisers can sign themselves up. ADMIN accounts are
-  // created by the team directly in Supabase (must also be enforced by RLS).
-  if (![Role.VENDOR, Role.ORGANIZER].includes(data.role)) {
-    throw new Error('Please choose Vendor or Event Organizer.');
-  }
-
-  if (!APP_CONFIG.DEMO_MODE) {
-    // Supabase:
-    // const { data: authData, error } = await supabaseClient.auth.signUp({
-    //   email: data.email,
-    //   password: data.password,
-    //   options: { data: { full_name: data.fullName, role: data.role } }
-    // });
-    // if (error) throw error;
-    // Then insert the users row and the vendor_profiles / organizers row
-    // (ideally in a database trigger so the role can't be tampered with).
-    throw backendNotConnected('registerAccount');
-  }
-
-  await demoDelay(500);
-  const db = getDemoDb();
-  const email = data.email.trim().toLowerCase();
-  if (db.users.some(u => u.email.toLowerCase() === email)) {
-    throw new Error('An account with this email already exists. Try logging in instead.');
-  }
-
-  // Note: data.password is deliberately NOT saved anywhere.
-  const user = {
-    id: nextDemoId(db.users),
-    fullName: data.fullName.trim(),
-    email,
-    phone: data.phone.trim(),
-    role: data.role
-  };
-  db.users.push(user);
-
-  if (user.role === Role.VENDOR) {
-    db.vendorProfiles.push({
-      id: nextDemoId(db.vendorProfiles),
-      userId: user.id,
-      businessName: data.businessName.trim(),
-      description: '', category: '', phone: user.phone, website: '',
-      city: '', province: '', address: '', profileImageUrl: ''
-    });
-  } else {
-    db.organizers.push({
-      id: nextDemoId(db.organizers),
-      userId: user.id,
-      organizationName: data.businessName.trim(),
-      description: '', phone: user.phone, website: '', address: ''
-    });
-  }
-
-  saveDemoDb(db);
-  return saveSession(user, false);
+  return await signUp(data);
 }
 
 // ---------- Forgot password ----------
