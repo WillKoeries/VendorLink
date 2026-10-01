@@ -9,4 +9,8 @@
 /dataSources/
 /dataSources.local.xml
 #Spring Boot Secrets
-src/main/resources/application-local.properties
+**/src/main/resources/application-local.properties
+*.env
+.env*
+!*.env.example
+application-local.properties

@@ -1,177 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VendorLink | Markets and festivals that need your stall</title>
-    <meta name="description" content="VendorLink connects South African vendors with markets, festivals and pop-ups, and helps organisers fill their stalls.">
+    <meta name="description"
+        content="VendorLink connects South African vendors with markets, festivals and pop-ups, and helps organisers fill their stalls.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home.css">
 </head>
+
 <body data-page="home">
 
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="siteHeader"></header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
 
-<main class="page-main" id="main">
+    <main class="page-main" id="main">
 
-    <!-- Hero -->
-    <section class="hero-section">
-        <div class="container hero-grid">
-            <div class="hero-copy">
-                <span class="eyebrow"><i class="fa-solid fa-store" aria-hidden="true"></i> South Africa's market platform</span>
-                <h1 class="hero-title">Find markets, festivals &amp; pop&#8209;ups that <span>need your stall</span></h1>
-                <p class="hero-subtitle">
-                    VendorLink connects stallholders and small businesses with event organisers in Cape Town,
-                    Johannesburg, Durban and beyond, with live stall availability on every event.
-                </p>
-                <div class="hero-actions">
-                    <a href="register.html?role=VENDOR" class="btn btn-primary btn-lg">
-                        <i class="fa-solid fa-store" aria-hidden="true"></i> Join as a vendor
+        <!-- Hero -->
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow"><i class="fa-solid fa-store" aria-hidden="true"></i> South Africa's market
+                        platform</span>
+                    <h1 class="hero-title">Find markets, festivals &amp; pop&#8209;ups that <span>need your stall</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        VendorLink connects stallholders and small businesses with event organisers in Cape Town,
+                        Johannesburg, Durban and beyond, with live stall availability on every event.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="register.html?role=VENDOR" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-store" aria-hidden="true"></i> Join as a vendor
+                        </a>
+                        <a href="browse-events.html" class="btn btn-secondary btn-lg">Explore open markets</a>
+                    </div>
+                    <ul class="hero-points">
+                        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Live stall availability</li>
+                        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> One profile for every
+                            application</li>
+                    </ul>
+                </div>
+
+                <div class="hero-visual">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
+                        alt="Shoppers browsing food stalls at an outdoor market" class="hero-image"
+                        data-fallback="event">
+                    <div class="hero-float hero-float-top" aria-hidden="true">
+                        <span class="hero-float-icon tone-success"><i class="fa-solid fa-circle-check"></i></span>
+                        <span><strong>Stall approved</strong><small>Organisers review every application</small></span>
+                    </div>
+                    <div class="hero-float hero-float-bottom" aria-hidden="true">
+                        <span class="hero-float-icon tone-primary"><i class="fa-solid fa-bolt"></i></span>
+                        <span><strong>Live stall counts</strong><small>Full events close automatically</small></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform numbers (calculated from the data) -->
+        <section class="stats-strip" aria-label="VendorLink in numbers">
+            <div class="container stats-grid">
+                <div class="stat-item"><strong id="statVendors">–</strong><span>Registered vendors</span></div>
+                <div class="stat-item"><strong id="statEvents">–</strong><span>Markets &amp; festivals listed</span>
+                </div>
+                <div class="stat-item"><strong id="statApplications">–</strong><span>Stall applications</span></div>
+                <div class="stat-item"><strong id="statApproval">–</strong><span>Applications approved</span></div>
+            </div>
+        </section>
+
+        <!-- Featured events -->
+        <section class="section section-white" aria-labelledby="featuredTitle">
+            <div class="container">
+                <div class="section-head">
+                    <h2 id="featuredTitle">Markets open for applications</h2>
+                    <p>Upcoming festivals, food fairs and artisan markets accepting vendor applications right now.</p>
+                </div>
+
+                <div class="pill-row featured-pills" id="categoryPills" role="group" aria-label="Filter by category">
+                </div>
+
+                <div class="featured-grid" id="featuredGrid" aria-live="polite"></div>
+
+                <div class="text-center mt-24">
+                    <a href="browse-events.html" class="btn btn-secondary btn-lg" id="browseAllLink">
+                        Browse all events <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </a>
-                    <a href="browse-events.html" class="btn btn-secondary btn-lg">Explore open markets</a>
-                </div>
-                <ul class="hero-points">
-                    <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Live stall availability</li>
-                    <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> One profile for every application</li>
-                </ul>
-            </div>
-
-            <div class="hero-visual">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
-                     alt="Shoppers browsing food stalls at an outdoor market" class="hero-image" data-fallback="event">
-                <div class="hero-float hero-float-top" aria-hidden="true">
-                    <span class="hero-float-icon tone-success"><i class="fa-solid fa-circle-check"></i></span>
-                    <span><strong>Stall approved</strong><small>Organisers review every application</small></span>
-                </div>
-                <div class="hero-float hero-float-bottom" aria-hidden="true">
-                    <span class="hero-float-icon tone-primary"><i class="fa-solid fa-bolt"></i></span>
-                    <span><strong>Live stall counts</strong><small>Full events close automatically</small></span>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Platform numbers (calculated from the data) -->
-    <section class="stats-strip" aria-label="VendorLink in numbers">
-        <div class="container stats-grid">
-            <div class="stat-item"><strong id="statVendors">–</strong><span>Registered vendors</span></div>
-            <div class="stat-item"><strong id="statEvents">–</strong><span>Markets &amp; festivals listed</span></div>
-            <div class="stat-item"><strong id="statApplications">–</strong><span>Stall applications</span></div>
-            <div class="stat-item"><strong id="statApproval">–</strong><span>Applications approved</span></div>
-        </div>
-    </section>
-
-    <!-- Featured events -->
-    <section class="section section-white" aria-labelledby="featuredTitle">
-        <div class="container">
-            <div class="section-head">
-                <h2 id="featuredTitle">Markets open for applications</h2>
-                <p>Upcoming festivals, food fairs and artisan markets accepting vendor applications right now.</p>
-            </div>
-
-            <div class="pill-row featured-pills" id="categoryPills" role="group" aria-label="Filter by category"></div>
-
-            <div class="featured-grid" id="featuredGrid" aria-live="polite"></div>
-
-            <div class="text-center mt-24">
-                <a href="browse-events.html" class="btn btn-secondary btn-lg" id="browseAllLink">
-                    Browse all events <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- How it works -->
-    <section class="section" aria-labelledby="journeyTitle">
-        <div class="container">
-            <div class="section-head">
-                <h2 id="journeyTitle">How VendorLink works</h2>
-                <p>One marketplace for both sides, instead of WhatsApp groups and scattered social posts.</p>
-            </div>
-
-            <div class="journey-switch" role="tablist" aria-label="Choose your role">
-                <button type="button" class="journey-tab is-active" role="tab" id="tabVendors" aria-selected="true" aria-controls="panelVendors">
-                    <i class="fa-solid fa-store" aria-hidden="true"></i> For vendors
-                </button>
-                <button type="button" class="journey-tab" role="tab" id="tabOrganizers" aria-selected="false" aria-controls="panelOrganizers" tabindex="-1">
-                    <i class="fa-regular fa-calendar-check" aria-hidden="true"></i> For organisers
-                </button>
-            </div>
-
-            <div class="journey-grid" id="panelVendors" role="tabpanel" aria-labelledby="tabVendors">
-                <div class="journey-card">
-                    <span class="step-num">01</span>
-                    <div class="step-icon"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div>
-                    <h3>Discover &amp; filter</h3>
-                    <p>Search events by category, province and stall fee, and see exactly how many stalls are left.</p>
+        <!-- How it works -->
+        <section class="section" aria-labelledby="journeyTitle">
+            <div class="container">
+                <div class="section-head">
+                    <h2 id="journeyTitle">How VendorLink works</h2>
+                    <p>One marketplace for both sides, instead of WhatsApp groups and scattered social posts.</p>
                 </div>
-                <div class="journey-card">
-                    <span class="step-num">02</span>
-                    <div class="step-icon"><i class="fa-solid fa-file-signature" aria-hidden="true"></i></div>
-                    <h3>Apply in minutes</h3>
-                    <p>Your business profile fills in the application for you. Just describe what you'll sell.</p>
+
+                <div class="journey-switch" role="tablist" aria-label="Choose your role">
+                    <button type="button" class="journey-tab is-active" role="tab" id="tabVendors" aria-selected="true"
+                        aria-controls="panelVendors">
+                        <i class="fa-solid fa-store" aria-hidden="true"></i> For vendors
+                    </button>
+                    <button type="button" class="journey-tab" role="tab" id="tabOrganizers" aria-selected="false"
+                        aria-controls="panelOrganizers" tabindex="-1">
+                        <i class="fa-regular fa-calendar-check" aria-hidden="true"></i> For organisers
+                    </button>
                 </div>
-                <div class="journey-card">
-                    <span class="step-num">03</span>
-                    <div class="step-icon"><i class="fa-solid fa-bell" aria-hidden="true"></i></div>
-                    <h3>Get approved &amp; trade</h3>
-                    <p>Track every application on your dashboard and get notified the moment an organiser decides.</p>
+
+                <div class="journey-grid" id="panelVendors" role="tabpanel" aria-labelledby="tabVendors">
+                    <div class="journey-card">
+                        <span class="step-num">01</span>
+                        <div class="step-icon"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div>
+                        <h3>Discover &amp; filter</h3>
+                        <p>Search events by category, province and stall fee, and see exactly how many stalls are left.
+                        </p>
+                    </div>
+                    <div class="journey-card">
+                        <span class="step-num">02</span>
+                        <div class="step-icon"><i class="fa-solid fa-file-signature" aria-hidden="true"></i></div>
+                        <h3>Apply in minutes</h3>
+                        <p>Your business profile fills in the application for you. Just describe what you'll sell.</p>
+                    </div>
+                    <div class="journey-card">
+                        <span class="step-num">03</span>
+                        <div class="step-icon"><i class="fa-solid fa-bell" aria-hidden="true"></i></div>
+                        <h3>Get approved &amp; trade</h3>
+                        <p>Track every application on your dashboard and get notified the moment an organiser decides.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="journey-grid" id="panelOrganizers" role="tabpanel" aria-labelledby="tabOrganizers" hidden>
+                    <div class="journey-card">
+                        <span class="step-num">01</span>
+                        <div class="step-icon"><i class="fa-solid fa-calendar-plus" aria-hidden="true"></i></div>
+                        <h3>Publish your event</h3>
+                        <p>Set dates, venue, stall fee, number of stalls and trading requirements in one form.</p>
+                    </div>
+                    <div class="journey-card">
+                        <span class="step-num">02</span>
+                        <div class="step-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
+                        <h3>No overbooking</h3>
+                        <p>Every approval takes a stall. When the last stall goes, the event shows as fully booked.</p>
+                    </div>
+                    <div class="journey-card">
+                        <span class="step-num">03</span>
+                        <div class="step-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+                        <h3>Review &amp; track</h3>
+                        <p>Approve vendors in a click, see stall fee totals and export your vendor list to CSV.</p>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="journey-grid" id="panelOrganizers" role="tabpanel" aria-labelledby="tabOrganizers" hidden>
-                <div class="journey-card">
-                    <span class="step-num">01</span>
-                    <div class="step-icon"><i class="fa-solid fa-calendar-plus" aria-hidden="true"></i></div>
-                    <h3>Publish your event</h3>
-                    <p>Set dates, venue, stall fee, number of stalls and trading requirements in one form.</p>
-                </div>
-                <div class="journey-card">
-                    <span class="step-num">02</span>
-                    <div class="step-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
-                    <h3>No overbooking</h3>
-                    <p>Every approval takes a stall. When the last stall goes, the event shows as fully booked.</p>
-                </div>
-                <div class="journey-card">
-                    <span class="step-num">03</span>
-                    <div class="step-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
-                    <h3>Review &amp; track</h3>
-                    <p>Approve vendors in a click, see stall fee totals and export your vendor list to CSV.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        <!-- Call to action -->
+        <section class="container home-cta">
+            <h2 id="ctaTitle">Ready to grow your market footprint?</h2>
+            <p id="ctaText">Create a free account to apply for stalls, or list your own market and start receiving
+                vendor applications.</p>
+            <a href="register.html" class="btn btn-light btn-lg" id="ctaButton">
+                Create your free account <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </section>
 
-    <!-- Call to action -->
-    <section class="container home-cta">
-        <h2 id="ctaTitle">Ready to grow your market footprint?</h2>
-        <p id="ctaText">Create a free account to apply for stalls, or list your own market and start receiving vendor applications.</p>
-        <a href="register.html" class="btn btn-light btn-lg" id="ctaButton">
-            Create your free account <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </a>
-    </section>
+    </main>
 
-</main>
+    <footer class="site-footer" id="siteFooter"></footer>
 
-<footer class="site-footer" id="siteFooter"></footer>
-
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<script src="js/pages/home.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/home.js"></script>
 </body>
+
 </html>
