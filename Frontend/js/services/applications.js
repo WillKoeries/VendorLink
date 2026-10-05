@@ -176,6 +176,7 @@ async function applyForEvent(data) {
     }
 
     const created = await res.json();
+    _vlMyAppsCache = null;
     return normalizeApplication(created.data || created);
   } catch (err) {
     console.error('Failed to apply for event:', err);
@@ -183,17 +184,27 @@ async function applyForEvent(data) {
   }
 }
 
-async function getMyApplications() {
+let _vlMyAppsCache = null;
+let _vlMyAppsCacheTime = 0;
+
+async function getMyApplications(forceRefresh = false) {
   const session = getSession();
   if (!session) return [];
+
+  if (!forceRefresh && _vlMyAppsCache && (Date.now() - _vlMyAppsCacheTime < 20000)) {
+    return _vlMyAppsCache;
+  }
 
   if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
     await demoDelay();
     const db = getDemoDb();
-    return db.applications
+    const apps = db.applications
       .filter(a => a.vendorId === session.userId)
       .sort(newestFirst)
       .map(a => attachApplicationRelations(a, db));
+    _vlMyAppsCache = apps;
+    _vlMyAppsCacheTime = Date.now();
+    return apps;
   }
 
   try {
@@ -206,10 +217,13 @@ async function getMyApplications() {
     }
     const data = await res.json();
     const list = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
-    return list.map(normalizeApplication).sort(newestFirst);
+    const apps = list.map(normalizeApplication).sort(newestFirst);
+    _vlMyAppsCache = apps;
+    _vlMyAppsCacheTime = Date.now();
+    return apps;
   } catch (err) {
     console.error('Failed to fetch my applications:', err);
-    return [];
+    return _vlMyAppsCache || [];
   }
 }
 
@@ -293,6 +307,7 @@ async function cancelApplication(id) {
     throw new Error(errMsg);
   }
 
+  _vlMyAppsCache = null;
   return { id: Number(id), status: ApplicationStatus.CANCELLED };
 }
 

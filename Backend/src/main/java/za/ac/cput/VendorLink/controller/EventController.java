@@ -64,7 +64,6 @@ public class EventController {
             Path targetPath = uploadDir.resolve(filename);
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Mirror to Frontend and Backend static directories if present
             Path feUploads = Paths.get("Frontend/images/uploads").toAbsolutePath().normalize();
             if (Files.exists(feUploads.getParent())) {
                 Files.createDirectories(feUploads);

@@ -9,12 +9,16 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/pricing.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 </head>
 
 <body data-page="pricing">
@@ -103,8 +107,8 @@
                                 <li class="is-muted"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Multi-city
                                     team accounts</li>
                             </ul>
-                            <a href="register.html?role=VENDOR" class="btn btn-primary btn-block">Get started with
-                                Pro</a>
+                            <button type="button" class="btn btn-primary btn-block" data-paid-plan="PROFESSIONAL_VENDOR">
+                                Get started with Pro</button>
                         </div>
                     </article>
 
@@ -126,8 +130,8 @@
                                 </li>
                                 <li><i class="fa-solid fa-check" aria-hidden="true"></i> Priority support</li>
                             </ul>
-                            <a href="register.html?role=VENDOR" class="btn btn-secondary btn-block">Register your
-                                brand</a>
+                            <button type="button" class="btn btn-secondary btn-block" data-paid-plan="COMMERCIAL_BRAND">
+                                Register your brand</button>
                         </div>
                     </article>
                 </div>
@@ -181,8 +185,8 @@
                                 <li><i class="fa-solid fa-check" aria-hidden="true"></i> Stall fee revenue reports</li>
                                 <li><i class="fa-solid fa-check" aria-hidden="true"></i> Export vendor lists to CSV</li>
                             </ul>
-                            <a href="register.html?role=ORGANIZER" class="btn btn-primary btn-block">Upgrade to
-                                Operator</a>
+                            <button type="button" class="btn btn-primary btn-block" data-paid-plan="MARKET_OPERATOR">
+                                Upgrade to Operator</button>
                         </div>
                     </article>
 
@@ -213,8 +217,8 @@
 
                 <p class="pricing-note">
                     <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-                    Plans are shown for information. Online subscriptions and payments are not part of this version of
-                    VendorLink yet.
+                    Paid plans are processed securely through PayFast. Your plan is activated only after PayFast
+                    confirms the payment.
                 </p>
             </div>
         </section>

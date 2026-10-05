@@ -158,7 +158,14 @@ async function getEvents(params = {}) {
     }
 
     const normalized = rawEvents.map(normalizeEvent).filter(Boolean);
-    return sortEventsByDate(normalized);
+    const sorted = sortEventsByDate(normalized);
+    // Pre-populate sessionStorage cache for instant event details navigation
+    try {
+      sorted.forEach(ev => {
+        if (ev && ev.id) sessionStorage.setItem(`vl_event_${ev.id}`, JSON.stringify(ev));
+      });
+    } catch (e) { }
+    return sorted;
   } catch (err) {
     console.error('Failed to fetch events from /api/events:', err);
     throw err;
@@ -193,14 +200,26 @@ async function getEventById(id) {
     const data = await res.json();
     const event = (data && data.data) ? data.data : data;
     if (!event || !event.id) return null;
-    return normalizeEvent(event);
+    const normalized = normalizeEvent(event);
+    if (normalized) {
+      try {
+        sessionStorage.setItem(`vl_event_${normalized.id}`, JSON.stringify(normalized));
+      } catch (e) { }
+    }
+    return normalized;
   } catch (err) {
     console.error(`Failed to fetch event id ${eventId}:`, err);
     throw err;
   }
 }
 
+let _vlCategoriesCache = null;
+
 async function getCategories() {
+  if (_vlCategoriesCache && _vlCategoriesCache.length > 0) {
+    return _vlCategoriesCache;
+  }
+
   if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
     await demoDelay(100);
     return getDemoDb().categories;
@@ -212,7 +231,10 @@ async function getCategories() {
     if (res.ok) {
       const data = await res.json();
       const list = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
-      if (list.length > 0) return list;
+      if (list.length > 0) {
+        _vlCategoriesCache = list;
+        return list;
+      }
     }
   } catch (err) {
     console.error('Failed to fetch categories from /api/categories:', err);

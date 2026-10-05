@@ -20,38 +20,59 @@ async function loadEvent() {
   const contentEl = document.getElementById('eventContent');
   const id = getQueryParam('id');
 
-  contentEl.hidden = true;
-
   if (!id || !/^\d+$/.test(id)) {
     showNotFound();
     return;
   }
 
-  renderLoading(stateEl, 'Loading event…');
-
+  // 1. Instant Render from session cache (0ms perceived latency)
+  let cached = null;
   try {
-    currentEvent = await getEventById(id);
-    if (!currentEvent) {
-      showNotFound();
+    const raw = sessionStorage.getItem(`vl_event_${id}`);
+    if (raw) cached = JSON.parse(raw);
+  } catch (e) { }
+
+  if (cached) {
+    currentEvent = cached;
+    stateEl.innerHTML = '';
+    renderEvent(currentEvent);
+    renderApplyAction();
+    contentEl.hidden = false;
+  } else {
+    contentEl.hidden = true;
+    renderLoading(stateEl, 'Loading event…');
+  }
+
+  // 2. Fetch fresh event & application status in parallel
+  try {
+    const [freshEvent, freshApp] = await Promise.all([
+      getEventById(id),
+      getMyApplicationForEvent(id).catch(e => {
+        console.warn('Could not check application status:', e);
+        return null;
+      })
+    ]);
+
+    if (!freshEvent) {
+      if (!cached) showNotFound();
       return;
     }
-    try {
-      myApplication = await getMyApplicationForEvent(currentEvent.id);
-    } catch (appErr) {
-      console.warn('Could not load application status for event:', appErr);
-      myApplication = null;
-    }
+
+    currentEvent = freshEvent;
+    myApplication = freshApp;
     stateEl.innerHTML = '';
     renderEvent(currentEvent);
     renderApplyAction();
     contentEl.hidden = false;
   } catch (err) {
-    console.error('Failed to load event:', err);
-    renderError(stateEl, {
-      title: 'Unable to load this event',
-      message: 'Please check your connection and try again.',
-      onRetry: loadEvent
-    });
+    console.error('Failed to load fresh event details:', err);
+    if (!cached) {
+      renderError(stateEl, {
+        title: 'Unable to load this event',
+        message: 'Please check your connection and try again.',
+        onRetry: loadEvent
+      });
+    }
   }
 }
 
