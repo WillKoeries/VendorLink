@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,180 +8,224 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/event-details.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 </head>
+
 <body data-page="browse">
 
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="siteHeader"></header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
 
-<main class="page-main event-page" id="main">
-    <div class="container">
+    <main class="page-main event-page" id="main">
+        <div class="container">
 
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="browse-events.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All events</a>
-            <span aria-hidden="true">/</span>
-            <span id="breadcrumbTitle" aria-current="page">Event</span>
-        </nav>
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="browse-events.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All events</a>
+                <span aria-hidden="true">/</span>
+                <span id="breadcrumbTitle" aria-current="page">Event</span>
+            </nav>
 
-        <!-- Loading, "not found" and error messages appear here -->
-        <div id="eventState"></div>
+            <!-- Loading, "not found" and error messages appear here -->
+            <div id="eventState"></div>
 
-        <!-- Event content: every value is filled in by js/pages/event-details.js -->
-        <article id="eventContent" hidden>
+            <!-- Event content: every value is filled in by js/pages/event-details.js -->
+            <article id="eventContent" hidden>
 
-            <div class="alert alert-info draft-note" id="draftNote" hidden>
-                <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                <span>Preview: this event is a <strong>draft</strong>, so only you can see it. Publish it from your dashboard when it's ready.</span>
-            </div>
-
-            <!-- Banner -->
-            <div class="event-hero">
-                <img id="eventBanner" src="images/placeholder-event.svg" alt="" data-fallback="event">
-                <div class="event-hero-overlay">
-                    <div class="event-hero-tags">
-                        <span class="badge badge-overlay" id="eventCategory"></span>
-                        <span id="eventStatusBadge"></span>
-                    </div>
-                    <h1 id="eventTitle"></h1>
-                    <p class="event-hero-meta">
-                        <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span id="heroDates"></span></span>
-                        <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span id="heroPlace"></span></span>
-                    </p>
+                <div class="alert alert-info draft-note" id="draftNote" hidden>
+                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                    <span>Preview: this event is a <strong>draft</strong>, so only you can see it. Publish it from your
+                        dashboard when it's ready.</span>
                 </div>
-            </div>
 
-            <div class="details-grid">
+                <!-- Banner -->
+                <div class="event-hero">
+                    <img id="eventBanner" src="images/placeholder-event.svg" alt="" data-fallback="event">
+                    <div class="event-hero-overlay">
+                        <div class="event-hero-tags">
+                            <span class="badge badge-overlay" id="eventCategory"></span>
+                            <span id="eventStatusBadge"></span>
+                        </div>
+                        <h1 id="eventTitle"></h1>
+                        <p class="event-hero-meta">
+                            <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span
+                                    id="heroDates"></span></span>
+                            <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span
+                                    id="heroPlace"></span></span>
+                        </p>
+                    </div>
+                </div>
 
-                <!-- Left: information -->
-                <div class="details-main">
-                    <section class="card card-padded details-section" aria-labelledby="aboutHeading">
-                        <h2 id="aboutHeading">About this event</h2>
-                        <div class="event-description" id="eventDescription"></div>
-                    </section>
+                <div class="details-grid">
 
-                    <section class="card card-padded details-section" aria-labelledby="infoHeading">
-                        <h2 id="infoHeading">Event information</h2>
-                        <dl class="info-grid">
-                            <div><dt><i class="fa-regular fa-calendar" aria-hidden="true"></i> Dates</dt><dd id="infoDates"></dd></div>
-                            <div><dt><i class="fa-regular fa-clock" aria-hidden="true"></i> Trading hours</dt><dd id="infoTime"></dd></div>
-                            <div><dt><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Venue</dt><dd id="infoLocation"></dd></div>
-                            <div><dt><i class="fa-solid fa-city" aria-hidden="true"></i> City &amp; province</dt><dd id="infoCity"></dd></div>
-                            <div><dt><i class="fa-solid fa-users" aria-hidden="true"></i> Expected visitors</dt><dd id="infoVisitors"></dd></div>
-                            <div><dt><i class="fa-solid fa-store" aria-hidden="true"></i> Stalls</dt><dd id="infoStalls"></dd></div>
-                            <div><dt><i class="fa-solid fa-tag" aria-hidden="true"></i> Category</dt><dd id="infoCategory"></dd></div>
-                            <div><dt><i class="fa-solid fa-wallet" aria-hidden="true"></i> Stall fee</dt><dd id="infoFee"></dd></div>
-                        </dl>
-                    </section>
+                    <!-- Left: information -->
+                    <div class="details-main">
+                        <section class="card card-padded details-section" aria-labelledby="aboutHeading">
+                            <h2 id="aboutHeading">About this event</h2>
+                            <div class="event-description" id="eventDescription"></div>
+                        </section>
 
-                    <section class="card card-padded details-section" aria-labelledby="requirementsHeading">
-                        <h2 id="requirementsHeading">Trading requirements</h2>
-                        <ul class="requirements-list" id="eventRequirements"></ul>
-                    </section>
+                        <section class="card card-padded details-section" aria-labelledby="infoHeading">
+                            <h2 id="infoHeading">Event information</h2>
+                            <dl class="info-grid">
+                                <div>
+                                    <dt><i class="fa-regular fa-calendar" aria-hidden="true"></i> Dates</dt>
+                                    <dd id="infoDates"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-regular fa-clock" aria-hidden="true"></i> Trading hours</dt>
+                                    <dd id="infoTime"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Venue</dt>
+                                    <dd id="infoLocation"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-solid fa-city" aria-hidden="true"></i> City &amp; province</dt>
+                                    <dd id="infoCity"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-solid fa-users" aria-hidden="true"></i> Expected visitors</dt>
+                                    <dd id="infoVisitors"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-solid fa-store" aria-hidden="true"></i> Stalls</dt>
+                                    <dd id="infoStalls"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-solid fa-tag" aria-hidden="true"></i> Category</dt>
+                                    <dd id="infoCategory"></dd>
+                                </div>
+                                <div>
+                                    <dt><i class="fa-solid fa-wallet" aria-hidden="true"></i> Stall fee</dt>
+                                    <dd id="infoFee"></dd>
+                                </div>
+                            </dl>
+                        </section>
 
-                    <section class="card card-padded details-section" aria-labelledby="organizerHeading">
-                        <h2 id="organizerHeading">Organiser</h2>
-                        <div class="organizer-card">
-                            <span class="avatar avatar-lg" id="organizerAvatar" aria-hidden="true"></span>
-                            <div>
-                                <h3 id="organizerName"></h3>
-                                <p class="text-muted" id="organizerDescription"></p>
-                                <ul class="organizer-contact" id="organizerContact"></ul>
+                        <section class="card card-padded details-section" aria-labelledby="requirementsHeading">
+                            <h2 id="requirementsHeading">Trading requirements</h2>
+                            <ul class="requirements-list" id="eventRequirements"></ul>
+                        </section>
+
+                        <section class="card card-padded details-section" aria-labelledby="organizerHeading">
+                            <h2 id="organizerHeading">Organiser</h2>
+                            <div class="organizer-card">
+                                <span class="avatar avatar-lg" id="organizerAvatar" aria-hidden="true"></span>
+                                <div>
+                                    <h3 id="organizerName"></h3>
+                                    <p class="text-muted" id="organizerDescription"></p>
+                                    <ul class="organizer-contact" id="organizerContact"></ul>
+                                </div>
                             </div>
+                        </section>
+                    </div>
+
+                    <!-- Right: stall availability & apply -->
+                    <aside class="apply-card" aria-labelledby="applyHeading">
+                        <h2 class="visually-hidden" id="applyHeading">Apply for a stall</h2>
+                        <div class="apply-fee">
+                            <span>Stall fee</span>
+                            <strong id="applyFee"></strong>
+                            <small>per stall for the event</small>
                         </div>
-                    </section>
+
+                        <div class="apply-availability">
+                            <div class="apply-availability-row">
+                                <span id="applyAvailabilityText"></span>
+                                <span id="applyStatusBadge"></span>
+                            </div>
+                            <div id="applyOccupancy"></div>
+                            <p class="text-small text-muted" id="applyBookedText"></p>
+                        </div>
+
+                        <div class="apply-action" id="applyAction"></div>
+
+                        <p class="apply-note">
+                            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                            The organiser reviews every application. You'll get a notification when they decide.
+                        </p>
+                    </aside>
                 </div>
-
-                <!-- Right: stall availability & apply -->
-                <aside class="apply-card" aria-labelledby="applyHeading">
-                    <h2 class="visually-hidden" id="applyHeading">Apply for a stall</h2>
-                    <div class="apply-fee">
-                        <span>Stall fee</span>
-                        <strong id="applyFee"></strong>
-                        <small>per stall for the event</small>
-                    </div>
-
-                    <div class="apply-availability">
-                        <div class="apply-availability-row">
-                            <span id="applyAvailabilityText"></span>
-                            <span id="applyStatusBadge"></span>
-                        </div>
-                        <div id="applyOccupancy"></div>
-                        <p class="text-small text-muted" id="applyBookedText"></p>
-                    </div>
-
-                    <div class="apply-action" id="applyAction"></div>
-
-                    <p class="apply-note">
-                        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-                        The organiser reviews every application. You'll get a notification when they decide.
-                    </p>
-                </aside>
-            </div>
-        </article>
-    </div>
-</main>
-
-<!-- Apply modal (hidden until "Apply for a stall" is clicked) -->
-<div class="modal-overlay" id="applyModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="applyModalTitle">
-        <div class="modal-header">
-            <div>
-                <h2 id="applyModalTitle">Apply for a stall</h2>
-                <p>Applying for <strong id="modalEventTitle"></strong> · <span id="modalEventFee"></span></p>
-            </div>
-            <button type="button" class="modal-close" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </article>
         </div>
+    </main>
 
-        <form id="applyForm" novalidate>
-            <div class="modal-body form-stack">
-                <div class="alert alert-error" id="applyFormAlert" hidden></div>
-
-                <div class="form-group">
-                    <label class="form-label" for="applyBusinessName">Business / brand name <span class="required">*</span></label>
-                    <input class="form-control" type="text" id="applyBusinessName" name="businessName" maxlength="100" required>
+    <!-- Apply modal (hidden until "Apply for a stall" is clicked) -->
+    <div class="modal-overlay" id="applyModal">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="applyModalTitle">
+            <div class="modal-header">
+                <div>
+                    <h2 id="applyModalTitle">Apply for a stall</h2>
+                    <p>Applying for <strong id="modalEventTitle"></strong> · <span id="modalEventFee"></span></p>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="applyProducts">What will you sell? <span class="required">*</span></label>
-                    <textarea class="form-control" id="applyProducts" name="productsDescription" rows="4" maxlength="1000" required
-                              placeholder="e.g. Home-baked koeksisters, rusks and filter coffee"></textarea>
-                    <p class="form-hint">Organisers use this to choose a balanced mix of stalls.</p>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="applySpecial">Special requirements <span class="text-muted">(optional)</span></label>
-                    <textarea class="form-control" id="applySpecial" name="specialRequirements" rows="3" maxlength="500"
-                              placeholder="e.g. Access to a plug point, corner spot, extra space for a trailer"></textarea>
-                </div>
+                <button type="button" class="modal-close" data-close-modal aria-label="Close"><i
+                        class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
-                <button type="submit" class="btn btn-primary" id="applySubmitBtn">
-                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Submit application
-                </button>
-            </div>
-        </form>
+            <form id="applyForm" novalidate>
+                <div class="modal-body form-stack">
+                    <div class="alert alert-error" id="applyFormAlert" hidden></div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="applyBusinessName">Business / brand name <span
+                                class="required">*</span></label>
+                        <input class="form-control" type="text" id="applyBusinessName" name="businessName"
+                            maxlength="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="applyProducts">What will you sell? <span
+                                class="required">*</span></label>
+                        <textarea class="form-control" id="applyProducts" name="productsDescription" rows="4"
+                            maxlength="1000" required
+                            placeholder="e.g. Home-baked koeksisters, rusks and filter coffee"></textarea>
+                        <p class="form-hint">Organisers use this to choose a balanced mix of stalls.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="applySpecial">Special requirements <span
+                                class="text-muted">(optional)</span></label>
+                        <textarea class="form-control" id="applySpecial" name="specialRequirements" rows="3"
+                            maxlength="500"
+                            placeholder="e.g. Access to a plug point, corner spot, extra space for a trailer"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="applySubmitBtn">
+                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Submit application
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<footer class="site-footer" id="siteFooter"></footer>
+    <footer class="site-footer" id="siteFooter"></footer>
 
-<script src="js/config.js"></script>
-<script src="js/models.js"></script>
-<script src="js/mock-data.js"></script>
-<script src="js/services/auth.js"></script>
-<script src="js/services/events.js"></script>
-<script src="js/services/applications.js"></script>
-<script src="js/services/profiles.js"></script>
-<script src="js/services/notifications.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/layout.js"></script>
-<script src="js/pages/event-details.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/event-details.js"></script>
 </body>
+
+</html>
+
 </html>

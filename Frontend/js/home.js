@@ -16,15 +16,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const featured = events.slice(0, 3);
 
             eventGrid.innerHTML = featured.map(evt => {
-                const img = evt.bannerImageUrl || 'images/market1.png';
+                const img = (typeof eventImageUrl === 'function' ? eventImageUrl(evt) : evt.bannerImageUrl) || 'images/marketplace-fallback.jpg';
                 const date = formatDate(evt.date);
-                const stalls = evt.availableStalls !== null && evt.availableStalls !== undefined 
-                    ? `${evt.availableStalls} Stalls Available` 
+                const stalls = evt.availableStalls !== null && evt.availableStalls !== undefined
+                    ? `${evt.availableStalls} Stalls Available`
                     : 'Stalls Available';
 
                 return `
                     <div class="event-card">
-                        <img src="${img}" alt="${evt.title}" onerror="this.src='images/market1.png'">
+                        <img src="${img}" alt="${evt.title || 'Event'}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/marketplace-fallback.jpg'">
                         <div class="event-content">
                             <h3>${evt.title}</h3>
                             <p>📍 ${evt.city || evt.location}</p>
@@ -42,4 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // If backend is not yet started, keep the existing static content gracefully
         console.warn('Backend events not available, keeping fallback featured events.', err.message);
     }
+});
+        }
+    } catch (err) {
+    // If backend is not yet started, keep the existing static content gracefully
+    console.warn('Backend events not available, keeping fallback featured events.', err.message);
+}
 });

@@ -15,27 +15,27 @@ import java.util.Optional;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-       List<Application> findByVendorIdOrderByAppliedAtDesc(Long vendorId);
+    List<Application> findByVendorIdOrderByAppliedAtDesc(Long vendorId);
 
-       List<Application> findByEventIdOrderByAppliedAtDesc(Long eventId);
+    List<Application> findByEventIdOrderByAppliedAtDesc(Long eventId);
 
-       List<Application> findByEvent_Organizer_IdOrderByAppliedAtDesc(Long organizerId);
+    List<Application> findByEvent_Organizer_IdOrderByAppliedAtDesc(Long organizerId);
 
-       List<Application> findTop5ByEvent_Organizer_IdOrderByAppliedAtDesc(Long organizerId);
+    List<Application> findTop5ByEvent_Organizer_IdOrderByAppliedAtDesc(Long organizerId);
 
-       List<Application> findByEvent_Organizer_IdAndStatus(Long organizerId, ApplicationStatus status);
+    List<Application> findByEvent_Organizer_IdAndStatus(Long organizerId, ApplicationStatus status);
 
-       boolean existsByEventIdAndVendorId(Long eventId, Long vendorId);
+    boolean existsByEventIdAndVendorId(Long eventId, Long vendorId);
 
-       Optional<Application> findByEventIdAndVendorId(Long eventId, Long vendorId);
+    Optional<Application> findByEventIdAndVendorId(Long eventId, Long vendorId);
 
-       long countByEvent_Organizer_Id(Long organizerId);
+    long countByEvent_Organizer_Id(Long organizerId);
 
-       long countByEvent_Organizer_IdAndStatus(Long organizerId, ApplicationStatus status);
+    long countByEvent_Organizer_IdAndStatus(Long organizerId, ApplicationStatus status);
 
-       @Lock(LockModeType.PESSIMISTIC_WRITE)
-       @Query("SELECT a FROM Application a WHERE a.id = :id")
-       Optional<Application> findByIdForUpdate(@Param("id") Long id);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Application a WHERE a.id = :id")
+    Optional<Application> findByIdForUpdate(@Param("id") Long id);
 
-       long countByEventIdAndStatus(Long eventId, ApplicationStatus status);
+    long countByEventIdAndStatus(Long eventId, ApplicationStatus status);
 }

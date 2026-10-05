@@ -3,18 +3,30 @@
  * Manages user credentials, navbar session state, and form interactions.
  */
 
+// Fallback toast function in case ui.js hasn't loaded yet
+function showToast(message, type = 'info') {
+    if (window.ui && typeof window.ui.toast === 'function') {
+        window.ui.toast(message, type);
+    } else if (typeof window.showToastNotification === 'function') {
+        window.showToastNotification(message, type);
+    } else {
+        console.log(`[Toast ${type}]: ${message}`);
+    }
+}
+
 const authService = {
     getToken() {
-        return localStorage.getItem('vendorlink_token');
+        return localStorage.getItem('vendorlink_token') || localStorage.getItem('token');
     },
 
     setToken(token) {
         localStorage.setItem('vendorlink_token', token);
+        localStorage.setItem('token', token);
     },
 
     getUser() {
         try {
-            const userStr = localStorage.getItem('vendorlink_user');
+            const userStr = localStorage.getItem('vendorlink_user') || localStorage.getItem('user');
             return userStr ? JSON.parse(userStr) : null;
         } catch {
             return null;
@@ -22,7 +34,9 @@ const authService = {
     },
 
     setUser(user) {
-        localStorage.setItem('vendorlink_user', JSON.stringify(user));
+        const serialized = JSON.stringify(user);
+        localStorage.setItem('vendorlink_user', serialized);
+        localStorage.setItem('user', serialized);
     },
 
     isLoggedIn() {
@@ -31,14 +45,15 @@ const authService = {
 
     logout() {
         localStorage.removeItem('vendorlink_token');
+        localStorage.removeItem('token');
         localStorage.removeItem('vendorlink_user');
+        localStorage.removeItem('user');
         showToast('Logged out successfully', 'info');
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 800);
     },
 
-    // Sync navbar across all pages depending on authentication state
     updateNavbar() {
         const buttonContainers = document.querySelectorAll('.navbar .buttons');
         const user = this.getUser();
@@ -66,14 +81,52 @@ const authService = {
     }
 };
 
-window.authService = authService;
+// ============================================================================
+// Global functions required by layout.js and page scripts
+// ============================================================================
+function getSession() {
+    const token = authService.getToken();
+    const user = authService.getUser();
+    if (!token || !user) return null;
 
-// Initialize on DOM ready
+    return {
+        token,
+        user,
+        role: user.role,
+        fullName: user.fullName || user.email,
+        email: user.email,
+        isOrganizer: user.role === 'ORGANIZER',
+        isVendor: user.role === 'VENDOR',
+        isAuthenticated: true,
+        ...user
+    };
+}
+
+function getCurrentUser() {
+    return authService.getUser();
+}
+
+function isAuthenticated() {
+    return authService.isLoggedIn();
+}
+
+function logout() {
+    return authService.logout();
+}
+
+window.authService = authService;
+window.getSession = getSession;
+window.getCurrentUser = getCurrentUser;
+window.isAuthenticated = isAuthenticated;
+window.logout = logout;
+window.showToast = showToast;
+
+// ============================================================================
+// DOM Initialization & Form Handlers
+// ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Synchronize Navbar across pages
     authService.updateNavbar();
 
-    // 2. Attach Login Form Listener (if on login.html)
     const loginForm = document.getElementById('login-form') || document.querySelector('.auth form');
     if (loginForm && window.location.pathname.includes('login.html')) {
         loginForm.addEventListener('submit', async (e) => {
@@ -96,15 +149,15 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
 
             try {
-                const response = await authAPI.login({ email, password });
-                
-                // Save authentication data
+                const response = typeof window.signIn === 'function'
+                    ? await window.signIn(email, password)
+                    : await authAPI.login({ email, password });
+
                 authService.setToken(response.token);
                 authService.setUser(response.user);
 
                 showToast(`Welcome back, ${response.user.fullName || 'User'}!`, 'success');
 
-                // Check for redirect param
                 const urlParams = new URLSearchParams(window.location.search);
                 const redirect = urlParams.get('redirect');
 
@@ -168,14 +221,23 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner"></span> Creating Account...';
 
             try {
-                const response = await authAPI.register({
-                    fullName,
-                    email,
-                    password,
-                    role,
-                    phone: phone || undefined,
-                    businessName: businessName || undefined
-                });
+                const response = typeof window.registerAccount === 'function'
+                    ? await window.registerAccount({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        phone: phone || undefined,
+                        businessName: businessName || undefined
+                    })
+                    : await authAPI.register({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        phone: phone || undefined,
+                        businessName: businessName || undefined
+                    });
 
                 authService.setToken(response.token);
                 authService.setUser(response.user);

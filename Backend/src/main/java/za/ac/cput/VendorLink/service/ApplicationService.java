@@ -77,6 +77,21 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
+    public ApplicationResponse getVendorApplicationForEvent(Long vendorId, Long eventId) {
+        return applicationRepository.findByEventIdAndVendorId(eventId, vendorId)
+                .map(Helper::toApplicationResponse)
+                .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ApplicationResponse> getOrganizerApplications(Long organizerId) {
+        return applicationRepository.findByEvent_Organizer_IdOrderByAppliedAtDesc(organizerId)
+                .stream()
+                .map(Helper::toApplicationResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<ApplicationResponse> getEventApplications(Long eventId, Long organizerId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));

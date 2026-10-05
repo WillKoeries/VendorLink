@@ -2,220 +2,271 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Pricing | VendorLink</title>
+    <meta name="description" content="Simple plans for vendors and event organisers on VendorLink.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/pricing.css">
-    <link rel="stylesheet" href="css/notifications.css">
-
 </head>
 
-<body>
+<body data-page="pricing">
 
-<header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
 
-    <div class="container navbar">
+    <main class="page-main" id="main">
 
-        <div class="logo">
-            <h2>Vendor<span>Link</span></h2>
-        </div>
+        <section class="pricing-section">
+            <div class="container">
 
-        <nav>
+                <div class="section-head pricing-head">
+                    <span class="eyebrow">Transparent &amp; predictable</span>
+                    <h1>Pricing built to grow with your market footprint</h1>
+                    <p>Whether you're setting up your first weekend stall or running a festival series across South
+                        Africa, there's a plan for you.</p>
+                </div>
 
-            <ul>
+                <!-- Role tabs & billing switch -->
+                <div class="pricing-controls">
+                    <div class="segmented" role="tablist" aria-label="Choose plan type">
+                        <button type="button" class="segmented-btn is-active" role="tab" id="vendorTab"
+                            aria-selected="true" aria-controls="vendorPlans">
+                            <i class="fa-solid fa-store" aria-hidden="true"></i> Vendor plans
+                        </button>
+                        <button type="button" class="segmented-btn" role="tab" id="organizerTab" aria-selected="false"
+                            aria-controls="organizerPlans" tabindex="-1">
+                            <i class="fa-regular fa-calendar-check" aria-hidden="true"></i> Organiser plans
+                        </button>
+                    </div>
 
-                <li><a href="index.html">Home</a></li>
-                <li><a href="browse-events.html">Browse Events</a></li>
-                <li><a href="pricing.html" class="active">Pricing</a></li>
-                <li><a href="about.html">About Us</a></li>
+                    <label class="billing-switch" for="annualToggle">
+                        <span>Monthly</span>
+                        <input type="checkbox" id="annualToggle" role="switch">
+                        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+                        <span>Annual</span>
+                        <span class="badge badge-success">Save 20%</span>
+                    </label>
+                </div>
 
-            </ul>
+                <!-- Vendor plans -->
+                <div class="pricing-deck" id="vendorPlans" role="tabpanel" aria-labelledby="vendorTab">
+                    <article class="plan-card">
+                        <div class="plan-backdrop backdrop-produce"></div>
+                        <div class="plan-content">
+                            <h2 class="plan-name">Casual Trader</h2>
+                            <p class="plan-tagline">For weekend pop-up vendors and small artisans getting started.</p>
+                            <p class="plan-price"><span class="price-currency">R</span><span
+                                    class="price-number">0</span><span class="price-term">/ forever</span></p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Apply to up to 3 events per
+                                    month</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Vendor profile</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Real-time application status
+                                    tracking</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> In-app notifications</li>
+                                <li class="is-muted"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Featured
+                                    profile badge</li>
+                                <li class="is-muted"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Booking
+                                    analytics</li>
+                            </ul>
+                            <a href="register.html?role=VENDOR" class="btn btn-secondary btn-block">Start for free</a>
+                        </div>
+                    </article>
 
-        </nav>
+                    <article class="plan-card is-featured">
+                        <span class="plan-ribbon">Most popular</span>
+                        <div class="plan-backdrop backdrop-market"></div>
+                        <div class="plan-content">
+                            <h2 class="plan-name">Professional Vendor</h2>
+                            <p class="plan-tagline">For established traders, food trucks and regular market businesses.
+                            </p>
+                            <p class="plan-price"><span class="price-currency">R</span><span class="price-number"
+                                    data-monthly="99">99</span><span class="price-term">/ month</span></p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>
+                                    <span><strong>Unlimited</strong> event applications</span></li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> <span><strong>Featured</strong>
+                                        badge for organisers</span></li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Priority placement in the
+                                    vendor directory</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Re-use your profile on every
+                                    application</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Stall booking analytics</li>
+                                <li class="is-muted"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Multi-city
+                                    team accounts</li>
+                            </ul>
+                            <button type="button" class="btn btn-primary btn-block" data-paid-plan="PROFESSIONAL_VENDOR">
+                                Get started with Pro</button>
+                        </div>
+                    </article>
 
-        <div class="buttons">
+                    <article class="plan-card">
+                        <div class="plan-backdrop backdrop-night"></div>
+                        <div class="plan-content">
+                            <h2 class="plan-name">Commercial Brand</h2>
+                            <p class="plan-tagline">For multi-market franchises, food truck fleets and high-volume
+                                retail.</p>
+                            <p class="plan-price"><span class="price-currency">R</span><span class="price-number"
+                                    data-monthly="199">199</span><span class="price-term">/ month</span></p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Everything in Professional</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Up to 5 mobile stalls or
+                                    branches</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Top placement in organiser
+                                    searches</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Dedicated account assistance
+                                </li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Priority support</li>
+                            </ul>
+                            <button type="button" class="btn btn-secondary btn-block" data-paid-plan="COMMERCIAL_BRAND">
+                                Register your brand</button>
+                        </div>
+                    </article>
+                </div>
 
-            <a href="login.html" class="login-btn">Login</a>
+                <!-- Organiser plans -->
+                <div class="pricing-deck" id="organizerPlans" role="tabpanel" aria-labelledby="organizerTab" hidden>
+                    <article class="plan-card">
+                        <div class="plan-backdrop backdrop-crafts"></div>
+                        <div class="plan-content">
+                            <h2 class="plan-name">Community Host</h2>
+                            <p class="plan-tagline">For community fairs, school festivals and charity weekend bazaars.
+                            </p>
+                            <p class="plan-price"><span class="price-currency">R</span><span
+                                    class="price-number">0</span><span class="price-term">/ forever</span></p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> 1 active event at a time</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Up to 20 vendor applications
+                                </li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> One-click approve and reject
+                                </li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Listing on the Browse Events
+                                    page</li>
+                                <li class="is-muted"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Revenue
+                                    reports</li>
+                                <li class="is-muted"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Vendor list
+                                    export</li>
+                            </ul>
+                            <a href="register.html?role=ORGANIZER" class="btn btn-secondary btn-block">List a free
+                                event</a>
+                        </div>
+                    </article>
 
-            <a href="register.html" class="register-btn">
-                Join as Vendor
-            </a>
+                    <article class="plan-card is-featured">
+                        <span class="plan-ribbon">Organiser choice</span>
+                        <div class="plan-backdrop backdrop-food-trucks"></div>
+                        <div class="plan-content">
+                            <h2 class="plan-name">Market Operator</h2>
+                            <p class="plan-tagline">For established weekly food markets, cultural expos and festivals.
+                            </p>
+                            <p class="plan-price"><span class="price-currency">R</span><span class="price-number"
+                                    data-monthly="499">499</span><span class="price-term">/ month</span></p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>
+                                    <span><strong>Unlimited</strong> active events</span></li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> <span><strong>Automatic stall
+                                            capacity</strong>: no overbooking</span></li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Unlimited vendor applications
+                                </li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Full dashboard with live stall
+                                    numbers</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Stall fee revenue reports</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Export vendor lists to CSV</li>
+                            </ul>
+                            <button type="button" class="btn btn-primary btn-block" data-paid-plan="MARKET_OPERATOR">
+                                Upgrade to Operator</button>
+                        </div>
+                    </article>
 
-        </div>
+                    <article class="plan-card">
+                        <div class="plan-backdrop backdrop-fashion"></div>
+                        <div class="plan-content">
+                            <h2 class="plan-name">City &amp; Enterprise</h2>
+                            <p class="plan-tagline">For metro councils, tourism boards and multi-venue organisations.
+                            </p>
+                            <p class="plan-price"><span class="price-number price-custom">Custom</span><span
+                                    class="price-term">/ tailored agreement</span></p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Events across several provinces
+                                </li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Account management &amp; staff
+                                    training</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> API access for your own systems
+                                </li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Informal trade &amp; inclusion
+                                    reporting</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Dedicated support line</li>
+                            </ul>
+                            <a href="mailto:support@vendorlink.co.za?subject=VendorLink%20Enterprise%20enquiry"
+                                class="btn btn-secondary btn-block">Contact our team</a>
+                        </div>
+                    </article>
+                </div>
 
-    </div>
-
-</header>
-
-<section class="pricing-header">
-
-    <div class="container">
-
-        <h1>Simple Pricing for Every Vendor</h1>
-
-        <p>
-            Choose the plan that best suits your business. Upgrade anytime as your business grows.
-        </p>
-
-    </div>
-
-</section>
-
-<section class="pricing-cards">
-
-    <div class="container cards">
-
-        <!-- FREE -->
-
-        <div class="price-card">
-
-            <h3>Free</h3>
-
-            <h2>R0</h2>
-
-            <p class="small">Perfect for beginners</p>
-
-            <ul>
-
-                <li>✔ Apply to Events</li>
-                <li>✔ Vendor Profile</li>
-                <li>✔ Basic Support</li>
-                <li>✔ Event Notifications</li>
-
-            </ul>
-
-            <a href="register.html" class="outline-btn">
-
-                Get Started
-
-            </a>
-
-        </div>
-
-        <!-- PROFESSIONAL -->
-
-        <div class="price-card featured">
-
-            <div class="badge">
-
-                Most Popular
-
+                <p class="pricing-note">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    Paid plans are processed securely through PayFast. Your plan is activated only after PayFast
+                    confirms the payment.
+                </p>
             </div>
+        </section>
 
-            <h3>Professional</h3>
+        <!-- FAQ -->
+        <section class="section section-white" id="faq" aria-labelledby="faqTitle">
+            <div class="container">
+                <div class="section-head">
+                    <h2 id="faqTitle">Frequently asked questions</h2>
+                    <p>Everything you need to know about plans, stall fees and applications.</p>
+                </div>
 
-            <h2>R99<span>/month</span></h2>
+                <div class="faq-grid">
+                    <details class="faq-item" open>
+                        <summary>Are stall fees separate from the plan?</summary>
+                        <p>Yes. Your VendorLink plan gives you access to the application tools. Stall fees are set by
+                            each organiser and are paid to them for the events you're approved for.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Can I change or cancel my plan?</summary>
+                        <p>You can move between plans when your trading season changes, for example upgrading before the
+                            festive season and dropping back to the free plan afterwards.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>How does stall capacity work?</summary>
+                        <p>Every approved application uses one stall. When the last stall is allocated, the event shows
+                            as “Fully booked” and new applications are blocked.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>How do I know if my application was approved?</summary>
+                        <p>You'll get a notification on VendorLink as soon as the organiser decides, and you can follow
+                            every application's status on your vendor dashboard.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
 
-            <p class="small">Grow your business</p>
+    </main>
 
-            <ul>
+    <footer class="site-footer" id="siteFooter"></footer>
 
-                <li>✔ Unlimited Applications</li>
-                <li>✔ Featured Vendor Profile</li>
-                <li>✔ Priority Listings</li>
-                <li>✔ Premium Support</li>
-                <li>✔ Analytics Dashboard</li>
-
-            </ul>
-
-            <a href="#" class="primary-btn">
-
-                Start Free Trial
-
-            </a>
-
-        </div>
-
-        <!-- ENTERPRISE -->
-
-        <div class="price-card">
-
-            <h3>Enterprise</h3>
-
-            <h2>Custom</h2>
-
-            <p class="small">For organisations</p>
-
-            <ul>
-
-                <li>✔ Unlimited Events</li>
-                <li>✔ Dedicated Manager</li>
-                <li>✔ API Access</li>
-                <li>✔ Advanced Analytics</li>
-                <li>✔ 24/7 Support</li>
-
-            </ul>
-
-            <a href="#" class="outline-btn">
-
-                Contact Sales
-
-            </a>
-
-        </div>
-
-    </div>
-
-</section>
-
-<footer>
-
-    <div class="container footer">
-
-        <div>
-
-            <h2>VendorLink</h2>
-
-            <p>
-                Connecting vendors with opportunities across South Africa.
-            </p>
-
-        </div>
-
-        <div>
-
-            <h3>Quick Links</h3>
-
-            <ul>
-
-                <li><a href="index.html">Home</a></li>
-                <li><a href="browse-events.html">Browse Events</a></li>
-                <li><a href="about.html">About Us</a></li>
-
-            </ul>
-
-        </div>
-
-        <div>
-
-            <h3>Support</h3>
-
-            <ul>
-
-                <li><a href="#">FAQ</a></li>
-                <li><a href="#">Contact</a></li>
-
-            </ul>
-
-        </div>
-
-    </div>
-
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="js/api.js"></script>
-<script src="js/auth.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/pricing.js"></script>
 </body>
 
 </html>

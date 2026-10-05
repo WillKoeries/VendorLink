@@ -3,18 +3,30 @@
  * Manages user credentials, navbar session state, and form interactions.
  */
 
+// Fallback toast function in case ui.js hasn't loaded yet
+function showToast(message, type = 'info') {
+    if (window.ui && typeof window.ui.toast === 'function') {
+        window.ui.toast(message, type);
+    } else if (typeof window.showToastNotification === 'function') {
+        window.showToastNotification(message, type);
+    } else {
+        console.log(`[Toast ${type}]: ${message}`);
+    }
+}
+
 const authService = {
     getToken() {
-        return localStorage.getItem('vendorlink_token');
+        return localStorage.getItem('vendorlink_token') || localStorage.getItem('token');
     },
 
     setToken(token) {
         localStorage.setItem('vendorlink_token', token);
+        localStorage.setItem('token', token);
     },
 
     getUser() {
         try {
-            const userStr = localStorage.getItem('vendorlink_user');
+            const userStr = localStorage.getItem('vendorlink_user') || localStorage.getItem('user');
             return userStr ? JSON.parse(userStr) : null;
         } catch {
             return null;
@@ -22,7 +34,9 @@ const authService = {
     },
 
     setUser(user) {
-        localStorage.setItem('vendorlink_user', JSON.stringify(user));
+        const serialized = JSON.stringify(user);
+        localStorage.setItem('vendorlink_user', serialized);
+        localStorage.setItem('user', serialized);
     },
 
     isLoggedIn() {
@@ -31,14 +45,15 @@ const authService = {
 
     logout() {
         localStorage.removeItem('vendorlink_token');
+        localStorage.removeItem('token');
         localStorage.removeItem('vendorlink_user');
+        localStorage.removeItem('user');
         showToast('Logged out successfully', 'info');
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 800);
     },
 
-    // Sync navbar across all pages depending on authentication state
     updateNavbar() {
         const buttonContainers = document.querySelectorAll('.navbar .buttons');
         const user = this.getUser();
@@ -46,23 +61,16 @@ const authService = {
         buttonContainers.forEach(container => {
             if (this.isLoggedIn() && user) {
                 const isOrganizer = user.role === 'ORGANIZER';
-                if (isOrganizer) {
-                    container.innerHTML = `
-                        <div class="nav-user-badge">
-                            <span class="nav-user-name">👤 ${escapeHtml(user.fullName || user.email)}</span>
-                            <a href="organizer-dashboard.html" class="nav-dashboard-link">Dashboard</a>
-                            <button class="nav-logout-btn" onclick="authService.logout()">Logout</button>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div class="nav-user-badge">
-                            <span class="nav-user-name">🏪 ${escapeHtml(user.fullName || user.email)}</span>
-                            <button class="nav-dashboard-link" style="border:none; cursor:pointer;" onclick="authService.showMyApplications()">My Applications</button>
-                            <button class="nav-logout-btn" onclick="authService.logout()">Logout</button>
-                        </div>
-                    `;
-                }
+                const dashboardHref = isOrganizer ? 'organizer-dashboard.html' : 'browse-events.html';
+                const dashboardLabel = isOrganizer ? 'Dashboard' : 'Browse Events';
+
+                container.innerHTML = `
+                    <div class="nav-user-badge">
+                        <span class="nav-user-name">👤 ${user.fullName || user.email}</span>
+                        <a href="${dashboardHref}" class="nav-dashboard-link">${dashboardLabel}</a>
+                        <button class="nav-logout-btn" onclick="authService.logout()">Logout</button>
+                    </div>
+                `;
             } else {
                 container.innerHTML = `
                     <a href="login.html" class="login-btn">Login</a>
@@ -70,103 +78,55 @@ const authService = {
                 `;
             }
         });
-    },
-
-    // View submitted applications and track status
-    async showMyApplications() {
-        let modal = document.getElementById('my-applications-modal');
-        if (!modal) {
-            const modalHtml = `
-                <div id="my-applications-modal" class="modal-overlay">
-                    <div class="modal-card" style="max-width: 650px; max-height: 85vh; overflow-y: auto;">
-                        <div class="modal-header">
-                            <h2>My Event Applications</h2>
-                            <button type="button" class="modal-close-btn" id="my-apps-close">&times;</button>
-                        </div>
-                        <div id="my-apps-list" style="display:flex; flex-direction:column; gap:14px;">
-                            <div style="text-align:center; padding: 25px; color: #64748b;">
-                                <div class="spinner" style="border-top-color:#2563eb; width:28px; height:28px; margin-bottom:10px;"></div>
-                                <p>Loading your applications...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            modal = document.getElementById('my-applications-modal');
-            document.getElementById('my-apps-close').onclick = () => modal.classList.remove('active');
-            modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
-        }
-
-        modal.classList.add('active');
-        const listEl = document.getElementById('my-apps-list');
-
-        try {
-            const apps = await applicationsAPI.getMyApplications();
-            if (!apps || apps.length === 0) {
-                listEl.innerHTML = `
-                    <div style="text-align: center; padding: 35px 20px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                        <p style="font-size: 1.1rem; color: #475569; font-weight: 500; margin-bottom: 6px;">No applications submitted yet</p>
-                        <p style="color: #94a3b8; font-size: 0.9rem;">Browse open events to apply for stalls.</p>
-                        <a href="browse-events.html" class="primary-btn" style="display:inline-block; margin-top:14px; text-decoration:none; padding:8px 18px; font-size:0.9rem;">Browse Events</a>
-                    </div>
-                `;
-                return;
-            }
-
-            listEl.innerHTML = apps.map(app => {
-                const statusColor = app.status === 'APPROVED' ? '#10b981' : (app.status === 'REJECTED' ? '#ef4444' : '#f59e0b');
-                const cancelBtn = app.status === 'PENDING' 
-                    ? `<button onclick="authService.cancelApplication(${app.id})" style="background:transparent; border:1px solid #cbd5e1; color:#ef4444; border-radius:6px; padding:4px 10px; font-size:0.8rem; cursor:pointer;">Cancel Application</button>` 
-                    : '';
-
-                return `
-                    <div style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; background: #ffffff;">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
-                            <div>
-                                <h3 style="margin: 0 0 4px 0; font-size: 1.05rem; color: #1e293b;">
-                                    <a href="event-details.html?id=${app.eventId}" style="color: inherit; text-decoration: none;">${escapeHtml(app.eventTitle || 'Event')}</a>
-                                </h3>
-                                <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Business: <strong>${escapeHtml(app.businessName)}</strong></p>
-                            </div>
-                            <span style="font-weight: 600; padding: 4px 10px; border-radius: 6px; background: ${statusColor}18; color: ${statusColor}; font-size: 0.8rem;">
-                                ${app.status}
-                            </span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #475569; margin: 6px 0;">${escapeHtml(app.productsDescription)}</p>
-                        ${app.reviewNotes ? `<p style="font-size: 0.85rem; color: #0284c7; background: #f0f9ff; padding: 8px 12px; border-radius: 6px; margin: 8px 0;"><strong>Organizer Note:</strong> ${escapeHtml(app.reviewNotes)}</p>` : ''}
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 0.8rem; color: #94a3b8;">
-                            <span>Applied: ${formatDate(app.appliedAt)}</span>
-                            ${cancelBtn}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        } catch (err) {
-            listEl.innerHTML = `<p style="color: #ef4444; text-align:center;">Failed to load applications: ${escapeHtml(err.message)}</p>`;
-        }
-    },
-
-    async cancelApplication(appId) {
-        if (!confirm('Are you sure you want to cancel this application?')) return;
-        try {
-            await applicationsAPI.cancelApplication(appId);
-            showToast('Application cancelled successfully', 'info');
-            this.showMyApplications();
-        } catch (err) {
-            showToast(err.message, 'error');
-        }
     }
 };
 
-window.authService = authService;
+// ============================================================================
+// Global functions required by layout.js and page scripts
+// ============================================================================
+function getSession() {
+    const token = authService.getToken();
+    const user = authService.getUser();
+    if (!token || !user) return null;
 
-// Initialize on DOM ready
+    return {
+        token,
+        user,
+        role: user.role,
+        fullName: user.fullName || user.email,
+        email: user.email,
+        isOrganizer: user.role === 'ORGANIZER',
+        isVendor: user.role === 'VENDOR',
+        isAuthenticated: true,
+        ...user
+    };
+}
+
+function getCurrentUser() {
+    return authService.getUser();
+}
+
+function isAuthenticated() {
+    return authService.isLoggedIn();
+}
+
+function logout() {
+    return authService.logout();
+}
+
+window.authService = authService;
+window.getSession = getSession;
+window.getCurrentUser = getCurrentUser;
+window.isAuthenticated = isAuthenticated;
+window.logout = logout;
+window.showToast = showToast;
+
+// ============================================================================
+// DOM Initialization & Form Handlers
+// ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Synchronize Navbar across pages
     authService.updateNavbar();
 
-    // 2. Attach Login Form Listener (if on login.html)
     const loginForm = document.getElementById('login-form') || document.querySelector('.auth form');
     if (loginForm && window.location.pathname.includes('login.html')) {
         loginForm.addEventListener('submit', async (e) => {
@@ -189,17 +149,17 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
 
             try {
-                const response = await authAPI.login({ email, password });
-                
-                // Save authentication data
+                const response = typeof window.signIn === 'function'
+                    ? await window.signIn(email, password)
+                    : await authAPI.login({ email, password });
+
                 authService.setToken(response.token);
                 authService.setUser(response.user);
 
                 showToast(`Welcome back, ${response.user.fullName || 'User'}!`, 'success');
 
-                // Check for redirect param safely
                 const urlParams = new URLSearchParams(window.location.search);
-                const redirect = safeRedirect(urlParams.get('redirect'), null);
+                const redirect = urlParams.get('redirect');
 
                 setTimeout(() => {
                     if (redirect) {
@@ -251,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (password.length < 8) {
-                showToast('Password must be at least 8 characters', 'warning');
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'warning');
                 return;
             }
 
@@ -261,14 +221,23 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner"></span> Creating Account...';
 
             try {
-                const response = await authAPI.register({
-                    fullName,
-                    email,
-                    password,
-                    role,
-                    phone: phone || undefined,
-                    businessName: businessName || undefined
-                });
+                const response = typeof window.registerAccount === 'function'
+                    ? await window.registerAccount({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        phone: phone || undefined,
+                        businessName: businessName || undefined
+                    })
+                    : await authAPI.register({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        phone: phone || undefined,
+                        businessName: businessName || undefined
+                    });
 
                 authService.setToken(response.token);
                 authService.setUser(response.user);

@@ -1,0 +1,26 @@
+# IDEs and Editors
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+
+# Build outputs
+target/
+dist/
+node_modules/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
+*.env
+.env*
+!*.env.example
+application-local.properties
+**/src/main/resources/application-local.properties
+
+# Uploads
+uploads/
+**/uploads/

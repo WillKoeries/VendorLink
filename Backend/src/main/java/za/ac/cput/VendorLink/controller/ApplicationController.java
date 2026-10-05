@@ -41,6 +41,25 @@ public class ApplicationController {
         return ResponseEntity.ok(applications);
     }
 
+    @GetMapping("/event/{eventId}/my")
+    @PreAuthorize("hasAnyRole('VENDOR', 'ADMIN')")
+    public ResponseEntity<ApplicationResponse> getMyApplicationForEvent(
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        ApplicationResponse application = applicationService.getVendorApplicationForEvent(userDetails.getUserId(), eventId);
+        return ResponseEntity.ok(application);
+    }
+
+    @GetMapping("/organizer")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMIN')")
+    public ResponseEntity<List<ApplicationResponse>> getOrganizerApplications(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        List<ApplicationResponse> applications = applicationService.getOrganizerApplications(userDetails.getUserId());
+        return ResponseEntity.ok(applications);
+    }
+
     @GetMapping("/event/{eventId}")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMIN')")
     public ResponseEntity<List<ApplicationResponse>> getEventApplications(
