@@ -29,10 +29,10 @@ public class ApplicationService {
     @Transactional
     public ApplicationResponse applyForEvent(Long vendorId, ApplicationRequest request) {
         User vendor = userRepository.findById(vendorId)
-                .orElseThrow(() -> new IllegalArgumentException("Vendor user not found with ID: " + vendorId));
+                .orElseThrow(() -> new ResourceNotFoundException("User", vendorId));
 
         Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + request.getEventId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Event", request.getEventId()));
 
         if (event.getStatus() != EventStatus.OPEN) {
             throw new IllegalStateException("Applications are not currently open for this event");
@@ -94,10 +94,10 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public List<ApplicationResponse> getEventApplications(Long eventId, Long organizerId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
+                .orElseThrow(() -> new ResourceNotFoundException("Event", eventId));
 
         if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new IllegalArgumentException("You are not authorized to view applications for this event");
+            throw new UnauthorizedAccessException("view applications for", "event");
         }
 
         return applicationRepository.findByEventIdOrderByAppliedAtDesc(eventId)
@@ -109,13 +109,13 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public ApplicationResponse getApplicationById(Long applicationId, Long userId) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Application not found with ID: " + applicationId));
+                .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
 
         boolean isApplicant = application.getVendor().getId().equals(userId);
         boolean isOrganizer = application.getEvent().getOrganizer().getId().equals(userId);
 
         if (!isApplicant && !isOrganizer) {
-            throw new IllegalArgumentException("You are not authorized to view this application");
+            throw new UnauthorizedAccessException("view", "application");
         }
 
         return Helper.toApplicationResponse(application);
@@ -172,10 +172,10 @@ public class ApplicationService {
     @Transactional
     public void cancelApplication(Long applicationId, Long vendorId) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Application not found with ID: " + applicationId));
+                .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
 
         if (!application.getVendor().getId().equals(vendorId)) {
-            throw new IllegalArgumentException("You are not authorized to cancel this application");
+            throw new UnauthorizedAccessException("cancel", "application");
         }
 
         if (application.getStatus() != ApplicationStatus.PENDING) {

@@ -5,8 +5,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.util.StreamUtils;
@@ -58,16 +60,18 @@ public class PayFastController {
         try {
             String raw = StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);
             service.handleNotification(parseOrdered(raw), request.getRemoteAddr());
+            return ResponseEntity.ok().build();
         } catch (IOException e) {
             log.warn("Could not read PayFast ITN body: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
         } catch (RuntimeException e) {
-            log.error("PayFast ITN handling failed", e);
+            log.error("PayFast ITN handling failed unexpectedly", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok().build();
     }
 
     private static void requirePrincipal(CustomUserDetails principal) {
-        if (principal == null) throw new IllegalStateException("You must be signed in to manage subscriptions");
+        if (principal == null) throw new AccessDeniedException("You must be signed in to manage subscriptions");
     }
 
     private static LinkedHashMap<String, String> parseOrdered(String raw) {

@@ -109,8 +109,8 @@ function submitToPayFast(redirect) {
 
 function showPaymentResult() {
   const payment = new URLSearchParams(window.location.search).get('payment');
-  if (payment === 'complete') showToast('PayFast payment received. Your plan will be active after confirmation.', 'success', 7000);
-  if (payment === 'cancelled') showToast('The PayFast payment was cancelled.', 'warning');
+  if (payment === 'complete') showToast('Payment received. Your plan will be active after confirmation.', 'success', 7000);
+  if (payment === 'cancelled') showToast('The payment was cancelled.', 'warning');
 }
 
 function updatePrices(isAnnual) {

@@ -79,6 +79,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/applications/my").hasAnyRole("VENDOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/applications/*").hasAnyRole("VENDOR", "ADMIN")
 
+                        .requestMatchers("/api/storage/**").authenticated()
+
                         // Authenticated requests
                         .anyRequest().authenticated()
                 )
