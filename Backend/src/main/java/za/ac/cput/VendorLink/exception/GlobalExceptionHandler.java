@@ -11,10 +11,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import za.ac.cput.VendorLink.dto.response.ErrorResponse;
 
 import java.time.LocalDateTime;
@@ -68,11 +71,15 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ErrorResponse> handleBadCredentials(
                         BadCredentialsException ex, HttpServletRequest request) {
 
+                String msg = (ex.getMessage() != null && !ex.getMessage().isBlank() && !"Bad credentials".equalsIgnoreCase(ex.getMessage().trim()))
+                                ? ex.getMessage()
+                                : "Invalid email or password";
+
                 ErrorResponse response = ErrorResponse.builder()
                                 .timestamp(LocalDateTime.now())
                                 .status(HttpStatus.UNAUTHORIZED.value())
                                 .error("Unauthorized")
-                                .message("Invalid email or password")
+                                .message(msg)
                                 .path(request.getRequestURI())
                                 .build();
 
@@ -169,11 +176,32 @@ public class GlobalExceptionHandler {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
 
+        @ExceptionHandler(MaxUploadSizeExceededException.class)
+        public ResponseEntity<ErrorResponse> handleMaxUploadSize(
+                        MaxUploadSizeExceededException ex, HttpServletRequest request) {
+                return build(HttpStatus.PAYLOAD_TOO_LARGE, "Payload Too Large",
+                                "Uploaded file exceeds maximum allowed file size", request);
+        }
+
+        @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+        public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+                        HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+                return build(HttpStatus.METHOD_NOT_ALLOWED, "Method Not Allowed",
+                                ex.getMessage(), request);
+        }
+
+        @ExceptionHandler(MissingServletRequestParameterException.class)
+        public ResponseEntity<ErrorResponse> handleMissingParams(
+                        MissingServletRequestParameterException ex, HttpServletRequest request) {
+                return build(HttpStatus.BAD_REQUEST, "Bad Request",
+                                ex.getMessage(), request);
+        }
+
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ErrorResponse> handleGeneralException(
                         Exception ex, HttpServletRequest request) {
 
-                log.error("Unhandled exception on {}: {}", request.getRequestURI(), ex.getMessage());
+                log.error("Unhandled exception on {}: ", request.getRequestURI(), ex);
 
                 ErrorResponse response = ErrorResponse.builder()
                                 .timestamp(LocalDateTime.now())

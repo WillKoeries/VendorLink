@@ -293,10 +293,15 @@ async function cancelApplication(id) {
     return attachApplicationRelations(application, db);
   }
 
-  const res = await fetch(`/api/applications/${id}`, {
-    method: 'DELETE',
-    headers: getAppAuthHeaders()
-  });
+  let res;
+  try {
+    res = await fetch(`/api/applications/${id}`, {
+      method: 'DELETE',
+      headers: getAppAuthHeaders()
+    });
+  } catch (networkErr) {
+    throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+  }
 
   if (!res.ok) {
     let errMsg = `Failed to withdraw application: HTTP ${res.status}`;
@@ -409,14 +414,19 @@ async function reviewApplication(id, newStatus, reviewNotes = '') {
     return attachApplicationRelations(application, db);
   }
 
-  const res = await fetch(`/api/applications/${id}/status`, {
-    method: 'PATCH',
-    headers: getAppAuthHeaders(),
-    body: JSON.stringify({
-      status: newStatus,
-      reviewNotes: reviewNotes.trim()
-    })
-  });
+  let res;
+  try {
+    res = await fetch(`/api/applications/${id}/status`, {
+      method: 'PATCH',
+      headers: getAppAuthHeaders(),
+      body: JSON.stringify({
+        status: newStatus,
+        reviewNotes: reviewNotes.trim()
+      })
+    });
+  } catch (networkErr) {
+    throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+  }
 
   if (!res.ok) {
     let errMsg = `Failed to update application status: HTTP ${res.status}`;

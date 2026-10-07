@@ -8,6 +8,8 @@ import za.ac.cput.VendorLink.dto.request.EventRequest;
 import za.ac.cput.VendorLink.dto.response.ApplicationResponse;
 import za.ac.cput.VendorLink.dto.response.DashboardStatsResponse;
 import za.ac.cput.VendorLink.dto.response.EventResponse;
+import za.ac.cput.VendorLink.exception.ResourceNotFoundException;
+import za.ac.cput.VendorLink.exception.UnauthorizedAccessException;
 import za.ac.cput.VendorLink.repository.ApplicationRepository;
 import za.ac.cput.VendorLink.repository.CategoryRepository;
 import za.ac.cput.VendorLink.repository.EventRepository;
@@ -70,37 +72,49 @@ public class EventService {
 
         @Transactional
         public EventResponse updateEvent(Long eventId, Long organizerId, EventRequest request) {
-                Event event = eventRepository.findById(eventId)
-                                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
+                Event event = eventRepository.findByIdForUpdate(eventId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event", eventId));
 
                 if (!event.getOrganizer().getId().equals(organizerId)) {
-                        throw new IllegalArgumentException("You are not authorized to update this event");
+                        throw new UnauthorizedAccessException("update", "event");
+                }
+
+                long approvedCount = applicationRepository.countByEventIdAndStatus(eventId, ApplicationStatus.APPROVED);
+
+                if (request.getTotalStalls() != null && request.getTotalStalls() < approvedCount) {
+                        throw new IllegalArgumentException(
+                                        "Total stalls cannot be lower than the " + approvedCount + " already approved applications");
                 }
 
                 if (request.getCategoryId() != null) {
                         Category category = categoryRepository.findById(request.getCategoryId())
-                                        .orElseThrow(() -> new IllegalArgumentException(
-                                                        "Category not found with ID: " + request.getCategoryId()));
+                                        .orElseThrow(() -> new ResourceNotFoundException("Category", request.getCategoryId()));
                         event.setCategory(category);
                 }
 
-                event.setTitle(request.getTitle().trim());
-                event.setDescription(request.getDescription());
-                event.setDate(request.getDate());
-                event.setEndDate(request.getEndDate());
-                event.setTime(request.getTime());
-                event.setLocation(request.getLocation().trim());
-                event.setCity(request.getCity().trim());
-                event.setProvince(request.getProvince());
-                event.setStallFee(request.getStallFee());
-                event.setTotalStalls(request.getTotalStalls());
-                if (request.getTotalStalls() != null) {
-                        event.setAvailableStalls(request.getTotalStalls());
-                }
-                event.setExpectedVisitors(request.getExpectedVisitors());
-                event.setRequirements(request.getRequirements());
-                event.setBannerImageUrl(request.getBannerImageUrl());
-                if (request.getStatus() != null) {
+                if (request.getTitle() != null) event.setTitle(request.getTitle().trim());
+                if (request.getDescription() != null) event.setDescription(request.getDescription());
+                if (request.getDate() != null) event.setDate(request.getDate());
+                if (request.getEndDate() != null) event.setEndDate(request.getEndDate());
+                if (request.getTime() != null) event.setTime(request.getTime());
+                if (request.getLocation() != null) event.setLocation(request.getLocation().trim());
+                if (request.getCity() != null) event.setCity(request.getCity().trim());
+                if (request.getProvince() != null) event.setProvince(request.getProvince());
+                if (request.getStallFee() != null) event.setStallFee(request.getStallFee());
+
+                int totalStalls = request.getTotalStalls() != null ? request.getTotalStalls() : event.getTotalStalls();
+                event.setTotalStalls(totalStalls);
+
+                int availableStalls = (int) (totalStalls - approvedCount);
+                event.setAvailableStalls(availableStalls);
+
+                if (request.getExpectedVisitors() != null) event.setExpectedVisitors(request.getExpectedVisitors());
+                if (request.getRequirements() != null) event.setRequirements(request.getRequirements());
+                if (request.getBannerImageUrl() != null) event.setBannerImageUrl(request.getBannerImageUrl());
+
+                if (availableStalls <= 0) {
+                        event.setStatus(EventStatus.CLOSED);
+                } else if (request.getStatus() != null) {
                         event.setStatus(request.getStatus());
                 }
 
@@ -111,10 +125,10 @@ public class EventService {
         @Transactional
         public void deleteEvent(Long eventId, Long organizerId) {
                 Event event = eventRepository.findById(eventId)
-                                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
+                                .orElseThrow(() -> new ResourceNotFoundException("Event", eventId));
 
                 if (!event.getOrganizer().getId().equals(organizerId)) {
-                        throw new IllegalArgumentException("You are not authorized to delete this event");
+                        throw new UnauthorizedAccessException("delete", "event");
                 }
 
                 event.setStatus(EventStatus.CANCELLED);
@@ -124,7 +138,7 @@ public class EventService {
         @Transactional(readOnly = true)
         public EventResponse getEventById(Long id) {
                 Event event = eventRepository.findById(id)
-                                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + id));
+                                .orElseThrow(() -> new ResourceNotFoundException("Event", id));
                 return Helper.toEventResponse(event);
         }
 
