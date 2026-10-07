@@ -104,16 +104,27 @@ export async function signIn(email, password) {
         throw new Error('Please enter both your email and password.');
     }
 
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password })
-    });
+    let response;
+    try {
+        response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.trim(), password })
+        });
+    } catch (networkErr) {
+        throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+    }
 
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-        throw new Error(data.message || data.error || 'Invalid email or password.');
+        let msg = data.message || data.error || 'Invalid email or password.';
+        if (data.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+            msg = Object.values(data.fieldErrors).join('. ');
+        }
+        const err = new Error(msg);
+        if (data.fieldErrors) err.fieldErrors = data.fieldErrors;
+        throw err;
     }
 
     // Save session credentials
@@ -131,24 +142,35 @@ export async function registerAccount(userData) {
         throw new Error('Please fill in all required registration fields.');
     }
 
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            email: email.trim(),
-            password,
-            fullName: fullName.trim(),
-            role: role || ROLES.VENDOR,
-            businessName: businessName ? businessName.trim() : undefined,
-            phone: phone ? phone.trim() : undefined,
-            phoneNumber: phone ? phone.trim() : undefined
-        })
-    });
+    let response;
+    try {
+        response = await fetch(`${API_BASE_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email.trim(),
+                password,
+                fullName: fullName.trim(),
+                role: role || ROLES.VENDOR,
+                businessName: businessName ? businessName.trim() : undefined,
+                phone: phone ? phone.trim() : undefined,
+                phoneNumber: phone ? phone.trim() : undefined
+            })
+        });
+    } catch (networkErr) {
+        throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+    }
 
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-        throw new Error(data.message || data.error || 'Registration failed. Please try again.');
+        let msg = data.message || data.error || 'Registration failed. Please try again.';
+        if (data.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+            msg = Object.values(data.fieldErrors).join('. ');
+        }
+        const err = new Error(msg);
+        if (data.fieldErrors) err.fieldErrors = data.fieldErrors;
+        throw err;
     }
 
     // Automatically initialize session on successful registration

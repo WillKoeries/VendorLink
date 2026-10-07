@@ -1,8 +1,5 @@
 /**
- * Pricing page
- * - Vendor / organiser plan tabs
- * - Monthly / annual switch: annual price = monthly price − 20%, rounded
- *   (prices come from each card's data-monthly attribute, not hard-coded here)
+ * Pricing page, plan tabs and PayFast subscription checkout.
  */
 
 const ANNUAL_DISCOUNT = 0.2;
@@ -10,6 +7,8 @@ const ANNUAL_DISCOUNT = 0.2;
 document.addEventListener('DOMContentLoaded', () => {
   setupPlanTabs();
   document.getElementById('annualToggle').addEventListener('change', (e) => updatePrices(e.target.checked));
+  setupPayFastButtons();
+  showPaymentResult();
 });
 
 function setupPlanTabs() {
@@ -38,8 +37,80 @@ function setupPlanTabs() {
     });
   });
 
-  // pricing.html#organizers opens the organiser plans
   if (window.location.hash === '#organizers') select(1);
+}
+
+function setupPayFastButtons() {
+  document.querySelectorAll('[data-paid-plan]').forEach(button => {
+    button.addEventListener('click', () => startSubscription(button));
+  });
+}
+
+async function startSubscription(button) {
+  const session = window.getSession ? window.getSession() : null;
+  if (!session) {
+    window.location.href = `login.html?redirect=${encodeURIComponent('pricing.html')}&reason=auth`;
+    return;
+  }
+
+  const billingCycle = document.getElementById('annualToggle').checked ? 'ANNUAL' : 'MONTHLY';
+  button.disabled = true;
+  const originalText = button.textContent;
+  button.textContent = 'Opening PayFast...';
+  try {
+    const token = localStorage.getItem('token') || localStorage.getItem('vendorlink_token');
+    const response = await fetch('/api/payfast/subscriptions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ plan: button.dataset.paidPlan, billingCycle })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || 'Could not start the subscription payment.');
+
+    if (data.simulatorEnabled) {
+      await completeSimulatedPayment(data.merchantPaymentId, token);
+      showToast('Your plan has been activated.', 'success');
+      return;
+    }
+    submitToPayFast(data);
+  } catch (error) {
+    showToast(error.message || 'Could not start the subscription payment.', 'error');
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+async function completeSimulatedPayment(merchantPaymentId, token) {
+  const response = await fetch(`/api/dev/payfast/complete/${encodeURIComponent(merchantPaymentId)}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.message || 'The local payment simulator could not complete the subscription.');
+  }
+}
+
+function submitToPayFast(redirect) {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = redirect.processUrl;
+  form.hidden = true;
+  Object.entries(redirect.fields).forEach(([name, value]) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  });
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function showPaymentResult() {
+  const payment = new URLSearchParams(window.location.search).get('payment');
+  if (payment === 'complete') showToast('Payment received. Your plan will be active after confirmation.', 'success', 7000);
+  if (payment === 'cancelled') showToast('The payment was cancelled.', 'warning');
 }
 
 function updatePrices(isAnnual) {

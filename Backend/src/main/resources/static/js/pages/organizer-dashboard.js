@@ -74,18 +74,35 @@ async function loadDashboard() {
     const [events, applications, notifications, account, categories] = await Promise.all([
       getOrganizerEvents(),
       getOrganizerApplications(),
-      getMyNotifications(),
-      getMyOrganizerProfile(),
-      getCategories()
+      getMyNotifications().catch(err => {
+        console.warn('Failed to load notifications:', err);
+        return [];
+      }),
+      getMyOrganizerProfile().catch(err => {
+        console.warn('Failed to load organizer profile:', err);
+        return { user: state.session, profile: null };
+      }),
+      getCategories().catch(err => {
+        console.warn('Failed to load categories:', err);
+        return [];
+      })
     ]);
-    Object.assign(state, { events, applications, notifications, categories, user: account.user, profile: account.profile });
+    Object.assign(state, {
+      events: events || [],
+      applications: applications || [],
+      notifications: notifications || [],
+      categories: categories || [],
+      user: account?.user || state.session,
+      profile: account?.profile || null
+    });
     document.getElementById('dashboardError').innerHTML = '';
     renderAll();
   } catch (err) {
+    console.error('Critical failure loading organizer dashboard:', err);
     document.querySelectorAll('[data-view]').forEach(v => { v.hidden = true; });
     renderError(document.getElementById('dashboardError'), {
       title: 'Unable to load your dashboard',
-      message: 'Please check your connection and try again.',
+      message: err.message || 'Please check your connection and try again.',
       onRetry: () => window.location.reload()
     });
   }

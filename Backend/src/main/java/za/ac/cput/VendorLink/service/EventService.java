@@ -8,6 +8,8 @@ import za.ac.cput.VendorLink.dto.request.EventRequest;
 import za.ac.cput.VendorLink.dto.response.ApplicationResponse;
 import za.ac.cput.VendorLink.dto.response.DashboardStatsResponse;
 import za.ac.cput.VendorLink.dto.response.EventResponse;
+import za.ac.cput.VendorLink.exception.ResourceNotFoundException;
+import za.ac.cput.VendorLink.exception.UnauthorizedAccessException;
 import za.ac.cput.VendorLink.repository.ApplicationRepository;
 import za.ac.cput.VendorLink.repository.CategoryRepository;
 import za.ac.cput.VendorLink.repository.EventRepository;
@@ -23,168 +25,181 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventService {
 
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
-    private final ApplicationRepository applicationRepository;
+        private final EventRepository eventRepository;
+        private final CategoryRepository categoryRepository;
+        private final UserRepository userRepository;
+        private final ApplicationRepository applicationRepository;
 
-    @Transactional
-    public EventResponse createEvent(Long organizerId, EventRequest request) {
-        User organizer = userRepository.findById(organizerId)
-                .orElseThrow(() -> new IllegalArgumentException("Organizer user not found with ID: " + organizerId));
+        @Transactional
+        public EventResponse createEvent(Long organizerId, EventRequest request) {
+                User organizer = userRepository.findById(organizerId)
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "Organizer user not found with ID: " + organizerId));
 
-        Category category = null;
-        if (request.getCategoryId() != null) {
-            category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Category not found with ID: " + request.getCategoryId()));
+                Category category = null;
+                if (request.getCategoryId() != null) {
+                        category = categoryRepository.findById(request.getCategoryId())
+                                        .orElseThrow(() -> new IllegalArgumentException(
+                                                        "Category not found with ID: " + request.getCategoryId()));
+                }
+
+                int totalStalls = request.getTotalStalls();
+                int availableStalls = request.getTotalStalls();
+
+                Event event = Event.builder()
+                                .title(request.getTitle().trim())
+                                .description(request.getDescription())
+                                .category(category)
+                                .organizer(organizer)
+                                .date(request.getDate())
+                                .endDate(request.getEndDate())
+                                .time(request.getTime())
+                                .location(request.getLocation().trim())
+                                .city(request.getCity().trim())
+                                .province(request.getProvince())
+                                .stallFee(request.getStallFee())
+                                .totalStalls(totalStalls)
+                                .availableStalls(availableStalls)
+                                .expectedVisitors(request.getExpectedVisitors())
+                                .requirements(request.getRequirements())
+                                .bannerImageUrl(request.getBannerImageUrl())
+                                .status(request.getStatus() != null ? request.getStatus() : EventStatus.OPEN)
+                                .build();
+
+                Event saved = eventRepository.save(event);
+                return Helper.toEventResponse(saved);
         }
 
-        int totalStalls = request.getTotalStalls();
-        int availableStalls = request.getTotalStalls();
+        @Transactional
+        public EventResponse updateEvent(Long eventId, Long organizerId, EventRequest request) {
+                Event event = eventRepository.findByIdForUpdate(eventId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event", eventId));
 
-        Event event = Event.builder()
-                .title(request.getTitle().trim())
-                .description(request.getDescription())
-                .category(category)
-                .organizer(organizer)
-                .date(request.getDate())
-                .endDate(request.getEndDate())
-                .time(request.getTime())
-                .location(request.getLocation().trim())
-                .city(request.getCity().trim())
-                .province(request.getProvince())
-                .stallFee(request.getStallFee())
-                .totalStalls(totalStalls)
-                .availableStalls(availableStalls)
-                .expectedVisitors(request.getExpectedVisitors())
-                .requirements(request.getRequirements())
-                .bannerImageUrl(request.getBannerImageUrl())
-                .status(request.getStatus() != null ? request.getStatus() : EventStatus.OPEN)
-                .build();
+                if (!event.getOrganizer().getId().equals(organizerId)) {
+                        throw new UnauthorizedAccessException("update", "event");
+                }
 
-        Event saved = eventRepository.save(event);
-        return Helper.toEventResponse(saved);
-    }
+                long approvedCount = applicationRepository.countByEventIdAndStatus(eventId, ApplicationStatus.APPROVED);
 
-    @Transactional
-    public EventResponse updateEvent(Long eventId, Long organizerId, EventRequest request) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
+                if (request.getTotalStalls() != null && request.getTotalStalls() < approvedCount) {
+                        throw new IllegalArgumentException(
+                                        "Total stalls cannot be lower than the " + approvedCount + " already approved applications");
+                }
 
-        if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new IllegalArgumentException("You are not authorized to update this event");
+                if (request.getCategoryId() != null) {
+                        Category category = categoryRepository.findById(request.getCategoryId())
+                                        .orElseThrow(() -> new ResourceNotFoundException("Category", request.getCategoryId()));
+                        event.setCategory(category);
+                }
+
+                if (request.getTitle() != null) event.setTitle(request.getTitle().trim());
+                if (request.getDescription() != null) event.setDescription(request.getDescription());
+                if (request.getDate() != null) event.setDate(request.getDate());
+                if (request.getEndDate() != null) event.setEndDate(request.getEndDate());
+                if (request.getTime() != null) event.setTime(request.getTime());
+                if (request.getLocation() != null) event.setLocation(request.getLocation().trim());
+                if (request.getCity() != null) event.setCity(request.getCity().trim());
+                if (request.getProvince() != null) event.setProvince(request.getProvince());
+                if (request.getStallFee() != null) event.setStallFee(request.getStallFee());
+
+                int totalStalls = request.getTotalStalls() != null ? request.getTotalStalls() : event.getTotalStalls();
+                event.setTotalStalls(totalStalls);
+
+                int availableStalls = (int) (totalStalls - approvedCount);
+                event.setAvailableStalls(availableStalls);
+
+                if (request.getExpectedVisitors() != null) event.setExpectedVisitors(request.getExpectedVisitors());
+                if (request.getRequirements() != null) event.setRequirements(request.getRequirements());
+                if (request.getBannerImageUrl() != null) event.setBannerImageUrl(request.getBannerImageUrl());
+
+                if (availableStalls <= 0) {
+                        event.setStatus(EventStatus.CLOSED);
+                } else if (request.getStatus() != null) {
+                        event.setStatus(request.getStatus());
+                }
+
+                Event updated = eventRepository.save(event);
+                return Helper.toEventResponse(updated);
         }
 
-        if (request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Category not found with ID: " + request.getCategoryId()));
-            event.setCategory(category);
+        @Transactional
+        public void deleteEvent(Long eventId, Long organizerId) {
+                Event event = eventRepository.findById(eventId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event", eventId));
+
+                if (!event.getOrganizer().getId().equals(organizerId)) {
+                        throw new UnauthorizedAccessException("delete", "event");
+                }
+
+                event.setStatus(EventStatus.CANCELLED);
+                eventRepository.save(event);
         }
 
-        event.setTitle(request.getTitle().trim());
-        event.setDescription(request.getDescription());
-        event.setDate(request.getDate());
-        event.setEndDate(request.getEndDate());
-        event.setTime(request.getTime());
-        event.setLocation(request.getLocation().trim());
-        event.setCity(request.getCity().trim());
-        event.setProvince(request.getProvince());
-        event.setStallFee(request.getStallFee());
-        event.setTotalStalls(request.getTotalStalls());
-        if (request.getTotalStalls() != null) {
-            event.setAvailableStalls(request.getTotalStalls());
-        }
-        event.setExpectedVisitors(request.getExpectedVisitors());
-        event.setRequirements(request.getRequirements());
-        event.setBannerImageUrl(request.getBannerImageUrl());
-        if (request.getStatus() != null) {
-            event.setStatus(request.getStatus());
+        @Transactional(readOnly = true)
+        public EventResponse getEventById(Long id) {
+                Event event = eventRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event", id));
+                return Helper.toEventResponse(event);
         }
 
-        Event updated = eventRepository.save(event);
-        return Helper.toEventResponse(updated);
-    }
+        @Transactional(readOnly = true)
+        public List<EventResponse> searchEvents(
+                        EventStatus status,
+                        Long categoryId,
+                        String province,
+                        String city,
+                        LocalDate date,
+                        String search) {
+                String cleanProvince = (province != null && !province.isBlank()) ? province.trim() : null;
+                String cleanCity = (city != null && !city.isBlank()) ? city.trim() : null;
+                String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
 
-    @Transactional
-    public void deleteEvent(Long eventId, Long organizerId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + eventId));
-
-        if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new IllegalArgumentException("You are not authorized to delete this event");
+                return eventRepository.searchEvents(status, categoryId, cleanProvince, cleanCity, date, cleanSearch)
+                                .stream()
+                                .map(Helper::toEventResponse)
+                                .collect(Collectors.toList());
         }
 
-        event.setStatus(EventStatus.CANCELLED);
-        eventRepository.save(event);
-    }
+        @Transactional(readOnly = true)
+        public List<EventResponse> getOrganizerEvents(Long organizerId) {
+                return eventRepository.findByOrganizerIdOrderByDateAsc(organizerId)
+                                .stream()
+                                .map(Helper::toEventResponse)
+                                .collect(Collectors.toList());
+        }
 
-    @Transactional(readOnly = true)
-    public EventResponse getEventById(Long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with ID: " + id));
-        return Helper.toEventResponse(event);
-    }
+        @Transactional(readOnly = true)
+        public DashboardStatsResponse getOrganizerDashboardStats(Long organizerId) {
+                long totalEvents = eventRepository.countByOrganizerId(organizerId);
+                long totalApplications = applicationRepository.countByEvent_Organizer_Id(organizerId);
+                long approvedVendors = applicationRepository.countByEvent_Organizer_IdAndStatus(organizerId,
+                                ApplicationStatus.APPROVED);
 
-    @Transactional(readOnly = true)
-    public List<EventResponse> searchEvents(
-            EventStatus status,
-            Long categoryId,
-            String province,
-            String city,
-            LocalDate date,
-            String search) {
-        String cleanProvince = (province != null && !province.isBlank()) ? province.trim() : null;
-        String cleanCity = (city != null && !city.isBlank()) ? city.trim() : null;
-        String cleanSearch = (search != null && !search.isBlank()) ? search.trim() : null;
+                List<Application> approvedApps = applicationRepository.findByEvent_Organizer_IdAndStatus(organizerId,
+                                ApplicationStatus.APPROVED);
+                BigDecimal totalRevenue = approvedApps.stream()
+                                .map(a -> a.getEvent().getStallFee())
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return eventRepository.searchEvents(status, categoryId, cleanProvince, cleanCity, date, cleanSearch)
-                .stream()
-                .map(Helper::toEventResponse)
-                .collect(Collectors.toList());
-    }
+                List<ApplicationResponse> recentApplications = applicationRepository
+                                .findTop5ByEvent_Organizer_IdOrderByAppliedAtDesc(organizerId)
+                                .stream()
+                                .map(Helper::toApplicationResponse)
+                                .collect(Collectors.toList());
 
-    @Transactional(readOnly = true)
-    public List<EventResponse> getOrganizerEvents(Long organizerId) {
-        return eventRepository.findByOrganizerIdOrderByDateAsc(organizerId)
-                .stream()
-                .map(Helper::toEventResponse)
-                .collect(Collectors.toList());
-    }
+                List<EventResponse> upcomingEvents = eventRepository.findByOrganizerIdOrderByDateAsc(organizerId)
+                                .stream()
+                                .filter(e -> e.getStatus() == EventStatus.OPEN || e.getStatus() == EventStatus.DRAFT)
+                                .map(Helper::toEventResponse)
+                                .collect(Collectors.toList());
 
-    @Transactional(readOnly = true)
-    public DashboardStatsResponse getOrganizerDashboardStats(Long organizerId) {
-        long totalEvents = eventRepository.countByOrganizerId(organizerId);
-        long totalApplications = applicationRepository.countByEvent_Organizer_Id(organizerId);
-        long approvedVendors = applicationRepository.countByEvent_Organizer_IdAndStatus(organizerId,
-                ApplicationStatus.APPROVED);
-
-        List<Application> approvedApps = applicationRepository.findByEvent_Organizer_IdAndStatus(organizerId,
-                ApplicationStatus.APPROVED);
-        BigDecimal totalRevenue = approvedApps.stream()
-                .map(a -> a.getEvent().getStallFee())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        List<ApplicationResponse> recentApplications = applicationRepository
-                .findTop5ByEvent_Organizer_IdOrderByAppliedAtDesc(organizerId)
-                .stream()
-                .map(Helper::toApplicationResponse)
-                .collect(Collectors.toList());
-
-        List<EventResponse> upcomingEvents = eventRepository.findByOrganizerIdOrderByDateAsc(organizerId)
-                .stream()
-                .filter(e -> e.getStatus() == EventStatus.OPEN || e.getStatus() == EventStatus.DRAFT)
-                .map(Helper::toEventResponse)
-                .collect(Collectors.toList());
-
-        return DashboardStatsResponse.builder()
-                .totalEvents(totalEvents)
-                .totalApplications(totalApplications)
-                .approvedVendors(approvedVendors)
-                .totalRevenue(totalRevenue)
-                .upcomingEvents(upcomingEvents)
-                .recentApplications(recentApplications)
-                .build();
-    }
+                return DashboardStatsResponse.builder()
+                                .totalEvents(totalEvents)
+                                .totalApplications(totalApplications)
+                                .approvedVendors(approvedVendors)
+                                .totalRevenue(totalRevenue)
+                                .upcomingEvents(upcomingEvents)
+                                .recentApplications(recentApplications)
+                                .build();
+        }
 }

@@ -57,6 +57,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/payfast/itn").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/vendors", "/api/vendors/*").permitAll()
@@ -77,6 +78,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/applications").hasAnyRole("VENDOR", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/applications/my").hasAnyRole("VENDOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/applications/*").hasAnyRole("VENDOR", "ADMIN")
+
+                        .requestMatchers("/api/storage/**").authenticated()
 
                         // Authenticated requests
                         .anyRequest().authenticated()

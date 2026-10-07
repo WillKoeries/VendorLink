@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const events = await eventsAPI.getEvents({ status: 'OPEN' });
 
         if (events && events.length > 0) {
-            // Take up to 3 featured events
+
             const featured = events.slice(0, 3);
 
             eventGrid.innerHTML = featured.map(evt => {
@@ -39,13 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }).join('');
         }
     } catch (err) {
-        // If backend is not yet started, keep the existing static content gracefully
         console.warn('Backend events not available, keeping fallback featured events.', err.message);
     }
-});
-        }
-    } catch (err) {
-    // If backend is not yet started, keep the existing static content gracefully
-    console.warn('Backend events not available, keeping fallback featured events.', err.message);
-}
 });

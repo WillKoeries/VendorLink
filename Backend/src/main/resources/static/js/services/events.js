@@ -158,7 +158,16 @@ async function getEvents(params = {}) {
     }
 
     const normalized = rawEvents.map(normalizeEvent).filter(Boolean);
-    return sortEventsByDate(normalized);
+    const sorted = sortEventsByDate(normalized);
+    // Pre-populate sessionStorage cache for instant event details navigation
+    try {
+      sorted.forEach(ev => {
+        if (ev && ev.id) sessionStorage.setItem(`vl_event_${ev.id}`, JSON.stringify(ev));
+      });
+    } catch (e) {
+      console.debug('Failed to cache events in sessionStorage:', e);
+    }
+    return sorted;
   } catch (err) {
     console.error('Failed to fetch events from /api/events:', err);
     throw err;
@@ -193,14 +202,28 @@ async function getEventById(id) {
     const data = await res.json();
     const event = (data && data.data) ? data.data : data;
     if (!event || !event.id) return null;
-    return normalizeEvent(event);
+    const normalized = normalizeEvent(event);
+    if (normalized) {
+      try {
+        sessionStorage.setItem(`vl_event_${normalized.id}`, JSON.stringify(normalized));
+      } catch (e) {
+        console.debug('Failed to cache event in sessionStorage:', e);
+      }
+    }
+    return normalized;
   } catch (err) {
     console.error(`Failed to fetch event id ${eventId}:`, err);
     throw err;
   }
 }
 
+let _vlCategoriesCache = null;
+
 async function getCategories() {
+  if (_vlCategoriesCache && _vlCategoriesCache.length > 0) {
+    return _vlCategoriesCache;
+  }
+
   if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
     await demoDelay(100);
     return getDemoDb().categories;
@@ -212,7 +235,10 @@ async function getCategories() {
     if (res.ok) {
       const data = await res.json();
       const list = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
-      if (list.length > 0) return list;
+      if (list.length > 0) {
+        _vlCategoriesCache = list;
+        return list;
+      }
     }
   } catch (err) {
     console.error('Failed to fetch categories from /api/categories:', err);
@@ -274,11 +300,17 @@ async function getOrganizerEvents() {
   }
 
   try {
-    const res = await fetch('/api/events/organizer/my-events', {
-      headers: getAuthHeaders()
-    });
+    let res;
+    try {
+      res = await fetch('/api/events/organizer/my-events', {
+        headers: getAuthHeaders()
+      });
+    } catch (networkErr) {
+      throw new Error('Unable to load your events. Please check your internet connection.');
+    }
     if (!res.ok) {
-      throw new Error(`Failed to load organizer events: HTTP ${res.status}`);
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `Failed to load organizer events: HTTP ${res.status}`);
     }
     const data = await res.json();
     const list = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
@@ -344,11 +376,16 @@ async function uploadEventImage(file) {
   // Remove Content-Type so browser sets multipart/form-data boundary automatically
   delete authHeaders['Content-Type'];
 
-  const res = await fetch('/api/events/upload-image', {
-    method: 'POST',
-    headers: authHeaders,
-    body: formData
-  });
+  let res;
+  try {
+    res = await fetch('/api/events/upload-image', {
+      method: 'POST',
+      headers: authHeaders,
+      body: formData
+    });
+  } catch (networkErr) {
+    throw new Error('Unable to upload image. Please check your internet connection.');
+  }
 
   if (!res.ok) {
     const errData = await res.json().catch(() => ({}));
@@ -404,14 +441,25 @@ async function createEvent(data) {
   }
 
   try {
-    const res = await fetch('/api/events', {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(event)
-    });
+    let res;
+    try {
+      res = await fetch('/api/events', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(event)
+      });
+    } catch (networkErr) {
+      throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+    }
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || `Failed to create event: HTTP ${res.status}`);
+      let msg = errData.message || `Failed to create event: HTTP ${res.status}`;
+      if (errData.fieldErrors && Object.keys(errData.fieldErrors).length > 0) {
+        msg = Object.values(errData.fieldErrors).join('. ');
+      }
+      const err = new Error(msg);
+      if (errData.fieldErrors) err.fieldErrors = errData.fieldErrors;
+      throw err;
     }
     const created = await res.json();
     return normalizeEvent(created);
@@ -443,14 +491,25 @@ async function updateEvent(id, data) {
 
   try {
     const changes = cleanEventData(data);
-    const res = await fetch(`/api/events/${id}`, {
-      method: 'PUT',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(changes)
-    });
+    let res;
+    try {
+      res = await fetch(`/api/events/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(changes)
+      });
+    } catch (networkErr) {
+      throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+    }
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || `Failed to update event: HTTP ${res.status}`);
+      let msg = errData.message || `Failed to update event: HTTP ${res.status}`;
+      if (errData.fieldErrors && Object.keys(errData.fieldErrors).length > 0) {
+        msg = Object.values(errData.fieldErrors).join('. ');
+      }
+      const err = new Error(msg);
+      if (errData.fieldErrors) err.fieldErrors = errData.fieldErrors;
+      throw err;
     }
     const updated = await res.json();
     return normalizeEvent(updated);
@@ -492,12 +551,18 @@ async function cancelEvent(id) {
   }
 
   try {
-    const res = await fetch(`/api/events/${id}`, {
-      method: 'DELETE',
-      headers: getAuthHeaders()
-    });
+    let res;
+    try {
+      res = await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+    } catch (networkErr) {
+      throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+    }
     if (!res.ok) {
-      throw new Error(`Failed to cancel event: HTTP ${res.status}`);
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `Failed to cancel event: HTTP ${res.status}`);
     }
     return { id, status: EventStatus.CANCELLED };
   } catch (err) {

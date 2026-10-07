@@ -110,37 +110,45 @@ async function updateMyVendorProfile(data) {
   }
 
   // Update backend profile
-  const res = await fetch('/api/vendor/profile', {
-    method: 'PUT',
-    headers: getProfileAuthHeaders(),
-    body: JSON.stringify({
-      businessName: data.businessName.trim(),
-      description: (data.description || '').trim(),
-      category: data.category || '',
-      phone: (data.phone || '').trim(),
-      website: (data.website || '').trim(),
-      city: (data.city || '').trim(),
-      province: data.province || '',
-      address: (data.address || '').trim(),
-      profileImageUrl: (data.profileImageUrl || '').trim()
-    })
-  });
+  let res;
+  try {
+    res = await fetch('/api/vendor/profile', {
+      method: 'PUT',
+      headers: getProfileAuthHeaders(),
+      body: JSON.stringify({
+        businessName: data.businessName.trim(),
+        description: (data.description || '').trim(),
+        category: data.category || '',
+        phone: (data.phone || '').trim(),
+        website: (data.website || '').trim(),
+        city: (data.city || '').trim(),
+        province: data.province || '',
+        address: (data.address || '').trim(),
+        profileImageUrl: (data.profileImageUrl || '').trim()
+      })
+    });
+  } catch (networkErr) {
+    throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+  }
 
   if (!res.ok) {
-    let errMsg = `Failed to update profile: HTTP ${res.status}`;
-    try {
-      const errJson = await res.json();
-      if (errJson.message) errMsg = errJson.message;
-    } catch (e) { }
-    throw new Error(errMsg);
+    const errData = await res.json().catch(() => ({}));
+    let errMsg = errData.message || `Failed to update profile: HTTP ${res.status}`;
+    if (errData.fieldErrors && Object.keys(errData.fieldErrors).length > 0) {
+      errMsg = Object.values(errData.fieldErrors).join('. ');
+    }
+    const err = new Error(errMsg);
+    if (errData.fieldErrors) err.fieldErrors = errData.fieldErrors;
+    throw err;
   }
 
   const updatedProfile = await res.json();
 
   // Also update user's fullName and phone on /api/users/me if available
+  let updatedUser = null;
   if (data.fullName || data.phone) {
     try {
-      await fetch('/api/users/me', {
+      const userRes = await fetch('/api/users/me', {
         method: 'PUT',
         headers: getProfileAuthHeaders(),
         body: JSON.stringify({
@@ -148,18 +156,25 @@ async function updateMyVendorProfile(data) {
           phone: (data.phone || '').trim()
         })
       });
-      if (typeof updateSessionName === 'function') {
-        updateSessionName(data.fullName.trim());
+      if (userRes.ok) {
+        updatedUser = await userRes.json();
+        if (typeof updateSessionName === 'function' && updatedUser.fullName) {
+          updateSessionName(updatedUser.fullName);
+        }
+      } else {
+        console.warn('Failed to update user profile info (/api/users/me):', userRes.status);
       }
-    } catch (e) { }
+    } catch (e) {
+      console.warn('Network error updating user profile info (/api/users/me):', e);
+    }
   }
 
   return {
     user: {
-      id: updatedProfile.userId || session.userId,
-      fullName: data.fullName || updatedProfile.fullName,
-      email: updatedProfile.email || session.email,
-      phone: updatedProfile.phone || data.phone
+      id: updatedUser?.id || updatedProfile.userId || session.userId,
+      fullName: updatedUser?.fullName || data.fullName || updatedProfile.fullName,
+      email: updatedUser?.email || updatedProfile.email || session.email,
+      phone: updatedUser?.phone || updatedProfile.phone || data.phone
     },
     profile: updatedProfile
   };
@@ -243,22 +258,29 @@ async function updateMyOrganizerProfile(data) {
     return { user, profile };
   }
 
-  const res = await fetch('/api/users/me', {
-    method: 'PUT',
-    headers: getProfileAuthHeaders(),
-    body: JSON.stringify({
-      fullName: (data.organizationName || data.fullName || '').trim(),
-      phone: (data.phone || '').trim()
-    })
-  });
+  let res;
+  try {
+    res = await fetch('/api/users/me', {
+      method: 'PUT',
+      headers: getProfileAuthHeaders(),
+      body: JSON.stringify({
+        fullName: (data.organizationName || data.fullName || '').trim(),
+        phone: (data.phone || '').trim()
+      })
+    });
+  } catch (networkErr) {
+    throw new Error('Unable to connect to the VendorLink server. Please check your internet connection.');
+  }
 
   if (!res.ok) {
-    let errMsg = `Failed to update organizer profile: HTTP ${res.status}`;
-    try {
-      const errJson = await res.json();
-      if (errJson.message) errMsg = errJson.message;
-    } catch (e) { }
-    throw new Error(errMsg);
+    const errData = await res.json().catch(() => ({}));
+    let errMsg = errData.message || `Failed to update organizer profile: HTTP ${res.status}`;
+    if (errData.fieldErrors && Object.keys(errData.fieldErrors).length > 0) {
+      errMsg = Object.values(errData.fieldErrors).join('. ');
+    }
+    const err = new Error(errMsg);
+    if (errData.fieldErrors) err.fieldErrors = errData.fieldErrors;
+    throw err;
   }
 
   const updated = await res.json();
