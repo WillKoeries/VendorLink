@@ -1,16 +1,30 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Ignored default folder with query files
-/queries/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-#Spring Boot Secrets
-**/src/main/resources/application-local.properties
+# IDEs and Editors
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+
+# Build outputs
+target/
+dist/
+node_modules/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
 *.env
 .env*
 !*.env.example
 application-local.properties
+**/src/main/resources/application-local.properties
+
+# Uploads
+uploads/
+**/uploads/
+
+# Agent skills & configs
+.agents/
+skills-lock.json

@@ -13,6 +13,7 @@ import za.ac.cput.VendorLink.domain.VendorProfile;
 import za.ac.cput.VendorLink.dto.request.VendorProfileRequest;
 import za.ac.cput.VendorLink.dto.response.PublicVendorResponse;
 import za.ac.cput.VendorLink.dto.response.VendorProfileResponse;
+import za.ac.cput.VendorLink.exception.ResourceNotFoundException;
 import za.ac.cput.VendorLink.repository.UserRepository;
 import za.ac.cput.VendorLink.repository.VendorProfileRepository;
 
@@ -70,7 +71,7 @@ public class VendorServiceTest {
         when(vendorProfileRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> vendorService.getVendorProfileById(999L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Vendor profile not found with ID: 999");
     }
 

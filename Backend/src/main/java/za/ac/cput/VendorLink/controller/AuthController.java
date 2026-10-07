@@ -35,7 +35,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new org.springframework.security.authentication.BadCredentialsException("User session is missing or expired");
         }
         UserResponse user = authService.getCurrentUser(userDetails.getUsername());
         return ResponseEntity.ok(user);

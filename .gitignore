@@ -24,3 +24,7 @@ application-local.properties
 # Uploads
 uploads/
 **/uploads/
+
+# Agent skills & configs
+.agents/
+skills-lock.json

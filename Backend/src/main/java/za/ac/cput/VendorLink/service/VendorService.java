@@ -7,6 +7,7 @@ import za.ac.cput.VendorLink.domain.User;
 import za.ac.cput.VendorLink.domain.VendorProfile;
 import za.ac.cput.VendorLink.dto.request.VendorProfileRequest;
 import za.ac.cput.VendorLink.dto.response.VendorProfileResponse;
+import za.ac.cput.VendorLink.exception.ResourceNotFoundException;
 import za.ac.cput.VendorLink.repository.UserRepository;
 import za.ac.cput.VendorLink.repository.VendorProfileRepository;
 import za.ac.cput.VendorLink.util.Helper;
@@ -26,7 +27,7 @@ public class VendorService {
         VendorProfile profile = vendorProfileRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+                            .orElseThrow(() -> new ResourceNotFoundException("User", userId));
                     return VendorProfile.builder()
                             .user(user)
                             .businessName(user.getFullName() + "'s Stall")
@@ -41,7 +42,7 @@ public class VendorService {
         VendorProfile profile = vendorProfileRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+                            .orElseThrow(() -> new ResourceNotFoundException("User", userId));
                     return VendorProfile.builder().user(user).build();
                 });
 
@@ -70,7 +71,7 @@ public class VendorService {
     @Transactional(readOnly = true)
     public VendorProfileResponse getVendorProfileById(Long id) {
         VendorProfile profile = vendorProfileRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vendor profile not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendor profile", id));
         return Helper.toVendorProfileResponse(profile);
     }
 }

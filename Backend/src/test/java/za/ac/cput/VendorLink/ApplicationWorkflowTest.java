@@ -11,16 +11,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import za.ac.cput.VendorLink.domain.ApplicationStatus;
-import za.ac.cput.VendorLink.domain.Event;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import za.ac.cput.VendorLink.domain.*;
 import za.ac.cput.VendorLink.dto.request.ApplicationRequest;
 import za.ac.cput.VendorLink.dto.request.ApplicationStatusUpdateRequest;
 import za.ac.cput.VendorLink.dto.request.LoginRequest;
 import za.ac.cput.VendorLink.dto.response.ApplicationResponse;
 import za.ac.cput.VendorLink.dto.response.AuthResponse;
 import za.ac.cput.VendorLink.dto.response.NotificationResponse;
-import za.ac.cput.VendorLink.repository.EventRepository;
+import za.ac.cput.VendorLink.repository.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,13 +41,87 @@ public class ApplicationWorkflowTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private OrganizerRepository organizerRepository;
+
+    @Autowired
+    private VendorProfileRepository vendorProfileRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ApplicationRepository applicationRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private String vendorToken;
     private String organizerToken;
 
     @BeforeEach
     void setUp() throws Exception {
+        notificationRepository.deleteAll();
+        applicationRepository.deleteAll();
+        eventRepository.deleteAll();
+        vendorProfileRepository.deleteAll();
+        organizerRepository.deleteAll();
+        userRepository.deleteAll();
+        categoryRepository.deleteAll();
+
+        Category category = categoryRepository.save(Category.builder()
+                .name("Food & Drinks")
+                .description("Artisanal foods and beverages")
+                .iconUrl("utensils")
+                .build());
+
+        User organizerUser = userRepository.save(User.builder()
+                .email("organizer@vendorlink.co.za")
+                .password(passwordEncoder.encode("Password123!"))
+                .fullName("Cape Events Organiser")
+                .role(Role.ORGANIZER)
+                .build());
+
+        organizerRepository.save(Organizer.builder()
+                .user(organizerUser)
+                .organizationName("Cape Events Co")
+                .build());
+
+        User vendorUser = userRepository.save(User.builder()
+                .email("vendor@vendorlink.co.za")
+                .password(passwordEncoder.encode("Password123!"))
+                .fullName("Lisa Vendor")
+                .role(Role.VENDOR)
+                .build());
+
+        vendorProfileRepository.save(VendorProfile.builder()
+                .user(vendorUser)
+                .businessName("Lisa's Coffee Bar")
+                .build());
+
+        eventRepository.save(Event.builder()
+                .title("Food Truck Festival")
+                .description("Cape Town's biggest gourmet food truck festival")
+                .category(category)
+                .organizer(organizerUser)
+                .date(LocalDate.of(2026, 11, 20))
+                .location("Green Point Urban Park")
+                .city("Cape Town")
+                .province("Western Cape")
+                .stallFee(new BigDecimal("250.00"))
+                .totalStalls(10)
+                .availableStalls(10)
+                .status(EventStatus.OPEN)
+                .build());
+
         LoginRequest vendorLogin = LoginRequest.builder()
                 .email("vendor@vendorlink.co.za")
                 .password("Password123!")

@@ -2,6 +2,7 @@ package za.ac.cput.VendorLink.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,78 +16,30 @@ import za.ac.cput.VendorLink.dto.response.DashboardStatsResponse;
 import za.ac.cput.VendorLink.dto.response.EventResponse;
 import za.ac.cput.VendorLink.security.CustomUserDetails;
 import za.ac.cput.VendorLink.service.EventService;
+import za.ac.cput.VendorLink.service.StorageService;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/events")
 @RequiredArgsConstructor
 public class EventController {
 
     private final EventService eventService;
+    private final StorageService storageService;
 
     @PostMapping("/upload-image")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMIN')")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "File is empty"));
-        }
-        String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Only image files are allowed"));
-        }
-        if (file.getSize() > 5 * 1024 * 1024) {
-            return ResponseEntity.badRequest().body(Map.of("message", "File size exceeds 5MB limit"));
-        }
-
-        try {
-            String originalFilename = file.getOriginalFilename();
-            String ext = "";
-            if (originalFilename != null && originalFilename.contains(".")) {
-                ext = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-            }
-            if (!Arrays.asList(".jpg", ".jpeg", ".png", ".webp", ".gif").contains(ext)) {
-                ext = ".jpg";
-            }
-            String filename = "event_" + UUID.randomUUID().toString() + ext;
-
-            Path uploadDir = Paths.get("uploads/events").toAbsolutePath().normalize();
-            Files.createDirectories(uploadDir);
-            Path targetPath = uploadDir.resolve(filename);
-            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-            // Mirror to Frontend and Backend static directories if present
-            Path feUploads = Paths.get("Frontend/images/uploads").toAbsolutePath().normalize();
-            if (Files.exists(feUploads.getParent())) {
-                Files.createDirectories(feUploads);
-                Files.copy(targetPath, feUploads.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
-            }
-            Path beUploads = Paths.get("Backend/src/main/resources/static/images/uploads").toAbsolutePath().normalize();
-            if (Files.exists(beUploads.getParent())) {
-                Files.createDirectories(beUploads);
-                Files.copy(targetPath, beUploads.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            String publicUrl = "/uploads/events/" + filename;
-            return ResponseEntity.ok(Map.of(
-                    "url", publicUrl,
-                    "imageUrl", publicUrl,
-                    "bannerImageUrl", publicUrl,
-                    "filename", filename
-            ));
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Failed to upload image: " + e.getMessage()));
-        }
+        String publicUrl = storageService.uploadEventImage(file);
+        return ResponseEntity.ok(Map.of(
+                "url", publicUrl,
+                "imageUrl", publicUrl,
+                "bannerImageUrl", publicUrl
+        ));
     }
 
     @GetMapping
