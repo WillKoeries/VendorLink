@@ -24,12 +24,18 @@ public final class PayFastSignature {
     public static String signNotification(LinkedHashMap<String, String> fields, String passphrase) {
         StringBuilder value = new StringBuilder();
         for (Map.Entry<String, String> entry : fields.entrySet()) {
-            if ("signature".equals(entry.getKey())) break;
+            if ("signature".equals(entry.getKey())) continue;
             value.append(entry.getKey()).append('=')
                     .append(phpUrlEncode(entry.getValue() == null ? "" : entry.getValue())).append('&');
         }
         appendPassphrase(value, passphrase);
         return md5(value.toString());
+    }
+
+    public static boolean matches(String expected, String actual) {
+        if (expected == null || actual == null) return false;
+        return MessageDigest.isEqual(expected.getBytes(StandardCharsets.US_ASCII),
+                actual.getBytes(StandardCharsets.US_ASCII));
     }
 
     static String phpUrlEncode(String input) {

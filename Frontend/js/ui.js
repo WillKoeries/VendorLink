@@ -38,7 +38,7 @@ function safeUrl(value) {
 // Pages that the ?redirect= parameter is allowed to send people to after login
 const REDIRECT_ALLOWED_PAGES = [
   'index.html', 'browse-events.html', 'event-details.html', 'pricing.html', 'about.html',
-  'vendor-dashboard.html', 'organizer-dashboard.html', 'legal.html'
+  'vendor-dashboard.html', 'organizer-dashboard.html', 'legal.html', 'payment-status.html'
 ];
 
 /** Turns a ?redirect= value into a safe same-site page, or returns the fallback. */

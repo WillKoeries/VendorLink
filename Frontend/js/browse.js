@@ -86,7 +86,6 @@ async function loadEvents() {
             rawData = await res.json();
         }
 
-        // Direct parser for raw JSON array
         const events = Array.isArray(rawData) ? rawData : (rawData && Array.isArray(rawData.data) ? rawData.data : []);
 
         if (!events || events.length === 0) {
@@ -99,7 +98,6 @@ async function loadEvents() {
             return;
         }
 
-        // Render Event Cards
         if (typeof eventCardHtml === 'function') {
             eventsContainer.innerHTML = events.map(eventCardHtml).join('');
         } else {
@@ -139,7 +137,6 @@ async function loadEvents() {
     }
 }
 
-// Global window attachments
 window.loadCategories = loadCategories;
 window.loadEvents = loadEvents;
 

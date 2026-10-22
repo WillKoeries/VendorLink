@@ -3,7 +3,6 @@
  * Manages user credentials, navbar session state, and form interactions.
  */
 
-// Fallback toast function in case ui.js hasn't loaded yet
 function showToast(message, type = 'info') {
     if (window.ui && typeof window.ui.toast === 'function') {
         window.ui.toast(message, type);
@@ -81,9 +80,6 @@ const authService = {
     }
 };
 
-// ============================================================================
-// Global functions required by layout.js and page scripts
-// ============================================================================
 function getSession() {
     const token = authService.getToken();
     const user = authService.getUser();
@@ -121,9 +117,6 @@ window.isAuthenticated = isAuthenticated;
 window.logout = logout;
 window.showToast = showToast;
 
-// ============================================================================
-// DOM Initialization & Form Handlers
-// ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     authService.updateNavbar();
 

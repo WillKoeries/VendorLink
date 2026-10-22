@@ -3,10 +3,8 @@
  * Handles HTTP requests, JWT authentication, and centralized error handling.
  */
 
-// Base API URL configuration
 const API_BASE_URL = window.API_BASE_URL || '/api';
 
-// Create dedicated Axios instance
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
     headers: {
@@ -15,7 +13,6 @@ const apiClient = axios.create({
     timeout: 15000
 });
 
-// Request Interceptor: Attach JWT Token if available
 apiClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token') || localStorage.getItem('vendorlink_token');
@@ -29,7 +26,6 @@ apiClient.interceptors.request.use(
     }
 );
 
-// Response Interceptor: Global error interception & token expiry handling
 apiClient.interceptors.response.use(
     (response) => {
         return response.data;
@@ -54,8 +50,7 @@ apiClient.interceptors.response.use(
                 localStorage.removeItem('vendorlink_token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('vendorlink_user');
-                
-                // If user was logged in and their session expired
+
                 if (hadToken && !window.location.pathname.includes('login.html')) {
                     showToast('Session expired. Please log in again.', 'warning');
                     setTimeout(() => {
@@ -103,7 +98,7 @@ const applicationsAPI = {
     getMyApplications: () => apiClient.get('/applications/my'),
     getEventApplications: (eventId) => apiClient.get(`/applications/event/${eventId}`),
     getApplicationById: (id) => apiClient.get(`/applications/${id}`),
-    updateStatus: (id, status, reviewNotes = '') => 
+    updateStatus: (id, status, reviewNotes = '') =>
         apiClient.patch(`/applications/${id}/status`, { status, reviewNotes }),
     cancelApplication: (id) => apiClient.delete(`/applications/${id}`)
 };

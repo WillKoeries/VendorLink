@@ -12,17 +12,12 @@ export const ROLES = Object.freeze({
     ADMIN: 'ADMIN'
 });
 
-// In-memory cache to avoid repeated JSON.parse calls on hot paths
 let cachedSession = null;
 
-// ============================================================================
-// Core Session Helpers
-// ============================================================================
 export function saveSession(token, user) {
     if (!token || !user) return null;
     const userStr = JSON.stringify(user);
-    
-    // Save to both key formats to support legacy and modular scripts
+
     localStorage.setItem('token', token);
     localStorage.setItem('vendorlink_token', token);
     localStorage.setItem('user', userStr);
@@ -186,11 +181,6 @@ export function signOut() {
     window.location.href = 'index.html?signedout=1';
 }
 
-// ---------- Page guard ----------
-/**
- * Call at the top of a protected page.
- * Returns the session if the user may view the page, otherwise redirects and returns null.
- */
 export function requireRole(allowedRoles) {
     const session = getSession();
     const currentPage = window.location.pathname.split('/').pop() + window.location.hash;
@@ -209,9 +199,6 @@ export function requireRole(allowedRoles) {
     return session;
 }
 
-// ============================================================================
-// Global Attachments (Prevents "is not defined" errors across all scripts)
-// ============================================================================
 window.ROLES = ROLES;
 window.Role = window.Role || ROLES;
 window.saveSession = saveSession;

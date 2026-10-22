@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Status | VendorLink</title>
+    <meta name="description" content="View your payment confirmation and subscription status on VendorLink.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/payment-status.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+    <link rel="icon" href="images/favicon_io/favicon.ico">
+    <link rel="manifest" href="images/favicon_io/site.webmanifest">
+</head>
+
+<body data-page="pricing">
+
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="siteHeader"></header>
+
+    <main class="page-main" id="main">
+
+        <section class="payment-status-section">
+            <div class="container">
+
+                <div class="payment-status-card" id="paymentStatusCard" aria-live="polite">
+                    <!-- Default initial loading placeholder -->
+                    <div class="status-icon-wrapper status-icon-loading" id="statusIcon">
+                        <div class="spinner-ring" aria-label="Loading"></div>
+                    </div>
+
+                    <h1 class="payment-status-title" id="statusTitle">Checking payment status...</h1>
+                    <p class="payment-status-subtitle" id="statusSubtitle">
+                        Please wait while we confirm your transaction details with PayFast.
+                    </p>
+
+                    <div id="statusBody">
+                        <!-- Dynamic content inserted by payment-status.js -->
+                    </div>
+
+                    <div class="payment-actions" id="statusActions">
+                        <!-- Dynamic action buttons inserted by payment-status.js -->
+                    </div>
+
+                    <div class="payment-actions-footer" id="statusFooter">
+                        <a href="pricing.html"><i class="fa-solid fa-arrow-left"></i> Back to Pricing</a>
+                        <span>&bull;</span>
+                        <a href="about.html#support">Need help?</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer" id="siteFooter"></footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/services/applications.js"></script>
+    <script src="js/services/profiles.js"></script>
+    <script src="js/services/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/payment-status.js"></script>
+</body>
+
+</html>
