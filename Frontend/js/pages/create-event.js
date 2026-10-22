@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   let uploadingBanner = false;
 
   document.getElementById('eventDate').min = todayIsoDate();
+  fillSelect(document.getElementById('eventProvince'), PROVINCES.map(province => ({
+    value: province,
+    label: province
+  })), { placeholder: 'Choose a province' });
   loadCategories();
 
   document.getElementById('eventDate').addEventListener('change', (event) => {
