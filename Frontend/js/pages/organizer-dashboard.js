@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!state.session) return;
 
   document.getElementById('roleTag').textContent = ROLE_LABELS[state.session.role];
-  document.getElementById('footerYear').textContent = new Date().getFullYear();
   if (isAdmin()) {
     ORGANIZER_TABS.events.subtitle = 'Admin view: every event on VendorLink.';
     ORGANIZER_TABS.applications.subtitle = 'Admin view: applications for every event.';
