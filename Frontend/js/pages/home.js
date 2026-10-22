@@ -81,6 +81,7 @@ function renderCategoryPills(categories) {
       <button type="button" class="pill" data-category="${c.id}" aria-pressed="false">
         ${categoryIconHtml(c)} ${escapeHtml(c.name)}</button>`)
   ].join('');
+  wireCategoryIconFallbacks(container);
 
   container.addEventListener('click', (e) => {
     const pill = e.target.closest('[data-category]');
