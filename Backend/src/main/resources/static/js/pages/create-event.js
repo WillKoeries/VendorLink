@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const bannerUrl = document.getElementById('bannerUrl');
   const uploadStatus = document.getElementById('bannerUploadStatus');
   const dropZone = document.getElementById('bannerDropZone');
+  const startTime = document.getElementById('eventStartTime');
+  const endTime = document.getElementById('eventEndTime');
+  const tradingHours = document.getElementById('eventTime');
   let uploadingBanner = false;
 
   document.getElementById('eventDate').min = todayIsoDate();
@@ -24,6 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('eventDate').addEventListener('change', (event) => {
     document.getElementById('eventEndDate').min = event.target.value;
   });
+
+  [startTime, endTime].forEach(input => input.addEventListener('change', syncTradingHours));
 
   bannerUrl.addEventListener('input', () => {
     bannerInput.value = bannerUrl.value.trim();
@@ -65,6 +70,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
       fillSelect(document.getElementById('eventCategory'), [], { placeholder: 'No categories available' });
     }
+  }
+
+  function syncTradingHours() {
+    tradingHours.value = startTime.value && endTime.value
+      ? `${startTime.value} – ${endTime.value}`
+      : '';
   }
 
   async function uploadBanner(file) {
@@ -124,6 +135,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert.hidden = true;
 
     const data = Object.fromEntries(new FormData(form).entries());
+    if ((startTime.value && !endTime.value) || (!startTime.value && endTime.value)) {
+      showFieldErrors(form, { time: 'Choose both a start and end time, or leave both blank.' });
+      return;
+    }
     const errors = validateEventData(data);
     if (Object.keys(errors).length) {
       showFieldErrors(form, errors);

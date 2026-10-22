@@ -191,6 +191,9 @@
 .create-event-section h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 22px; color: var(--navy); font-size: 1.05rem; }
 .create-event-section h3 i { color: var(--primary); }
 .create-event-section > p { margin: -12px 0 18px; font-size: 0.85rem; }
+.create-event-section > .form-hint { margin: 10px 0 18px; line-height: 1.5; }
+.time-range-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px; }
+.time-range-controls > span { color: var(--slate-500); font-size: 0.85rem; }
 .create-event-section code { padding: 2px 5px; border-radius: 4px; background: var(--slate-100); }
 .create-event-banner { position: relative; min-height: 190px; display: grid; place-items: center; overflow: hidden; border: 2px dashed var(--slate-300); border-radius: var(--radius-md); background: var(--slate-50); transition: border-color 0.2s ease, background 0.2s ease; }
 .create-event-banner:hover, .create-event-banner.is-dragover { border-color: var(--primary); background: #eff6ff; }
