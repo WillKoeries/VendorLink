@@ -101,6 +101,18 @@ function renderEvent(event) {
 
   // Banner
   const banner = document.getElementById('eventBanner');
+  banner.removeAttribute('data-fallback');
+  const bannerFallbacks = [eventBannerFallback(event), FALLBACK_IMAGES.event];
+  let nextBannerFallback = 0;
+  banner.onerror = () => {
+    if (nextBannerFallback < bannerFallbacks.length) {
+      banner.src = bannerFallbacks[nextBannerFallback++];
+    } else {
+      banner.onerror = null;
+      banner.hidden = true;
+    }
+  };
+  banner.hidden = false;
   banner.src = eventImageUrl(event);
   banner.alt = event.title;
   setText('eventCategory', event.category ? event.category.name : 'Uncategorised');
