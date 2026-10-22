@@ -123,8 +123,18 @@ function getNotificationStyle(type) {
   return styles[type] || { icon: 'fa-bell', tone: 'primary' };
 }
 
+function notificationItemHtml(notification, role) {
+  const style = getNotificationStyle(notification.type);
+  const link = getNotificationLink(notification, role);
+  return `<a class="notif-item${notification.isRead ? '' : ' is-unread'}" href="${escapeHtml(link)}" data-notification-id="${escapeHtml(notification.id)}">
+    <span class="notif-icon tone-${escapeHtml(style.tone)}"><i class="fa-solid ${escapeHtml(style.icon)}" aria-hidden="true"></i></span>
+    <span class="notif-body"><span class="notif-title">${escapeHtml(notification.title)}</span><span class="notif-message">${escapeHtml(notification.message)}</span><span class="notif-time">${escapeHtml(timeAgo(notification.createdAt))}</span></span>
+  </a>`;
+}
+
 window.getMyNotifications = getMyNotifications;
 window.markNotificationRead = markNotificationRead;
 window.markAllNotificationsRead = markAllNotificationsRead;
 window.getNotificationLink = getNotificationLink;
 window.getNotificationStyle = getNotificationStyle;
+window.notificationItemHtml = notificationItemHtml;
