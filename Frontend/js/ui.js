@@ -171,19 +171,35 @@ function avatarHtml(name, imageUrl, sizeClass = '') {
 const CATEGORY_ICON_FALLBACKS = {
   'Food & Street Eats': 'fa-utensils',
   'Arts & Crafts': 'fa-palette',
+  'Crafts & Handmade': 'fa-palette',
   'Fashion & Vintage': 'fa-shirt',
+  'Fashion & Apparel': 'fa-shirt',
   'Farmers & Produce': 'fa-seedling',
   'Night Markets': 'fa-moon',
   'Health & Beauty': 'fa-spa',
+  'Beauty & Wellness': 'fa-spa',
+  'Home & Living': 'fa-house',
+  'Vintage & Collectibles': 'fa-gem',
   'Tech & Pop-Ups': 'fa-laptop'
 };
 
 function categoryIconHtml(category) {
   if (!category) return '<i class="fa-solid fa-tag" aria-hidden="true"></i>';
   const url = safeUrl(category.iconUrl);
-  if (url) return `<img src="${escapeHtml(url)}" alt="" loading="lazy">`;
   const icon = CATEGORY_ICON_FALLBACKS[category.name] || 'fa-tag';
+  if (url) return `<img src="${escapeHtml(url)}" alt="" loading="lazy" data-category-fallback="${icon}">`;
   return `<i class="fa-solid ${icon}" aria-hidden="true"></i>`;
+}
+
+function wireCategoryIconFallbacks(container) {
+  container.querySelectorAll('img[data-category-fallback]').forEach(image => {
+    image.addEventListener('error', () => {
+      const fallback = document.createElement('i');
+      fallback.className = `fa-solid ${image.dataset.categoryFallback || 'fa-tag'}`;
+      fallback.setAttribute('aria-hidden', 'true');
+      image.replaceWith(fallback);
+    }, { once: true });
+  });
 }
 
 // ============ Status badges ============

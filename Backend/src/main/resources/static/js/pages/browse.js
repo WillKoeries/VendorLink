@@ -169,6 +169,7 @@ function renderCategoryPills(categories) {
     '<button type="button" class="pill" data-category="all"><i class="fa-solid fa-border-all" aria-hidden="true"></i> All categories</button>',
     ...categories.map(c => `<button type="button" class="pill" data-category="${c.id}">${categoryIconHtml(c)} ${escapeHtml(c.name)}</button>`)
   ].join('');
+  wireCategoryIconFallbacks(els.pills);
 }
 
 /** Make every control show the current `filters` values. */

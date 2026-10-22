@@ -86,6 +86,17 @@ async function startSubscription(button) {
       })
     });
     const data = await response.json().catch(() => ({}));
+    if (response.status === 401) {
+      // A saved session can outlive its JWT. Clear it so login starts with a fresh token.
+      localStorage.removeItem('token');
+      localStorage.removeItem('vendorlink_token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('vendorlink_user');
+      sessionStorage.removeItem('vl_pending_payment');
+      sessionStorage.removeItem('vl_pending_payment_id');
+      window.location.href = `login.html?redirect=${encodeURIComponent('pricing.html')}&reason=auth`;
+      return;
+    }
     if (!response.ok) throw new Error(data.message || 'Could not start the subscription payment.');
 
     if (data.merchantPaymentId) {
