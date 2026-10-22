@@ -98,7 +98,6 @@ async function markAllNotificationsRead() {
   }
 }
 
-/** Where clicking a notification should take the user. */
 function getNotificationLink(notification, role) {
   switch (notification.type) {
     case NotificationType.EVENT_UPDATED:
@@ -112,7 +111,6 @@ function getNotificationLink(notification, role) {
   }
 }
 
-/** Icon and colour for each notification type. */
 function getNotificationStyle(type) {
   const styles = {
     APPLICATION_SUBMITTED: { icon: 'fa-file-signature', tone: 'primary' },
@@ -125,7 +123,6 @@ function getNotificationStyle(type) {
   return styles[type] || { icon: 'fa-bell', tone: 'primary' };
 }
 
-// Global window assignments
 window.getMyNotifications = getMyNotifications;
 window.markNotificationRead = markNotificationRead;
 window.markAllNotificationsRead = markAllNotificationsRead;

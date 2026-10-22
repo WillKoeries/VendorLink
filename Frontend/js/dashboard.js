@@ -4,7 +4,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Guard route: Ensure authenticated user is an ORGANIZER or ADMIN
     const user = authService.getUser();
     if (!authService.isLoggedIn() || !user || (user.role !== 'ORGANIZER' && user.role !== 'ADMIN')) {
         showToast('Please log in with an Organizer account to access the dashboard.', 'warning');
@@ -14,13 +13,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 2. Set Organizer profile in Topbar
     const profileNameEl = document.querySelector('.topbar .profile span');
     if (profileNameEl && user.fullName) {
         profileNameEl.textContent = user.fullName;
     }
 
-    // 3. Connect Sidebar Logout
     const sidebarItems = document.querySelectorAll('.sidebar ul li');
     sidebarItems.forEach(item => {
         if (item.textContent.trim().toLowerCase() === 'logout') {
@@ -31,12 +28,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // 4. Load Dashboard Metrics
     async function loadDashboardStats() {
         try {
             const stats = await eventsAPI.getOrganizerDashboardStats();
 
-            // Populate Statistic Cards
             const statTotalEvents = document.getElementById('stat-total-events');
             const statApplications = document.getElementById('stat-applications');
             const statApproved = document.getElementById('stat-approved');
@@ -47,7 +42,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (statApproved) statApproved.textContent = stats.approvedVendors ?? 0;
             if (statRevenue) statRevenue.textContent = formatCurrency(stats.totalRevenue ?? 0);
 
-            // Populate Upcoming Events Table
             const tbody = document.getElementById('upcoming-events-tbody') || document.querySelector('.table-section tbody');
             if (tbody && stats.upcomingEvents) {
                 if (stats.upcomingEvents.length === 0) {
@@ -74,10 +68,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
-            // Populate Recent Applications Section
             const appContainer = document.getElementById('recent-applications-list') || document.querySelector('.applications');
             if (appContainer && stats.recentApplications) {
-                // Keep the heading
                 const heading = appContainer.querySelector('h2');
                 const headingHtml = heading ? heading.outerHTML : '<h2>Recent Vendor Applications</h2>';
 
@@ -133,12 +125,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 5. Handle Approve / Reject Application Actions via Axios
     window.handleApplicationStatus = async (appId, newStatus) => {
         try {
             await applicationsAPI.updateStatus(appId, newStatus, `Updated by organizer to ${newStatus}`);
             showToast(`Application has been ${newStatus.toLowerCase()}!`, 'success');
-            // Refresh dashboard
             await loadDashboardStats();
         } catch (err) {
             showToast('Failed to update status: ' + err.message, 'error');

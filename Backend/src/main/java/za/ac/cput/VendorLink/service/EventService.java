@@ -46,6 +46,11 @@ public class EventService {
                 int totalStalls = request.getTotalStalls();
                 int availableStalls = request.getTotalStalls();
 
+                EventStatus initialStatus = request.getStatus() == null ? EventStatus.OPEN : request.getStatus();
+                if (initialStatus != EventStatus.DRAFT && initialStatus != EventStatus.OPEN) {
+                        throw new IllegalArgumentException("New events must be DRAFT or OPEN");
+                }
+
                 Event event = Event.builder()
                                 .title(request.getTitle().trim())
                                 .description(request.getDescription())
@@ -63,7 +68,7 @@ public class EventService {
                                 .expectedVisitors(request.getExpectedVisitors())
                                 .requirements(request.getRequirements())
                                 .bannerImageUrl(request.getBannerImageUrl())
-                                .status(request.getStatus() != null ? request.getStatus() : EventStatus.OPEN)
+                                .status(initialStatus)
                                 .build();
 
                 Event saved = eventRepository.save(event);
@@ -115,11 +120,25 @@ public class EventService {
                 if (availableStalls <= 0) {
                         event.setStatus(EventStatus.CLOSED);
                 } else if (request.getStatus() != null) {
+                        validateStatusTransition(event.getStatus(), request.getStatus());
                         event.setStatus(request.getStatus());
                 }
 
                 Event updated = eventRepository.save(event);
                 return Helper.toEventResponse(updated);
+        }
+
+        private static void validateStatusTransition(EventStatus current, EventStatus requested) {
+                if (current == requested) return;
+                if (current == EventStatus.CANCELLED || current == EventStatus.COMPLETED) {
+                        throw new IllegalStateException("A " + current + " event cannot be reopened or changed");
+                }
+                if (requested == EventStatus.COMPLETED && current != EventStatus.CLOSED) {
+                        throw new IllegalStateException("Only closed events can be marked completed");
+                }
+                if (requested == EventStatus.OPEN && current != EventStatus.DRAFT && current != EventStatus.CLOSED) {
+                        throw new IllegalStateException("Only draft or closed events can be opened");
+                }
         }
 
         @Transactional

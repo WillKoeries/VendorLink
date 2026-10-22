@@ -12,6 +12,7 @@ import za.ac.cput.VendorLink.repository.SubscriptionRepository;
 import za.ac.cput.VendorLink.repository.UserRepository;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -25,7 +26,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class PayFastSubscriptionService {
+public class PayFastSubscriptionService implements PaymentGateway {
     private static final Logger log = LoggerFactory.getLogger(PayFastSubscriptionService.class);
     private static final BigDecimal TOLERANCE = new BigDecimal("0.01");
     private static final Duration TIMEOUT = Duration.ofSeconds(15);
@@ -34,30 +35,38 @@ public class PayFastSubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
-
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(TIMEOUT).build();
 
-    @Value("${app.payfast.sandbox:true}")
+    @Value("${app.payfast.sandbox:false}")
     private boolean sandbox;
-    @Value("${app.payfast.merchant-id:10054859}")
+    @Value("${app.payfast.merchant-id}")
     private String merchantId;
-    @Value("${app.payfast.merchant-key:dku03dr7i156u}")
+    @Value("${app.payfast.merchant-key}")
     private String merchantKey;
     @Value("${app.payfast.passphrase:}")
     private String passphrase;
-    @Value("${app.payfast.return-url:http://localhost:5500/pricing.html?payment=complete}")
+    @Value("${app.payfast.return-url:https://vendorlink-1vla.onrender.com/payment-status.html?payment=complete}")
     private String returnUrl;
-    @Value("${app.payfast.cancel-url:http://localhost:5500/pricing.html?payment=cancelled}")
+    @Value("${app.payfast.cancel-url:https://vendorlink-1vla.onrender.com/payment-status.html?payment=cancelled}")
     private String cancelUrl;
-    @Value("${app.payfast.notify-url:http://localhost:8080/api/payfast/itn}")
+    @Value("${app.payfast.notify-url:https://vendorlink-1vla.onrender.com/api/payfast/itn}")
     private String notifyUrl;
-    @Value("${app.payfast.validate-source-ip:true}")
+    @Value("${app.payfast.validate-source-ip:false}")
     private boolean validateSourceIp;
     @Value("${app.payfast.simulator.enabled:false}")
     private boolean simulatorEnabled;
 
     public boolean isSimulatorEnabled() {
         return simulatorEnabled;
+    }
+
+    @Override
+    public PaymentProvider provider() {
+        return PaymentProvider.PAYFAST;
+    }
+
+    public boolean isSandbox() {
+        return sandbox;
     }
 
     public String processUrl() {
@@ -69,6 +78,12 @@ public class PayFastSubscriptionService {
     }
 
     public LinkedHashMap<String, String> begin(Long userId, String requestedPlan, String requestedCycle) {
+        return begin(userId, requestedPlan, requestedCycle, null, null);
+    }
+
+    @Override
+    public LinkedHashMap<String, String> begin(Long userId, String requestedPlan, String requestedCycle,
+                                               String clientReturnUrl, String clientCancelUrl) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User account was not found"));
         String plan = normalizePlan(requestedPlan);
@@ -86,8 +101,12 @@ public class PayFastSubscriptionService {
         LinkedHashMap<String, String> fields = new LinkedHashMap<>();
         fields.put("merchant_id", merchantId);
         fields.put("merchant_key", merchantKey);
-        fields.put("return_url", returnUrl);
-        fields.put("cancel_url", cancelUrl);
+
+        String effectiveReturnUrl = isAllowedCallbackUrl(clientReturnUrl, returnUrl) ? clientReturnUrl : returnUrl;
+        String effectiveCancelUrl = isAllowedCallbackUrl(clientCancelUrl, cancelUrl) ? clientCancelUrl : cancelUrl;
+
+        fields.put("return_url", appendParam(effectiveReturnUrl, "payment_id", subscription.getMerchantPaymentId()));
+        fields.put("cancel_url", appendParam(effectiveCancelUrl, "payment_id", subscription.getMerchantPaymentId()));
         fields.put("notify_url", notifyUrl);
         fields.put("name_first", name[0]);
         fields.put("name_last", name[1]);
@@ -99,14 +118,39 @@ public class PayFastSubscriptionService {
         return fields;
     }
 
+    static boolean isAllowedCallbackUrl(String candidate, String configuredUrl) {
+        if (candidate == null || configuredUrl == null || candidate.isBlank() || configuredUrl.isBlank()) return false;
+        try {
+            URI requested = URI.create(candidate);
+            URI configured = URI.create(configuredUrl);
+            return ("http".equalsIgnoreCase(requested.getScheme()) || "https".equalsIgnoreCase(requested.getScheme()))
+                    && requested.getUserInfo() == null
+                    && requested.getHost() != null
+                    && requested.getHost().equalsIgnoreCase(configured.getHost())
+                    && requested.getPort() == configured.getPort()
+                    && requested.getScheme().equalsIgnoreCase(configured.getScheme());
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private static String appendParam(String url, String key, String value) {
+        if (url == null || url.isBlank()) return url;
+        String separator = url.contains("?") ? "&" : "?";
+        return url + separator + key + "=" + URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+    @Override
     public void handleNotification(LinkedHashMap<String, String> posted, String sourceIp) {
         String paymentId = posted.get("m_payment_id");
         if (paymentId == null) {
             log.warn("PayFast ITN without m_payment_id");
             return;
         }
-        if (!PayFastSignature.signNotification(posted, passphrase)
-                .equalsIgnoreCase(posted.get("signature"))) {
+        String providedSignature = posted.get("signature");
+        if (!PayFastSignature.matches(
+                PayFastSignature.signNotification(posted, passphrase),
+                providedSignature == null ? null : providedSignature.toLowerCase(Locale.ROOT))) {
             log.warn("PayFast ITN for {} failed signature validation", paymentId);
             return;
         }
@@ -149,6 +193,7 @@ public class PayFastSubscriptionService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public SubscriptionResponse status(Long userId, String merchantPaymentId) {
         Subscription subscription = subscriptionRepository.findByMerchantPaymentId(merchantPaymentId)
                 .orElseThrow(() -> new IllegalArgumentException("Subscription payment was not found"));
@@ -159,10 +204,44 @@ public class PayFastSubscriptionService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public SubscriptionResponse active(Long userId) {
         return subscriptionRepository.findFirstByUserIdAndStatusOrderByCompletedAtDesc(
                         userId, SubscriptionStatus.COMPLETED)
                 .map(PayFastSubscriptionService::toResponse).orElse(null);
+    }
+
+    @Transactional
+    @Override
+    public SubscriptionResponse cancelPending(Long userId, String merchantPaymentId) {
+        Subscription subscription = subscriptionRepository.findByMerchantPaymentId(merchantPaymentId)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription payment was not found"));
+        if (!subscription.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("That subscription payment does not belong to you");
+        }
+        if (subscription.getStatus() == SubscriptionStatus.PENDING) {
+            subscription.setStatus(SubscriptionStatus.CANCELLED);
+            subscription = subscriptionRepository.save(subscription);
+            log.info("Subscription payment {} cancelled by user {}", merchantPaymentId, userId);
+        }
+        return toResponse(subscription);
+    }
+
+    @Transactional
+    @Override
+    public SubscriptionResponse confirmSandbox(Long userId, String merchantPaymentId) {
+        if (!simulatorEnabled) {
+            throw new IllegalStateException("Direct payment confirmation is only available when the local simulator is enabled");
+        }
+        Subscription subscription = subscriptionRepository.findByMerchantPaymentId(merchantPaymentId)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription payment was not found"));
+        if (!subscription.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("That subscription payment does not belong to you");
+        }
+        if (subscription.getStatus() == SubscriptionStatus.PENDING) {
+            complete(merchantPaymentId, "SANDBOX-" + merchantPaymentId);
+        }
+        return status(userId, merchantPaymentId);
     }
 
     public static BigDecimal price(String plan, String cycle) {

@@ -30,6 +30,9 @@ public class ApplicationService {
     public ApplicationResponse applyForEvent(Long vendorId, ApplicationRequest request) {
         User vendor = userRepository.findById(vendorId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", vendorId));
+        if (vendor.getRole() != Role.VENDOR) {
+            throw new UnauthorizedAccessException("submit", "vendor application");
+        }
 
         Event event = eventRepository.findById(request.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Event", request.getEventId()));
@@ -171,15 +174,20 @@ public class ApplicationService {
 
     @Transactional
     public void cancelApplication(Long applicationId, Long vendorId) {
-        Application application = applicationRepository.findById(applicationId)
+        Application application = applicationRepository.findByIdForUpdate(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
 
         if (!application.getVendor().getId().equals(vendorId)) {
             throw new UnauthorizedAccessException("cancel", "application");
         }
 
-        if (application.getStatus() != ApplicationStatus.PENDING) {
-            throw new IllegalStateException("Only pending applications can be cancelled");
+        ApplicationStatus previous = application.getStatus();
+        if (previous != ApplicationStatus.PENDING && previous != ApplicationStatus.APPROVED) {
+            throw new IllegalStateException("Only pending or approved applications can be withdrawn");
+        }
+        if (previous == ApplicationStatus.APPROVED) {
+            eventRepository.releaseStall(application.getEvent().getId());
+            eventRepository.reopenIfSpace(application.getEvent().getId(), EventStatus.CLOSED, EventStatus.OPEN);
         }
 
         application.setStatus(ApplicationStatus.CANCELLED);

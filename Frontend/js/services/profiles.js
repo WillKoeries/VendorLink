@@ -297,7 +297,6 @@ async function updateMyOrganizerProfile(data) {
   };
 }
 
-// Global window assignments
 window.getMyVendorProfile = getMyVendorProfile;
 window.updateMyVendorProfile = updateMyVendorProfile;
 window.getMyOrganizerProfile = getMyOrganizerProfile;

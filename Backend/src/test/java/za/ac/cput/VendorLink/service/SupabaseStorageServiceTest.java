@@ -8,6 +8,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Base64;
+
 public class SupabaseStorageServiceTest {
 
     private SupabaseStorageService storageService;
@@ -49,7 +51,9 @@ public class SupabaseStorageServiceTest {
     @Test
     @DisplayName("Should fallback to local storage when Supabase key is unconfigured")
     void shouldFallbackToLocalStorage() {
-        MockMultipartFile validFile = new MockMultipartFile("file", "photo.png", "image/png", "sample data".getBytes());
+        byte[] png = Base64.getDecoder().decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=");
+        MockMultipartFile validFile = new MockMultipartFile("file", "photo.png", "image/png", png);
         String url = storageService.uploadEventImage(validFile);
 
         assertThat(url).isNotNull();

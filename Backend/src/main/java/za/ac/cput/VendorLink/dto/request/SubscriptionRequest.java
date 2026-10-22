@@ -4,5 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record SubscriptionRequest(
         @NotBlank String plan,
-        @NotBlank String billingCycle
+        @NotBlank String billingCycle,
+        String returnUrl,
+        String cancelUrl
 ) {}

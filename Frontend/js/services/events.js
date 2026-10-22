@@ -322,7 +322,7 @@ async function getOrganizerEvents() {
   }
 }
 
-/** Checks the event form values. Returns an object of { fieldName: message }. */
+/** Checks the event form values. */
 function validateEventData(data, bookedStalls = 0) {
   const errors = {};
   if (!data.title || data.title.trim().length < 4) errors.title = 'Enter an event title (at least 4 characters).';
@@ -359,7 +359,6 @@ async function uploadEventImage(file) {
   if (!file.type || !file.type.startsWith('image/')) throw new Error('Please select an image file (PNG, JPG, WebP, GIF)');
   if (file.size > 5 * 1024 * 1024) throw new Error('Image size must be 5MB or less');
 
-  // In demo mode or offline without auth, read as Data URL
   if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -373,7 +372,7 @@ async function uploadEventImage(file) {
   formData.append('file', file);
 
   const authHeaders = typeof getAuthHeaders === 'function' ? getAuthHeaders() : {};
-  // Remove Content-Type so browser sets multipart/form-data boundary automatically
+
   delete authHeaders['Content-Type'];
 
   let res;
@@ -571,7 +570,6 @@ async function cancelEvent(id) {
   }
 }
 
-// Global attachments for non-module script tags
 window.getEvents = getEvents;
 window.getEventById = getEventById;
 window.getCategories = getCategories;

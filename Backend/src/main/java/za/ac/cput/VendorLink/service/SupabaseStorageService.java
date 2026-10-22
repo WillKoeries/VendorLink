@@ -14,17 +14,13 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 @Service
 public class SupabaseStorageService implements StorageService {
 
     private static final Logger log = LoggerFactory.getLogger(SupabaseStorageService.class);
-    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(".jpg", ".jpeg", ".png", ".webp", ".gif");
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
     @Value("${app.supabase.url:https://ahyhdieaxbhwlreepogy.supabase.co}")
@@ -68,15 +64,11 @@ public class SupabaseStorageService implements StorageService {
     }
 
     private String uploadImageToBucket(String bucket, String prefix, MultipartFile file) {
-        validateFile(file);
-
-        String ext = extractExtension(file.getOriginalFilename());
-        String filename = prefix + UUID.randomUUID() + ext;
-        String contentType = file.getContentType() != null ? file.getContentType() : "image/jpeg";
-
         try {
             byte[] bytes = file.getBytes();
-            return uploadFile(bucket, filename, bytes, contentType);
+            String[] imageType = detectImageType(file, bytes);
+            String filename = prefix + UUID.randomUUID() + imageType[0];
+            return uploadFile(bucket, filename, bytes, imageType[1]);
         } catch (IOException e) {
             log.error("Failed to read uploaded file bytes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to read image bytes. Please try again.");
@@ -147,26 +139,37 @@ public class SupabaseStorageService implements StorageService {
         }
     }
 
-    private void validateFile(MultipartFile file) {
+    private String[] detectImageType(MultipartFile file, byte[] bytes) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Uploaded file is empty");
-        }
-        String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("Only image files are allowed");
         }
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new IllegalArgumentException("File size exceeds 5MB limit");
         }
-    }
-
-    private String extractExtension(String originalFilename) {
-        if (originalFilename != null && originalFilename.contains(".")) {
-            String ext = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-            if (ALLOWED_EXTENSIONS.contains(ext)) {
-                return ext;
-            }
+        String declaredType = file.getContentType();
+        if (declaredType == null || !declaredType.startsWith("image/")) {
+            throw new IllegalArgumentException("Only image files are allowed");
         }
-        return ".jpg";
+
+        if (bytes.length >= 8
+                && (bytes[0] & 0xff) == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4e
+                && bytes[3] == 0x47 && bytes[4] == 0x0d && bytes[5] == 0x0a
+                && bytes[6] == 0x1a && bytes[7] == 0x0a) {
+            return new String[]{".png", "image/png"};
+        }
+        if (bytes.length >= 3 && (bytes[0] & 0xff) == 0xff && (bytes[1] & 0xff) == 0xd8
+                && (bytes[2] & 0xff) == 0xff) {
+            return new String[]{".jpg", "image/jpeg"};
+        }
+        if (bytes.length >= 6 && bytes[0] == 'G' && bytes[1] == 'I' && bytes[2] == 'F'
+                && bytes[3] == '8' && (bytes[4] == '7' || bytes[4] == '9') && bytes[5] == 'a') {
+            return new String[]{".gif", "image/gif"};
+        }
+        if (bytes.length >= 12 && bytes[0] == 'R' && bytes[1] == 'I' && bytes[2] == 'F'
+                && bytes[3] == 'F' && bytes[8] == 'W' && bytes[9] == 'E'
+                && bytes[10] == 'B' && bytes[11] == 'P') {
+            return new String[]{".webp", "image/webp"};
+        }
+        throw new IllegalArgumentException("Only valid PNG, JPEG, GIF, or WebP images are allowed");
     }
 }

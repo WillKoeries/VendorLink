@@ -54,22 +54,47 @@ async function startSubscription(button) {
   }
 
   const billingCycle = document.getElementById('annualToggle').checked ? 'ANNUAL' : 'MONTHLY';
+  const planCard = button.closest('.plan-card');
+  const planName = planCard?.querySelector('.plan-name')?.textContent?.trim() || button.dataset.paidPlan;
+  const priceNumber = planCard?.querySelector('.price-number')?.textContent?.trim() || '';
+
   button.disabled = true;
   const originalText = button.textContent;
   button.textContent = 'Opening PayFast...';
+
   try {
     const token = localStorage.getItem('token') || localStorage.getItem('vendorlink_token');
+    const origin = window.location.origin;
+
+    // Store pending payment in sessionStorage before leaving
+    sessionStorage.setItem('vl_pending_payment', JSON.stringify({
+      plan: button.dataset.paidPlan,
+      billingCycle,
+      planName,
+      amount: priceNumber,
+      timestamp: Date.now()
+    }));
+
     const response = await fetch('/api/payfast/subscriptions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ plan: button.dataset.paidPlan, billingCycle })
+      body: JSON.stringify({
+        plan: button.dataset.paidPlan,
+        billingCycle,
+        returnUrl: `${origin}/payment-status.html?payment=complete`,
+        cancelUrl: `${origin}/payment-status.html?payment=cancelled`
+      })
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.message || 'Could not start the subscription payment.');
 
+    if (data.merchantPaymentId) {
+      sessionStorage.setItem('vl_pending_payment_id', data.merchantPaymentId);
+    }
+
     if (data.simulatorEnabled) {
       await completeSimulatedPayment(data.merchantPaymentId, token);
-      showToast('Your plan has been activated.', 'success');
+      window.location.href = `payment-status.html?payment=complete&payment_id=${encodeURIComponent(data.merchantPaymentId)}`;
       return;
     }
     submitToPayFast(data);
@@ -108,9 +133,11 @@ function submitToPayFast(redirect) {
 }
 
 function showPaymentResult() {
-  const payment = new URLSearchParams(window.location.search).get('payment');
-  if (payment === 'complete') showToast('Payment received. Your plan will be active after confirmation.', 'success', 7000);
-  if (payment === 'cancelled') showToast('The payment was cancelled.', 'warning');
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('payment')) {
+    // Forward to dedicated payment status page
+    window.location.replace(`payment-status.html${window.location.search}`);
+  }
 }
 
 function updatePrices(isAnnual) {

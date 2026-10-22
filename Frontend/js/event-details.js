@@ -4,7 +4,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Extract Event ID from URL query string
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('id') || 1;
 
@@ -87,7 +86,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Modal Injection & Application Handling
     function setupApplicationModal() {
         if (!document.getElementById('application-modal')) {
             const modalHtml = `
@@ -157,7 +155,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
 
-                // Pre-fill business name if available
                 const businessInput = document.getElementById('app-business-name');
                 if (businessInput && user && user.businessName) {
                     businessInput.value = user.businessName;
