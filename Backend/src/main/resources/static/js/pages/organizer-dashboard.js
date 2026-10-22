@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('roleTag').textContent = ROLE_LABELS[state.session.role];
   document.getElementById('footerYear').textContent = new Date().getFullYear();
+  mountUserMenu(document.getElementById('topbarUserMenu'));
   if (isAdmin()) {
     ORGANIZER_TABS.events.subtitle = 'Admin view: every event on VendorLink.';
     ORGANIZER_TABS.applications.subtitle = 'Admin view: applications for every event.';
@@ -160,6 +161,20 @@ function renderOverview() {
   const capacity = trading.reduce((sum, e) => sum + e.totalStalls, 0);
   const revenue = state.events.reduce((sum, e) => sum + revenueForEvent(e), 0);
 
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const firstName = (state.user?.fullName || state.session.fullName || 'there').trim().split(/\s+/)[0];
+  document.getElementById('organizerWelcome').innerHTML = `
+    <div class="organizer-welcome-copy">
+      <span class="organizer-welcome-kicker"><i class="fa-solid fa-sparkles" aria-hidden="true"></i> ORGANIZER OVERVIEW</span>
+      <h2>${greeting}, ${escapeHtml(firstName)}</h2>
+      <p>Keep your events moving. Review new applications, check stall availability, or publish your next market.</p>
+    </div>
+    <div class="organizer-welcome-actions">
+      <button type="button" class="btn btn-light" id="overviewCreateEventBtn"><i class="fa-solid fa-plus" aria-hidden="true"></i> Create an event</button>
+      <a href="#applications" class="organizer-welcome-link">Review applications <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>`;
+
   document.getElementById('overviewStats').innerHTML = [
     statCardHtml({ label: 'Open events', value: String(openEvents.length), note: `${drafts} draft${drafts === 1 ? '' : 's'} not published yet`, icon: 'fa-calendar-check', tone: 'primary' }),
     statCardHtml({ label: 'Pending applications', value: String(pending.length), note: 'Waiting for your decision', icon: 'fa-hourglass-half', tone: 'warning' }),
@@ -173,7 +188,7 @@ function renderOverview() {
     .filter(e => [EventStatus.OPEN, EventStatus.CLOSED].includes(e.status) && isUpcoming(e))
     .slice(0, 5);
   if (!upcoming.length) {
-    renderEmpty(upcomingEl, { icon: 'fa-calendar-plus', title: 'No upcoming events', message: 'Create an event to start receiving applications.', action: { label: 'Create event', onClick: () => openEventModal(null), icon: 'fa-plus' } });
+    renderEmpty(upcomingEl, { icon: 'fa-calendar-plus', title: 'No upcoming events', message: 'Create an event to start receiving applications.', action: { label: 'Create event', onClick: () => { window.location.href = 'create-event.html'; }, icon: 'fa-plus' } });
   } else {
     upcomingEl.innerHTML = `<div class="feed">${upcoming.map(e => `
       <div class="feed-item">
@@ -222,7 +237,7 @@ function renderEventsTable() {
     : state.events.filter(e => e.status === state.eventsStatusFilter);
 
   if (!state.events.length) {
-    renderEmpty(container, { icon: 'fa-calendar-plus', title: 'You haven’t created any events yet', message: 'Create your first market or festival to start receiving vendor applications.', action: { label: 'Create your first event', onClick: () => openEventModal(null), icon: 'fa-plus' } });
+    renderEmpty(container, { icon: 'fa-calendar-plus', title: 'You haven’t created any events yet', message: 'Create your first market or festival to start receiving vendor applications.', action: { label: 'Create your first event', onClick: () => { window.location.href = 'create-event.html'; }, icon: 'fa-plus' } });
     return;
   }
   if (!events.length) {
@@ -719,7 +734,8 @@ async function confirmCancelEvent(eventId) {
 
 // ============ Listeners ============
 function setupListeners() {
-  document.getElementById('newEventBtn').addEventListener('click', () => openEventModal(null));
+  const goToCreateEvent = () => { window.location.href = 'create-event.html'; };
+  document.getElementById('newEventBtn').addEventListener('click', goToCreateEvent);
   document.getElementById('eventForm').addEventListener('submit', saveEvent);
   document.getElementById('settingsForm').addEventListener('submit', saveSettings);
   document.getElementById('exportVendorsBtn').addEventListener('click', exportVendorsCsv);
@@ -751,6 +767,8 @@ function setupListeners() {
 
   // One click handler for all the buttons that are drawn by JavaScript
   document.addEventListener('click', async (e) => {
+    if (e.target.closest('#overviewCreateEventBtn')) return goToCreateEvent();
+
     const review = e.target.closest('[data-review-id]');
     if (review) return openReviewModal(review.dataset.reviewId);
 

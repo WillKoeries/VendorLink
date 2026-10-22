@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create an event | VendorLink</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="icon" href="images/favicon_io/favicon.ico">
+</head>
+<body data-page="create-event" data-layout="dashboard">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="dashboard">
+        <aside class="dash-sidebar">
+            <div class="dash-brand">
+                <a href="index.html" class="logo">Vendor<span>Link</span></a>
+                <span class="dash-role">Organizer</span>
+            </div>
+            <nav class="dash-nav" aria-label="Organizer dashboard">
+                <a href="organizer-dashboard.html#overview" class="dash-nav-item"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Overview</a>
+                <a href="create-event.html" class="dash-nav-item is-active" aria-current="page"><i class="fa-solid fa-plus" aria-hidden="true"></i> Create event</a>
+                <a href="organizer-dashboard.html#events" class="dash-nav-item"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Events</a>
+                <a href="organizer-dashboard.html#applications" class="dash-nav-item"><i class="fa-solid fa-clipboard-list" aria-hidden="true"></i> Applications</a>
+                <a href="organizer-dashboard.html#vendors" class="dash-nav-item"><i class="fa-solid fa-store" aria-hidden="true"></i> Vendors</a>
+                <a href="organizer-dashboard.html#revenue" class="dash-nav-item"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Revenue</a>
+                <a href="organizer-dashboard.html#settings" class="dash-nav-item"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
+            </nav>
+            <div class="dash-sidebar-foot">
+                <a href="browse-events.html" class="dash-nav-item"><i class="fa-solid fa-globe" aria-hidden="true"></i> View public site</a>
+                <button type="button" class="dash-nav-item is-danger" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
+            </div>
+        </aside>
+
+        <div class="dash-main">
+            <header class="dash-topbar">
+                <div>
+                    <a class="create-event-back" href="organizer-dashboard.html#events"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to events</a>
+                    <h1>Create an event</h1>
+                    <p>Share your market with vendors and start receiving applications.</p>
+                </div>
+                <div class="dash-topbar-actions"><div id="topbarUserMenu"></div></div>
+            </header>
+
+            <main class="dash-content create-event-content" id="main">
+                <div class="create-event-intro">
+                    <span class="create-event-intro-icon"><i class="fa-solid fa-calendar-plus" aria-hidden="true"></i></span>
+                    <div><h2>Event details</h2><p>Fields marked <span class="required">*</span> are required. Your banner will appear on event listings.</p></div>
+                </div>
+
+                <form id="createEventForm" class="create-event-form" novalidate>
+                    <div class="alert alert-error" id="createEventAlert" role="alert" tabindex="-1" hidden></div>
+                    <section class="create-event-section">
+                        <h3><i class="fa-regular fa-pen-to-square" aria-hidden="true"></i> About the event</h3>
+                        <div class="form-group">
+                            <label class="form-label" for="eventTitle">Event title <span class="required">*</span></label>
+                            <input class="form-control" id="eventTitle" name="title" maxlength="120" required placeholder="e.g. Cape Town Summer Market">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label" for="eventCategory">Category</label><select class="form-control" id="eventCategory" name="categoryId"><option value="">Loading categories…</option></select></div>
+                            <div class="form-group"><label class="form-label" for="eventStatus">Publishing status</label><select class="form-control" id="eventStatus" name="status"><option value="DRAFT">Save as draft</option><option value="OPEN">Publish and accept applications</option></select><p class="form-hint">Drafts are visible only to you.</p></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="eventDescription">Description <span class="required">*</span></label><textarea class="form-control" id="eventDescription" name="description" rows="5" maxlength="2000" required placeholder="Tell vendors and visitors what makes your event special."></textarea><p class="form-hint">Add at least 20 characters to help vendors decide whether to apply.</p></div>
+                    </section>
+
+                    <section class="create-event-section">
+                        <h3><i class="fa-regular fa-calendar" aria-hidden="true"></i> Date and location</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label" for="eventDate">Start date <span class="required">*</span></label><input class="form-control" type="date" id="eventDate" name="date" required></div>
+                            <div class="form-group"><label class="form-label" for="eventEndDate">End date</label><input class="form-control" type="date" id="eventEndDate" name="endDate"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label" for="eventTime">Trading hours</label><input class="form-control" id="eventTime" name="time" maxlength="40" placeholder="e.g. 09:00 – 17:00"></div>
+                            <div class="form-group"><label class="form-label" for="eventVisitors">Expected visitors</label><input class="form-control" id="eventVisitors" name="expectedVisitors" maxlength="40" placeholder="e.g. 3,000+"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="eventLocation">Venue / address <span class="required">*</span></label><input class="form-control" id="eventLocation" name="location" maxlength="160" required placeholder="Venue name and street address"></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label" for="eventCity">City <span class="required">*</span></label><input class="form-control" id="eventCity" name="city" maxlength="80" required></div>
+                            <div class="form-group"><label class="form-label" for="eventProvince">Province <span class="required">*</span></label><select class="form-control" id="eventProvince" name="province" required><option value="">Choose a province</option></select></div>
+                        </div>
+                    </section>
+
+                    <section class="create-event-section">
+                        <h3><i class="fa-solid fa-store" aria-hidden="true"></i> Stall information</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label" for="eventFee">Stall fee (R) <span class="required">*</span></label><input class="form-control" type="number" id="eventFee" name="stallFee" min="0" step="10" required></div>
+                            <div class="form-group"><label class="form-label" for="eventStalls">Total stalls <span class="required">*</span></label><input class="form-control" type="number" id="eventStalls" name="totalStalls" min="1" step="1" required></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="eventRequirements">Trading requirements</label><textarea class="form-control" id="eventRequirements" name="requirements" rows="3" maxlength="2000" placeholder="List any requirements vendors should know about"></textarea></div>
+                    </section>
+
+                    <section class="create-event-section">
+                        <h3><i class="fa-regular fa-image" aria-hidden="true"></i> Event banner</h3>
+                        <p class="text-muted">Upload an image or paste an image URL. The saved URL will be stored in <code>banner_image_url</code>.</p>
+                        <div class="create-event-banner" id="bannerDropZone">
+                            <input type="file" id="bannerFile" accept="image/png,image/jpeg,image/webp,image/gif" class="file-input-hidden" aria-label="Choose event banner image">
+                            <div id="bannerUploadPrompt" class="upload-prompt"><i class="fa-solid fa-cloud-arrow-up upload-icon" aria-hidden="true"></i><p><strong>Choose a banner image</strong> or drag it here</p><small class="upload-hint">PNG, JPG, WebP or GIF · up to 5 MB</small></div>
+                            <div id="bannerPreviewBox" class="banner-preview-box" hidden><img id="bannerPreview" src="" alt="Event banner preview"><button type="button" class="btn btn-sm btn-danger remove-preview-btn" id="removeBannerBtn"><i class="fa-solid fa-trash" aria-hidden="true"></i> Remove image</button></div>
+                        </div>
+                        <p id="bannerUploadStatus" class="form-hint" aria-live="polite">The image uploads securely and its public URL is saved with the event.</p>
+                        <div class="form-group"><label class="form-label" for="bannerUrl">Or paste an image URL</label><input class="form-control" type="url" id="bannerUrl" name="bannerImageUrl" placeholder="https://example.com/event-banner.jpg"><input type="hidden" id="bannerImageUrl"></div>
+                    </section>
+
+                    <div class="create-event-actions"><a class="btn btn-secondary" href="organizer-dashboard.html#events">Cancel</a><button type="submit" id="createEventSubmit" class="btn btn-primary"><i class="fa-solid fa-check" aria-hidden="true"></i> Create event</button></div>
+                </form>
+
+                <section id="createEventSuccess" class="create-event-success" hidden aria-live="polite">
+                    <span class="success-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+                    <h2>Event created</h2>
+                    <p id="createEventSuccessText"></p>
+                    <div class="create-event-actions"><a href="organizer-dashboard.html#events" class="btn btn-primary">Go to my events</a><a href="browse-events.html" class="btn btn-secondary">View public events</a></div>
+                </section>
+            </main>
+            <footer class="dash-footer"><span>&copy; <span id="footerYear"></span> VendorLink</span><a href="organizer-dashboard.html#overview">Dashboard</a></footer>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script type="module" src="js/services/auth.js"></script>
+    <script src="js/services/events.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/pages/create-event.js"></script>
+</body>
+</html>

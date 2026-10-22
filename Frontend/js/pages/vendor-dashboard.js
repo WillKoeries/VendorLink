@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!state.session) return;
 
   document.getElementById('footerYear').textContent = new Date().getFullYear();
+  mountUserMenu(document.getElementById('topbarUserMenu'));
   setupDashboardShell({ tabs: VENDOR_TABS, defaultTab: 'overview' });
   setupListeners();
   showArrivalMessages();

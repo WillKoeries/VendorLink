@@ -80,6 +80,34 @@ const NAV_LINKS = [
 
 const ROLE_LABELS = { VENDOR: 'Vendor', ORGANIZER: 'Organizer', ADMIN: 'Admin' };
 
+/** Set up the shared hash-based navigation used by vendor and organizer dashboards. */
+function setupDashboardShell({ tabs, defaultTab = 'overview' } = {}) {
+  const views = [...document.querySelectorAll('[data-view]')];
+  const navItems = [...document.querySelectorAll('.dash-nav [data-tab]')];
+  const heading = document.getElementById('pageHeading');
+  const subheading = document.getElementById('pageSubheading');
+  const availableTabs = tabs || {};
+
+  function activateTab(tabName, updateUrl = false) {
+    const tab = Object.hasOwn(availableTabs, tabName) ? tabName : defaultTab;
+    views.forEach(view => { view.hidden = view.dataset.view !== tab; });
+    navItems.forEach(item => {
+      const active = item.dataset.tab === tab;
+      item.classList.toggle('is-active', active);
+      if (active) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+    if (heading) heading.textContent = availableTabs[tab]?.title || tab;
+    if (subheading) subheading.textContent = availableTabs[tab]?.subtitle || '';
+    if (updateUrl && window.location.hash !== `#${tab}`) {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${tab}`);
+    }
+  }
+
+  window.addEventListener('hashchange', () => activateTab(window.location.hash.slice(1)));
+  activateTab(window.location.hash.slice(1) || defaultTab, !window.location.hash);
+}
+
 // ============================================================================
 // Demo Banner (Safe execution without crashing if APP_CONFIG is missing)
 // ============================================================================
@@ -100,6 +128,9 @@ function renderDemoBanner() {
 // Navbar Renderer
 // ============================================================================
 function renderSiteHeader() {
+  // Dashboard pages provide their own top bar and must not be replaced by the public navbar.
+  if (document.body?.dataset.layout === 'dashboard') return;
+
   // Look for any header container (#siteHeader, #site-header, or tag <header>)
   const header = document.getElementById('siteHeader')
       || document.getElementById('site-header')
@@ -229,6 +260,8 @@ function mountUserMenu(container) {
 // Footer Renderer
 // ============================================================================
 function renderSiteFooter() {
+  if (document.body?.dataset.layout === 'dashboard') return;
+
   const footer = document.getElementById('siteFooter')
       || document.getElementById('site-footer')
       || document.querySelector('footer');
