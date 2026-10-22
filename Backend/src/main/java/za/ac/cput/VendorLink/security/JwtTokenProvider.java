@@ -20,20 +20,26 @@ public class JwtTokenProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${app.jwt.secret}")
+    @Value("${app.jwt.secret:}")
     private String jwtSecret;
 
     @Value("${app.jwt.ttl-seconds}")
     private long jwtTtlSeconds;
 
+    private SecretKey ephemeralSigningKey;
+
     @PostConstruct
     public void validateConfiguration() {
-        if (jwtSecret == null || jwtSecret.getBytes(StandardCharsets.UTF_8).length < 32) {
+        if (jwtSecret == null || jwtSecret.isBlank()) {
+            ephemeralSigningKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+            log.warn("JWT_SECRET is not configured; using an ephemeral signing key. Configure JWT_SECRET in Render to preserve sessions across restarts.");
+        } else if (jwtSecret.getBytes(StandardCharsets.UTF_8).length < 32) {
             throw new IllegalStateException("app.jwt.secret must be at least 32 bytes long");
         }
     }
 
     private SecretKey signingKey() {
+        if (ephemeralSigningKey != null) return ephemeralSigningKey;
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         if (keyBytes.length < 32) {
             throw new IllegalStateException("app.jwt.secret must be at least 32 bytes long");

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.ac.cput.VendorLink.domain.*;
 import za.ac.cput.VendorLink.dto.response.SubscriptionResponse;
+import za.ac.cput.VendorLink.factory.PaymentGateway;
+import za.ac.cput.VendorLink.factory.PaymentProvider;
 import za.ac.cput.VendorLink.repository.SubscriptionRepository;
 import za.ac.cput.VendorLink.repository.UserRepository;
 
@@ -39,9 +41,9 @@ public class PayFastSubscriptionService implements PaymentGateway {
 
     @Value("${app.payfast.sandbox:false}")
     private boolean sandbox;
-    @Value("${app.payfast.merchant-id}")
+    @Value("${app.payfast.merchant-id:}")
     private String merchantId;
-    @Value("${app.payfast.merchant-key}")
+    @Value("${app.payfast.merchant-key:}")
     private String merchantKey;
     @Value("${app.payfast.passphrase:}")
     private String passphrase;
@@ -84,6 +86,7 @@ public class PayFastSubscriptionService implements PaymentGateway {
     @Override
     public LinkedHashMap<String, String> begin(Long userId, String requestedPlan, String requestedCycle,
                                                String clientReturnUrl, String clientCancelUrl) {
+        requireConfigured();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User account was not found"));
         String plan = normalizePlan(requestedPlan);
@@ -142,6 +145,10 @@ public class PayFastSubscriptionService implements PaymentGateway {
 
     @Override
     public void handleNotification(LinkedHashMap<String, String> posted, String sourceIp) {
+        if (merchantId == null || merchantId.isBlank() || merchantKey == null || merchantKey.isBlank()) {
+            log.error("Ignoring PayFast ITN because PayFast credentials are not configured");
+            return;
+        }
         String paymentId = posted.get("m_payment_id");
         if (paymentId == null) {
             log.warn("PayFast ITN without m_payment_id");
@@ -325,6 +332,12 @@ public class PayFastSubscriptionService implements PaymentGateway {
         String clean = fullName == null ? "VendorLink customer" : fullName.trim();
         int space = clean.indexOf(' ');
         return space < 0 ? new String[]{clean, ""} : new String[]{clean.substring(0, space), clean.substring(space + 1)};
+    }
+
+    private void requireConfigured() {
+        if (merchantId == null || merchantId.isBlank() || merchantKey == null || merchantKey.isBlank()) {
+            throw new IllegalStateException("PayFast is not configured. Set PAYFAST_MERCHANT_ID and PAYFAST_MERCHANT_KEY.");
+        }
     }
 
     private static SubscriptionResponse toResponse(Subscription subscription) {

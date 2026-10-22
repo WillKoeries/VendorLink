@@ -158,6 +158,14 @@ function eventImageUrl(event) {
   return safeUrl(event.bannerImageUrl) || FALLBACK_IMAGES.event;
 }
 
+function eventBannerFallback(event) {
+  const details = `${event?.title || ''} ${event?.description || ''} ${event?.category?.name || event?.categoryName || ''}`.toLowerCase();
+  if (/\b(craft|artisan|handmade|maker)\b/.test(details)) {
+    return 'images/events/umhlanga-artisan-craft-fair.jpg';
+  }
+  return FALLBACK_IMAGES.event;
+}
+
 /** Round avatar: the profile image if there is one, otherwise the person's initials. */
 function avatarHtml(name, imageUrl, sizeClass = '') {
   const url = safeUrl(imageUrl);

@@ -27,15 +27,21 @@ function demoDateTime(daysAgo, hour = 10) {
   return d.toISOString();
 }
 
+// One photo file per event (named after the event), stored locally so the demo works offline.
+// Photos from Unsplash (https://unsplash.com/license).
 const DEMO_IMAGES = {
-  foodMarket: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
-  foodTrucks: 'https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?auto=format&fit=crop&w=1200&q=80',
-  crafts: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=80',
-  nightMarket: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80',
-  produce: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1200&q=80',
-  fashion: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1200&q=80',
-  community: 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=1200&q=80',
-  lights: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80'
+  foodMarket: 'images/events/cape-town-summer-market.jpg',
+  foodTrucks: 'images/events/joburg-street-food-carnival.jpg',
+  crafts: 'images/events/umhlanga-artisan-craft-fair.jpg',
+  nightMarket: 'images/events/pretoria-twilight-fest.jpg',
+  produce: 'images/events/stellenbosch-fresh-valley-market.jpg',
+  fashion: 'images/events/maboneng-vintage-thrift-fair.jpg',
+  waterfront: 'images/events/gqeberha-beachfront-makers-market.jpg',
+  nightFood: 'images/events/durban-spice-route-night-market.jpg',
+  techExpo: 'images/events/cape-town-tech-design-pop-up.jpg',
+  winterStew: 'images/events/winter-warmers-food-market.jpg',
+  beadwork: 'images/events/heritage-month-craft-expo.jpg',
+  soaps: 'images/events/paarl-wellness-weekend-market.jpg'
 };
 
 // ---------- Users (UML: User) ----------
@@ -161,7 +167,7 @@ const MOCK_EVENTS = [
     location: 'Hobie Beach boardwalk', city: 'Gqeberha', province: 'Eastern Cape',
     stallFee: 200, totalStalls: 14, availableStalls: 13, expectedVisitors: '3,500',
     requirements: 'Handmade or locally designed goods\nWind-proof displays recommended',
-    bannerImageUrl: DEMO_IMAGES.community, status: 'OPEN'
+    bannerImageUrl: DEMO_IMAGES.waterfront, status: 'OPEN'
   },
   {
     id: 8, organizerId: 103, categoryId: 5,
@@ -171,7 +177,7 @@ const MOCK_EVENTS = [
     location: 'Durban Station Drive precinct', city: 'Durban', province: 'KwaZulu-Natal',
     stallFee: 300, totalStalls: 10, availableStalls: 9, expectedVisitors: '5,000',
     requirements: 'Food vendors need a Certificate of Acceptability\nOwn lighting required',
-    bannerImageUrl: DEMO_IMAGES.lights, status: 'OPEN'
+    bannerImageUrl: DEMO_IMAGES.nightFood, status: 'OPEN'
   },
   {
     id: 9, organizerId: 101, categoryId: 7,
@@ -181,7 +187,7 @@ const MOCK_EVENTS = [
     location: 'V&A Waterfront, Makers Landing', city: 'Cape Town', province: 'Western Cape',
     stallFee: 600, totalStalls: 8, availableStalls: 8, expectedVisitors: '7,000',
     requirements: 'Power point supplied per stand\nProduct liability insurance recommended',
-    bannerImageUrl: '', status: 'OPEN'
+    bannerImageUrl: DEMO_IMAGES.techExpo, status: 'OPEN'
   },
   {
     id: 10, organizerId: 101, categoryId: 1,
@@ -191,7 +197,7 @@ const MOCK_EVENTS = [
     location: 'Old Biscuit Mill, Woodstock', city: 'Cape Town', province: 'Western Cape',
     stallFee: 220, totalStalls: 8, availableStalls: 4, expectedVisitors: '3,200',
     requirements: 'Certificate of Acceptability required',
-    bannerImageUrl: DEMO_IMAGES.foodMarket, status: 'COMPLETED'
+    bannerImageUrl: DEMO_IMAGES.winterStew, status: 'COMPLETED'
   },
   {
     id: 11, organizerId: 101, categoryId: 2,
@@ -201,7 +207,7 @@ const MOCK_EVENTS = [
     location: 'Castle of Good Hope', city: 'Cape Town', province: 'Western Cape',
     stallFee: 200, totalStalls: 12, availableStalls: 12, expectedVisitors: '',
     requirements: '',
-    bannerImageUrl: '', status: 'DRAFT'
+    bannerImageUrl: DEMO_IMAGES.beadwork, status: 'DRAFT'
   },
   {
     id: 12, organizerId: 101, categoryId: 6,
@@ -211,7 +217,7 @@ const MOCK_EVENTS = [
     location: 'Paarl Arboretum', city: 'Paarl', province: 'Western Cape',
     stallFee: 180, totalStalls: 10, availableStalls: 10, expectedVisitors: '1,500',
     requirements: '',
-    bannerImageUrl: DEMO_IMAGES.community, status: 'CANCELLED'
+    bannerImageUrl: DEMO_IMAGES.soaps, status: 'CANCELLED'
   }
 ];
 
@@ -342,7 +348,7 @@ const MOCK_DATA = {
 //  (applying, approving, editing a profile…) carry across pages until the
 //  tab is closed. This is NOT a real database.
 // ============================================================
-const DEMO_DB_KEY = 'vendorlink_demo_db_v1';
+const DEMO_DB_KEY = 'vendorlink_demo_db_v2'; // bump when MOCK_DATA changes so open tabs pick it up
 
 function getDemoDb() {
   try {

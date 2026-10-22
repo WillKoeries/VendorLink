@@ -1,4 +1,4 @@
-package za.ac.cput.VendorLink.service;
+package za.ac.cput.VendorLink.factory;
 
 import org.springframework.stereotype.Component;
 

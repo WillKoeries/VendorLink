@@ -7,7 +7,6 @@
  *   PENDING → CANCELLED             (vendor withdraws, or the event is cancelled)
  *
  * Fully integrated with Spring Boot REST API (/api/applications).
- * Supports DEMO_MODE fallback if APP_CONFIG.DEMO_MODE is true.
  */
 
 // ---------- Helpers ----------

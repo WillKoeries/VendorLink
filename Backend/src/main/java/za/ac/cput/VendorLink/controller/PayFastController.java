@@ -16,9 +16,9 @@ import za.ac.cput.VendorLink.dto.request.SubscriptionRequest;
 import za.ac.cput.VendorLink.dto.response.PayFastRedirectResponse;
 import za.ac.cput.VendorLink.dto.response.SubscriptionResponse;
 import za.ac.cput.VendorLink.security.CustomUserDetails;
-import za.ac.cput.VendorLink.service.PaymentGateway;
-import za.ac.cput.VendorLink.service.PaymentGatewayFactory;
-import za.ac.cput.VendorLink.service.PaymentProvider;
+import za.ac.cput.VendorLink.factory.PaymentGateway;
+import za.ac.cput.VendorLink.factory.PaymentGatewayFactory;
+import za.ac.cput.VendorLink.factory.PaymentProvider;
 
 import java.io.IOException;
 import java.net.URLDecoder;
