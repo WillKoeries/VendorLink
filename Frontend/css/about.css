@@ -261,112 +261,6 @@
   font-size: 1rem;
 }
 
-/* ---------- Team ---------- */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.team-card {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  background: #ffffff;
-  border: 1.5px solid var(--slate-200);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.team-card:hover {
-  transform: translateY(-6px);
-  border-color: #3b82f6;
-}
-
-.team-banner {
-  position: relative;
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--navy) 0%, #1e3a8a 100%);
-}
-
-.team-orb {
-  position: absolute;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  filter: blur(28px);
-  opacity: 0.5;
-}
-
-.orb-blue { background: #3b82f6; }
-.orb-green { background: #10b981; }
-.orb-purple { background: #8b5cf6; }
-.orb-amber { background: #f59e0b; }
-
-.team-glyph {
-  position: relative;
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-}
-
-.team-info {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 24px 18px;
-}
-
-.team-info h3 {
-  font-size: 1.15rem;
-  font-weight: 800;
-}
-
-.team-role {
-  color: var(--primary);
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
-}
-
-.team-info > p:not(.team-role) {
-  flex: 1;
-  color: var(--slate-500);
-  font-size: 0.88rem;
-  margin-bottom: 14px;
-}
-
-.tag-row {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tech-tag {
-  background: var(--slate-100);
-  color: var(--slate-700);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.74rem;
-  font-weight: 600;
-}
-
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
   .story-grid,
@@ -377,10 +271,6 @@
   .pillars-grid {
     max-width: 640px;
     margin-inline: auto;
-  }
-
-  .team-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .scope-grid {
@@ -395,8 +285,7 @@
     padding: 56px 0;
   }
 
-  .story-points,
-  .team-grid {
+  .story-points {
     grid-template-columns: 1fr;
   }
 }

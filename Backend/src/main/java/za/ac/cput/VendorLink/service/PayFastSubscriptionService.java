@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.ac.cput.VendorLink.domain.*;
 import za.ac.cput.VendorLink.dto.response.SubscriptionResponse;
+import za.ac.cput.VendorLink.factory.PaymentGateway;
+import za.ac.cput.VendorLink.factory.PaymentProvider;
 import za.ac.cput.VendorLink.repository.SubscriptionRepository;
 import za.ac.cput.VendorLink.repository.UserRepository;
 

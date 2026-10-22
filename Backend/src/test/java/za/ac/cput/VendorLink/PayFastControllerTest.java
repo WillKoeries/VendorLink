@@ -13,10 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import za.ac.cput.VendorLink.domain.SubscriptionStatus;
 import za.ac.cput.VendorLink.dto.request.SubscriptionRequest;
 import za.ac.cput.VendorLink.dto.response.SubscriptionResponse;
+import za.ac.cput.VendorLink.factory.PaymentGatewayFactory;
+import za.ac.cput.VendorLink.factory.PaymentProvider;
 import za.ac.cput.VendorLink.security.CustomUserDetails;
 import za.ac.cput.VendorLink.service.PayFastSubscriptionService;
-import za.ac.cput.VendorLink.service.PaymentGatewayFactory;
-import za.ac.cput.VendorLink.service.PaymentProvider;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
