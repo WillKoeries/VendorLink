@@ -31,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDashboardShell({ tabs: VENDOR_TABS, defaultTab: 'overview' });
   setupListeners();
   showArrivalMessages();
-  loadDashboard();
+  loadDashboard().then(showApplicationPaymentResult);
+  window.setInterval(refreshApplications, 30000);
+  window.addEventListener('focus', refreshApplications);
 });
 
 function showArrivalMessages() {
@@ -102,12 +104,23 @@ function renderOverview() {
   // Nudge vendors to finish their profile
   const p = state.profile || {};
   const missing = [!p.description && 'a description', !p.category && 'a category', !p.city && 'your city'].filter(Boolean);
-  document.getElementById('profilePrompt').innerHTML = missing.length ? `
+  const paymentDue = state.applications.filter(a => a.status === ApplicationStatus.APPROVED
+    && ['UNPAID', 'PENDING'].includes(a.paymentStatus));
+  const paymentPrompt = paymentDue.length ? `
+    <div class="alert alert-warning">
+      <i class="fa-solid fa-wallet" aria-hidden="true"></i>
+      <span>${paymentDue.length === 1
+        ? `Your application for <strong>${escapeHtml(paymentDue[0].event?.title || 'an event')}</strong> was approved. Pay ${escapeHtml(formatCurrency(paymentDue[0].paymentAmount))} to confirm your stall.`
+        : `${paymentDue.length} approved applications need stall-fee payment to confirm your places.`}
+        <a href="#applications">View applications</a></span>
+    </div>` : '';
+  const profilePrompt = missing.length ? `
     <div class="alert alert-warning">
       <i class="fa-solid fa-user-pen" aria-hidden="true"></i>
       <span>Your profile is missing ${escapeHtml(missing.join(', '))}. Organisers see your profile when you apply.
         <a href="#profile">Complete your profile</a></span>
     </div>` : '';
+  document.getElementById('profilePrompt').innerHTML = paymentPrompt + profilePrompt;
 
   const unread = state.notifications.filter(n => !n.isRead).length;
   const stat = (label, value, note, icon, tone) => `
@@ -165,6 +178,17 @@ function renderOverview() {
   navCount.textContent = unread;
 }
 
+async function refreshApplications() {
+  if (document.hidden || !state.session) return;
+  try {
+    state.applications = await getMyApplications(true);
+    renderOverview();
+    renderApplications();
+  } catch (err) {
+    console.warn('Could not refresh vendor applications:', err);
+  }
+}
+
 // ============ My applications ============
 function renderApplications() {
   const statuses = ['all', ...Object.values(ApplicationStatus)];
@@ -197,6 +221,8 @@ function renderApplications() {
 function applicationCardHtml(a) {
   const e = a.event;
   const canWithdraw = a.status === ApplicationStatus.PENDING;
+  const paymentDue = a.status === ApplicationStatus.APPROVED
+    && ['UNPAID', 'PENDING'].includes(a.paymentStatus);
   const note = a.reviewNotes
     ? `<div class="review-note"><strong>Organiser’s note:</strong> ${escapeHtml(a.reviewNotes)}</div>` : '';
   const eventCancelled = e && e.status === EventStatus.CANCELLED
@@ -217,8 +243,11 @@ function applicationCardHtml(a) {
       </div>
       <div class="application-side">
         ${applicationStatusBadge(a.status)}
+        ${a.status === ApplicationStatus.APPROVED && a.paymentStatus === 'PAID'
+          ? '<span class="badge badge-success"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Paid</span>' : ''}
         <div class="application-actions">
           ${e ? `<a class="btn btn-secondary btn-sm" href="event-details.html?id=${e.id}">View event</a>` : ''}
+          ${paymentDue ? `<button type="button" class="btn btn-primary btn-sm" data-pay-application="${a.id}"><i class="fa-solid fa-wallet" aria-hidden="true"></i> ${a.paymentStatus === 'PENDING' ? 'Continue payment' : `Pay ${escapeHtml(formatCurrency(a.paymentAmount))}`}</button>` : ''}
           ${canWithdraw ? `<button type="button" class="btn btn-danger btn-sm" data-withdraw-id="${a.id}">Withdraw</button>` : ''}
         </div>
       </div>
@@ -367,6 +396,12 @@ function setupListeners() {
       return;
     }
 
+    const pay = e.target.closest('[data-pay-application]');
+    if (pay) {
+      await payForApprovedApplication(pay);
+      return;
+    }
+
     // Notification lists on this page: mark as read, then follow the link
     const notification = e.target.closest('.dash-content [data-notification-id]');
     if (notification) {
@@ -376,4 +411,60 @@ function setupListeners() {
       window.location.href = notification.getAttribute('href');
     }
   });
+}
+
+async function payForApprovedApplication(button) {
+  const applicationId = Number(button.dataset.payApplication);
+  button.disabled = true;
+  const originalHtml = button.innerHTML;
+  button.innerHTML = '<span class="spinner" aria-hidden="true"></span> Opening PayFast…';
+  const origin = window.location.origin;
+  try {
+    const redirect = await startApplicationPayment(
+      applicationId,
+      `${origin}/vendor-dashboard.html?stall_payment=complete&application_id=${applicationId}#applications`,
+      `${origin}/vendor-dashboard.html?stall_payment=cancelled&application_id=${applicationId}#applications`
+    );
+    submitToPayFast(redirect);
+  } catch (err) {
+    showToast(err.message || 'Could not start the stall payment.', 'error');
+    button.disabled = false;
+    button.innerHTML = originalHtml;
+  }
+}
+
+function submitToPayFast(redirect) {
+  const processUrl = new URL(redirect.processUrl);
+  if (processUrl.protocol !== 'https:'
+      || !['sandbox.payfast.co.za', 'www.payfast.co.za'].includes(processUrl.hostname)) {
+    throw new Error('The PayFast checkout URL is invalid.');
+  }
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = processUrl.href;
+  form.hidden = true;
+  Object.entries(redirect.fields || {}).forEach(([name, value]) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  });
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function showApplicationPaymentResult() {
+  const params = new URLSearchParams(window.location.search);
+  const result = params.get('stall_payment');
+  if (!result) return;
+  const application = state.applications.find(a => a.id === Number(params.get('application_id')));
+  if (result === 'cancelled') {
+    showToast('Payment was cancelled. You can continue it from My applications.', 'info', 6000);
+  } else if (application?.paymentStatus === 'PAID') {
+    showToast('Payment confirmed. Your stall is paid.', 'success', 6000);
+  } else {
+    showToast('PayFast returned you to VendorLink. Your payment status will update after confirmation.', 'info', 7000);
+  }
+  history.replaceState(null, '', `${window.location.pathname}${window.location.hash}`);
 }

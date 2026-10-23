@@ -29,6 +29,12 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     Optional<Application> findByEventIdAndVendorId(Long eventId, Long vendorId);
 
+    Optional<Application> findByMerchantPaymentId(String merchantPaymentId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Application a WHERE a.merchantPaymentId = :merchantPaymentId")
+    Optional<Application> findByMerchantPaymentIdForUpdate(@Param("merchantPaymentId") String merchantPaymentId);
+
     long countByEvent_Organizer_Id(Long organizerId);
 
     long countByEvent_Organizer_IdAndStatus(Long organizerId, ApplicationStatus status);

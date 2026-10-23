@@ -84,6 +84,9 @@ public class Helper {
                 .reviewNotes(app.getReviewNotes())
                 .appliedAt(app.getAppliedAt())
                 .reviewedAt(app.getReviewedAt())
+                .paymentStatus(app.getPaymentStatus())
+                .paymentAmount(app.getPaymentAmount())
+                .paymentCompletedAt(app.getPaymentCompletedAt())
                 .build();
     }
 

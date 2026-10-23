@@ -3,6 +3,7 @@ package za.ac.cput.VendorLink.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -47,6 +48,22 @@ public class Application {
     private LocalDateTime appliedAt;
 
     private LocalDateTime reviewedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private ApplicationPaymentStatus paymentStatus = ApplicationPaymentStatus.NOT_REQUIRED;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal paymentAmount;
+
+    @Column(unique = true, length = 64)
+    private String merchantPaymentId;
+
+    @Column(unique = true, length = 64)
+    private String pfPaymentId;
+
+    private LocalDateTime paymentCompletedAt;
 
     @PrePersist
     public void prePersist() {

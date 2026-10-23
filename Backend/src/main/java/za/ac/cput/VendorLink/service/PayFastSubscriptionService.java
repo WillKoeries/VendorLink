@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.ac.cput.VendorLink.domain.*;
 import za.ac.cput.VendorLink.dto.response.SubscriptionResponse;
+import za.ac.cput.VendorLink.dto.response.PayFastRedirectResponse;
+import za.ac.cput.VendorLink.repository.ApplicationRepository;
 import za.ac.cput.VendorLink.factory.PaymentGateway;
 import za.ac.cput.VendorLink.factory.PaymentProvider;
 import za.ac.cput.VendorLink.repository.SubscriptionRepository;
@@ -36,7 +38,9 @@ public class PayFastSubscriptionService implements PaymentGateway {
             "www.payfast.co.za", "sandbox.payfast.co.za", "w1w.payfast.co.za", "w2w.payfast.co.za");
 
     private final SubscriptionRepository subscriptionRepository;
+    private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(TIMEOUT).build();
 
     @Value("${app.payfast.sandbox:false}")
@@ -121,6 +125,63 @@ public class PayFastSubscriptionService implements PaymentGateway {
         return fields;
     }
 
+    @Transactional
+    public PayFastRedirectResponse beginApplicationPayment(Long userId, Long applicationId,
+                                                           String clientReturnUrl, String clientCancelUrl) {
+        requireConfigured();
+        Application application = applicationRepository.findByIdForUpdate(applicationId)
+                .orElseThrow(() -> new IllegalArgumentException("Application was not found"));
+        if (!application.getVendor().getId().equals(userId)) {
+            throw new IllegalArgumentException("That application does not belong to you");
+        }
+        if (application.getStatus() != ApplicationStatus.APPROVED) {
+            throw new IllegalStateException("You can pay after the organiser approves your application");
+        }
+        if (application.getPaymentStatus() == ApplicationPaymentStatus.PAID) {
+            throw new IllegalStateException("This stall fee has already been paid");
+        }
+        if (application.getEvent().getStatus() == EventStatus.CANCELLED
+                || application.getEvent().getStatus() == EventStatus.COMPLETED) {
+            throw new IllegalStateException("This event is no longer accepting stall payments");
+        }
+
+        BigDecimal amount = application.getPaymentAmount() != null
+                ? application.getPaymentAmount() : application.getEvent().getStallFee();
+        if (amount == null || amount.signum() <= 0) {
+            throw new IllegalStateException("No payment is due for this application");
+        }
+        if (amount.compareTo(new BigDecimal("5.00")) < 0) {
+            throw new IllegalStateException("PayFast payments must be at least R5.00. Ask the organiser to update the stall fee.");
+        }
+
+        if (application.getPaymentStatus() != ApplicationPaymentStatus.PENDING
+                || application.getMerchantPaymentId() == null) {
+            application.setMerchantPaymentId("APP-" + UUID.randomUUID());
+        }
+        application.setPaymentStatus(ApplicationPaymentStatus.PENDING);
+        application.setPaymentAmount(amount);
+        applicationRepository.save(application);
+
+        String[] name = splitName(application.getVendor().getFullName());
+        String effectiveReturnUrl = isAllowedCallbackUrl(clientReturnUrl, returnUrl) ? clientReturnUrl : returnUrl;
+        String effectiveCancelUrl = isAllowedCallbackUrl(clientCancelUrl, cancelUrl) ? clientCancelUrl : cancelUrl;
+        LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+        fields.put("merchant_id", merchantId);
+        fields.put("merchant_key", merchantKey);
+        fields.put("return_url", appendParam(effectiveReturnUrl, "payment_id", application.getMerchantPaymentId()));
+        fields.put("cancel_url", appendParam(effectiveCancelUrl, "payment_id", application.getMerchantPaymentId()));
+        fields.put("notify_url", notifyUrl);
+        fields.put("name_first", name[0]);
+        fields.put("name_last", name[1]);
+        fields.put("email_address", application.getVendor().getEmail());
+        fields.put("m_payment_id", application.getMerchantPaymentId());
+        fields.put("amount", amount.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString());
+        String itemName = "VendorLink stall fee - " + application.getEvent().getTitle();
+        fields.put("item_name", itemName.substring(0, Math.min(itemName.length(), 100)));
+        fields.put("signature", PayFastSignature.sign(fields, passphrase));
+        return new PayFastRedirectResponse(processUrl(), fields, application.getMerchantPaymentId(), simulatorEnabled);
+    }
+
     static boolean isAllowedCallbackUrl(String candidate, String configuredUrl) {
         if (candidate == null || configuredUrl == null || candidate.isBlank() || configuredUrl.isBlank()) return false;
         try {
@@ -139,11 +200,15 @@ public class PayFastSubscriptionService implements PaymentGateway {
 
     private static String appendParam(String url, String key, String value) {
         if (url == null || url.isBlank()) return url;
-        String separator = url.contains("?") ? "&" : "?";
-        return url + separator + key + "=" + URLEncoder.encode(value, StandardCharsets.UTF_8);
+        int fragmentStart = url.indexOf('#');
+        String base = fragmentStart < 0 ? url : url.substring(0, fragmentStart);
+        String fragment = fragmentStart < 0 ? "" : url.substring(fragmentStart);
+        String separator = base.contains("?") ? "&" : "?";
+        return base + separator + key + "=" + URLEncoder.encode(value, StandardCharsets.UTF_8) + fragment;
     }
 
     @Override
+    @Transactional
     public void handleNotification(LinkedHashMap<String, String> posted, String sourceIp) {
         if (merchantId == null || merchantId.isBlank() || merchantKey == null || merchantKey.isBlank()) {
             log.error("Ignoring PayFast ITN because PayFast credentials are not configured");
@@ -165,6 +230,10 @@ public class PayFastSubscriptionService implements PaymentGateway {
             log.warn("PayFast ITN for {} came from unexpected address {}", paymentId, sourceIp);
             return;
         }
+        if (paymentId.startsWith("APP-")) {
+            handleApplicationPaymentNotification(posted, paymentId);
+            return;
+        }
         Subscription subscription = subscriptionRepository.findByMerchantPaymentId(paymentId).orElse(null);
         if (subscription == null) {
             log.warn("PayFast ITN for unknown payment {}", paymentId);
@@ -182,6 +251,48 @@ public class PayFastSubscriptionService implements PaymentGateway {
             return;
         }
         complete(paymentId, posted.get("pf_payment_id"));
+    }
+
+    private void handleApplicationPaymentNotification(LinkedHashMap<String, String> posted, String paymentId) {
+        Application application = applicationRepository.findByMerchantPaymentIdForUpdate(paymentId).orElse(null);
+        if (application == null) {
+            log.warn("PayFast ITN for unknown application payment {}", paymentId);
+            return;
+        }
+        BigDecimal gross = parseAmount(posted.get("amount_gross"));
+        if (gross == null || application.getPaymentAmount() == null
+                || application.getPaymentAmount().subtract(gross).abs().compareTo(TOLERANCE) > 0
+                || !merchantId.equals(posted.get("merchant_id"))) {
+            log.warn("PayFast ITN for application payment {} failed merchant or amount validation", paymentId);
+            return;
+        }
+        String paymentStatus = posted.get("payment_status");
+        if ("CANCELLED".equals(paymentStatus)) {
+            if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING) {
+                application.setPaymentStatus(ApplicationPaymentStatus.UNPAID);
+                application.setMerchantPaymentId(null);
+                applicationRepository.save(application);
+            }
+            return;
+        }
+        if (!"COMPLETE".equals(paymentStatus) || !confirmWithPayFast(posted)) {
+            log.warn("PayFast did not confirm application payment {}", paymentId);
+            return;
+        }
+        if (application.getStatus() != ApplicationStatus.APPROVED) {
+            log.warn("Ignoring payment {} because its application is no longer approved", paymentId);
+            return;
+        }
+        if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING) {
+            application.setPaymentStatus(ApplicationPaymentStatus.PAID);
+            application.setPfPaymentId(posted.get("pf_payment_id"));
+            application.setPaymentCompletedAt(LocalDateTime.now());
+            Application paid = applicationRepository.save(application);
+            notificationService.createNotification(application.getEvent().getOrganizer(),
+                    "Vendor stall fee paid",
+                    application.getBusinessName() + " paid the stall fee for " + application.getEvent().getTitle() + ".",
+                    "APPLICATION_PAYMENT_COMPLETED", paid.getId());
+        }
     }
 
     @Transactional

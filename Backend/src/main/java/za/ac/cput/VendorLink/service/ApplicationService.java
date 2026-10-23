@@ -14,6 +14,7 @@ import za.ac.cput.VendorLink.repository.UserRepository;
 import za.ac.cput.VendorLink.util.Helper;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,9 +152,23 @@ public class ApplicationService {
                 throw new IllegalStateException("Cannot approve: no stalls available for this event");
             }
             eventRepository.closeIfFull(event.getId(), EventStatus.OPEN, EventStatus.CLOSED);
+            BigDecimal fee = event.getStallFee() == null ? BigDecimal.ZERO : event.getStallFee();
+            application.setPaymentAmount(fee);
+            application.setPaymentStatus(fee.signum() > 0
+                    ? ApplicationPaymentStatus.UNPAID : ApplicationPaymentStatus.NOT_REQUIRED);
+            application.setMerchantPaymentId(null);
+            application.setPfPaymentId(null);
+            application.setPaymentCompletedAt(null);
         } else if (previous == ApplicationStatus.APPROVED) {
+            if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING
+                    || application.getPaymentStatus() == ApplicationPaymentStatus.PAID) {
+                throw new IllegalStateException("This application has a payment in progress or has been paid. Resolve the payment before rejecting it.");
+            }
             eventRepository.releaseStall(event.getId());
             eventRepository.reopenIfSpace(event.getId(), EventStatus.CLOSED, EventStatus.OPEN);
+            application.setPaymentStatus(ApplicationPaymentStatus.NOT_REQUIRED);
+            application.setPaymentAmount(null);
+            application.setMerchantPaymentId(null);
         }
 
         application.setStatus(newStatus);
@@ -165,6 +180,8 @@ public class ApplicationService {
                 application.getVendor(),
                 "Application " + newStatus.name(),
                 "Your application for '" + event.getTitle() + "' has been " + newStatus.name().toLowerCase() +
+                        (newStatus == ApplicationStatus.APPROVED && application.getPaymentStatus() == ApplicationPaymentStatus.UNPAID
+                                ? ". Pay the stall fee from your dashboard to confirm your place" : "") +
                         (reviewNotes != null && !reviewNotes.isBlank() ? ". Note: " + reviewNotes : "."),
                 "APPLICATION_" + newStatus.name(),
                 updated.getId());
@@ -186,6 +203,10 @@ public class ApplicationService {
             throw new IllegalStateException("Only pending or approved applications can be withdrawn");
         }
         if (previous == ApplicationStatus.APPROVED) {
+            if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING
+                    || application.getPaymentStatus() == ApplicationPaymentStatus.PAID) {
+                throw new IllegalStateException("This approved application has a payment in progress or has been paid. Contact the organiser to resolve it before withdrawing.");
+            }
             eventRepository.releaseStall(application.getEvent().getId());
             eventRepository.reopenIfSpace(application.getEvent().getId(), EventStatus.CLOSED, EventStatus.OPEN);
         }

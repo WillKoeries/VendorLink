@@ -317,7 +317,7 @@ function renderApplications() {
       <table class="table">
         <thead><tr>
           <th scope="col">Vendor</th><th scope="col">Event</th><th scope="col">What they sell</th>
-          <th scope="col">Applied</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Action</span></th>
+          <th scope="col">Applied</th><th scope="col">Status</th><th scope="col">Payment</th><th scope="col"><span class="visually-hidden">Action</span></th>
         </tr></thead>
         <tbody>${rows.map(a => `
           <tr>
@@ -326,12 +326,21 @@ function renderApplications() {
             <td><span class="truncate" title="${escapeHtml(a.productsDescription)}">${escapeHtml(a.productsDescription)}</span></td>
             <td class="nowrap">${escapeHtml(formatDate(a.appliedAt.slice(0, 10)))}</td>
             <td>${applicationStatusBadge(a.status)}</td>
+            <td>${applicationPaymentBadge(a)}</td>
             <td><button type="button" class="btn ${a.status === ApplicationStatus.PENDING ? 'btn-primary' : 'btn-secondary'} btn-sm" data-review-id="${a.id}">
               ${a.status === ApplicationStatus.PENDING ? 'Review' : 'View'}</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
     </div>`;
+}
+
+function applicationPaymentBadge(application) {
+  if (application.status !== ApplicationStatus.APPROVED) return '<span class="text-muted">—</span>';
+  if (application.paymentStatus === 'PAID') return '<span class="badge badge-success">Paid</span>';
+  if (application.paymentStatus === 'PENDING') return '<span class="badge badge-warning">Payment in progress</span>';
+  if (application.paymentStatus === 'UNPAID') return `<span class="badge badge-warning">Due ${escapeHtml(formatCurrency(application.paymentAmount))}</span>`;
+  return '<span class="badge badge-neutral">No payment due</span>';
 }
 
 function openReviewModal(applicationId) {
@@ -356,6 +365,7 @@ function openReviewModal(applicationId) {
       <dt>Special requirements</dt><dd>${escapeHtml(a.specialRequirements || 'None')}</dd>
       <dt>Applied</dt><dd>${escapeHtml(formatDateTime(a.appliedAt))}</dd>
       ${a.reviewedAt ? `<dt>Reviewed</dt><dd>${escapeHtml(formatDateTime(a.reviewedAt))}</dd>` : ''}
+      ${a.status === ApplicationStatus.APPROVED ? `<dt>Stall fee payment</dt><dd>${escapeHtml(a.paymentStatus === 'PAID' ? 'Paid' : a.paymentStatus === 'PENDING' ? 'Payment in progress' : a.paymentStatus === 'UNPAID' ? `Due ${formatCurrency(a.paymentAmount)}` : 'No payment due')}</dd>` : ''}
       ${!isPending && a.reviewNotes ? `<dt>Your notes</dt><dd>${escapeHtml(a.reviewNotes)}</dd>` : ''}
     </dl>
     ${isPending && event ? `

@@ -13,12 +13,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.VendorLink.dto.request.SubscriptionRequest;
+import za.ac.cput.VendorLink.dto.request.PaymentCallbackRequest;
 import za.ac.cput.VendorLink.dto.response.PayFastRedirectResponse;
 import za.ac.cput.VendorLink.dto.response.SubscriptionResponse;
 import za.ac.cput.VendorLink.security.CustomUserDetails;
 import za.ac.cput.VendorLink.factory.PaymentGateway;
 import za.ac.cput.VendorLink.factory.PaymentGatewayFactory;
 import za.ac.cput.VendorLink.factory.PaymentProvider;
+import za.ac.cput.VendorLink.service.PayFastSubscriptionService;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -31,6 +33,18 @@ import java.util.LinkedHashMap;
 public class PayFastController {
     private static final Logger log = LoggerFactory.getLogger(PayFastController.class);
     private final PaymentGatewayFactory gatewayFactory;
+    private final PayFastSubscriptionService payFastService;
+
+    @PostMapping("/applications/{applicationId}")
+    public PayFastRedirectResponse startApplicationPayment(
+            @AuthenticationPrincipal CustomUserDetails principal,
+            @PathVariable Long applicationId,
+            @RequestBody(required = false) PaymentCallbackRequest request) {
+        requirePrincipal(principal);
+        return payFastService.beginApplicationPayment(principal.getUserId(), applicationId,
+                request == null ? null : request.returnUrl(),
+                request == null ? null : request.cancelUrl());
+    }
 
     @PostMapping("/subscriptions")
     public PayFastRedirectResponse startSubscription(

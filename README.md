@@ -155,6 +155,10 @@ Paid VendorLink plans utilize PayFast's secure hosted payment portal:
 3. **ITN Confirmation**: PayFast delivers a server-to-server Instant Transaction Notification (ITN) webhook verifying signatures, merchant credentials, and paid amounts.
 4. **Activation**: Upon verification, the subscription transitions atomically from `PENDING` to `COMPLETED`.
 
+## Stall Fee Payments
+
+Vendors apply for a stall before paying. When an organiser approves a paid application, it becomes `UNPAID` and the vendor dashboard shows a Pay button. Checkout amounts are read from the approved application on the server; the application changes to `PAID` only after PayFast's signed ITN is validated. Free events are marked `NOT_REQUIRED`. Flyway migration V2 adds the payment state and references to the existing applications table; existing applications are not billed retroactively.
+
 ---
 
 ## 🔮 Future Enhancements

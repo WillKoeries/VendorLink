@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import za.ac.cput.VendorLink.domain.ApplicationStatus;
+import za.ac.cput.VendorLink.domain.ApplicationPaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,4 +39,7 @@ public class ApplicationResponse {
     private String reviewNotes;
     private LocalDateTime appliedAt;
     private LocalDateTime reviewedAt;
+    private ApplicationPaymentStatus paymentStatus;
+    private BigDecimal paymentAmount;
+    private LocalDateTime paymentCompletedAt;
 }

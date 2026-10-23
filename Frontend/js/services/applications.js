@@ -55,6 +55,9 @@ function normalizeApplication(a) {
     productsDescription: a.productsDescription || '',
     specialRequirements: a.specialRequirements || '',
     status: (a.status || ApplicationStatus.PENDING).toUpperCase(),
+    paymentStatus: (a.paymentStatus || 'NOT_REQUIRED').toUpperCase(),
+    paymentAmount: Number(a.paymentAmount ?? a.stallFee ?? eventObj.stallFee) || 0,
+    paymentCompletedAt: a.paymentCompletedAt || null,
     reviewNotes: a.reviewNotes || '',
     appliedAt: a.appliedAt || new Date().toISOString(),
     reviewedAt: a.reviewedAt || null,
@@ -181,6 +184,23 @@ async function applyForEvent(data) {
     console.error('Failed to apply for event:', err);
     throw err;
   }
+}
+
+async function startApplicationPayment(applicationId, returnUrl, cancelUrl) {
+  const session = getSession();
+  if (!session) throw new Error('Please log in to pay this stall fee.');
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    throw new Error('Stall payments are not available in demo mode.');
+  }
+
+  const response = await fetch(`/api/payfast/applications/${encodeURIComponent(applicationId)}`, {
+    method: 'POST',
+    headers: getAppAuthHeaders(),
+    body: JSON.stringify({ returnUrl, cancelUrl })
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.message || 'Could not start the stall payment.');
+  return result.data || result;
 }
 
 let _vlMyAppsCache = null;
