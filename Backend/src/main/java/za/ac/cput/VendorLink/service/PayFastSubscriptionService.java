@@ -150,7 +150,7 @@ public class PayFastSubscriptionService implements PaymentGateway {
         if (amount == null || amount.signum() <= 0) {
             throw new IllegalStateException("No payment is due for this application");
         }
-        if (amount.compareTo(new BigDecimal("5.00")) < 0) {
+        if (!sandbox && amount.compareTo(new BigDecimal("5.00")) < 0) {
             throw new IllegalStateException("PayFast payments must be at least R5.00. Ask the organiser to update the stall fee.");
         }
 
