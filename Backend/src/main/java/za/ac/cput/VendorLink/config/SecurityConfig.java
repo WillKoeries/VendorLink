@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/events/**").hasAnyRole("ORGANIZER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasAnyRole("ORGANIZER", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/applications/*/status").hasAnyRole("ORGANIZER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/applications/*/refund-processed").hasAnyRole("ORGANIZER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/applications/organizer").hasAnyRole("ORGANIZER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/applications/event/*/my").hasAnyRole("VENDOR", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/applications/event/*").hasAnyRole("ORGANIZER", "ADMIN")

@@ -98,7 +98,6 @@ async function markAllNotificationsRead() {
   }
 }
 
-/** Where clicking a notification should take the user. */
 function getNotificationLink(notification, role) {
   switch (notification.type) {
     case NotificationType.EVENT_UPDATED:
@@ -112,13 +111,14 @@ function getNotificationLink(notification, role) {
   }
 }
 
-/** Icon and colour for each notification type. */
 function getNotificationStyle(type) {
   const styles = {
     APPLICATION_SUBMITTED: { icon: 'fa-file-signature', tone: 'primary' },
     APPLICATION_APPROVED: { icon: 'fa-circle-check', tone: 'success' },
     APPLICATION_REJECTED: { icon: 'fa-circle-xmark', tone: 'danger' },
     APPLICATION_CANCELLED: { icon: 'fa-rotate-left', tone: 'warning' },
+    APPLICATION_REFUND_REQUESTED: { icon: 'fa-money-bill-transfer', tone: 'warning' },
+    APPLICATION_REFUND_COMPLETED: { icon: 'fa-circle-check', tone: 'success' },
     EVENT_UPDATED: { icon: 'fa-calendar-day', tone: 'primary' },
     EVENT_CANCELLED: { icon: 'fa-calendar-xmark', tone: 'danger' }
   };
@@ -134,7 +134,6 @@ function notificationItemHtml(notification, role) {
   </a>`;
 }
 
-// Global window assignments
 window.getMyNotifications = getMyNotifications;
 window.markNotificationRead = markNotificationRead;
 window.markAllNotificationsRead = markAllNotificationsRead;

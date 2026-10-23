@@ -203,15 +203,61 @@ public class ApplicationService {
             throw new IllegalStateException("Only pending or approved applications can be withdrawn");
         }
         if (previous == ApplicationStatus.APPROVED) {
-            if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING
-                    || application.getPaymentStatus() == ApplicationPaymentStatus.PAID) {
-                throw new IllegalStateException("This approved application has a payment in progress or has been paid. Contact the organiser to resolve it before withdrawing.");
-            }
             eventRepository.releaseStall(application.getEvent().getId());
             eventRepository.reopenIfSpace(application.getEvent().getId(), EventStatus.CLOSED, EventStatus.OPEN);
+            if (application.getPaymentStatus() == ApplicationPaymentStatus.PAID
+                    || application.getPaymentStatus() == ApplicationPaymentStatus.PENDING) {
+                // Keep the payment reference so a late PayFast ITN can still be reconciled.
+                application.setPaymentStatus(ApplicationPaymentStatus.REFUND_PENDING);
+            } else if (application.getPaymentStatus() == ApplicationPaymentStatus.UNPAID) {
+                application.setPaymentStatus(ApplicationPaymentStatus.CANCELLED);
+                application.setMerchantPaymentId(null);
+            }
         }
 
         application.setStatus(ApplicationStatus.CANCELLED);
-        applicationRepository.save(application);
+        Application cancelled = applicationRepository.save(application);
+        notificationService.createNotification(
+                application.getVendor(),
+                "Application cancelled",
+                application.getPaymentStatus() == ApplicationPaymentStatus.REFUND_PENDING
+                        ? "Your approved application for '" + application.getEvent().getTitle()
+                            + "' was cancelled. A refund has been requested and the organiser must process it through PayFast."
+                        : "Your application for '" + application.getEvent().getTitle() + "' was cancelled.",
+                "APPLICATION_CANCELLED",
+                cancelled.getId());
+        boolean refundPending = application.getPaymentStatus() == ApplicationPaymentStatus.REFUND_PENDING;
+        notificationService.createNotification(
+                application.getEvent().getOrganizer(),
+                refundPending ? "Stall fee refund required" : "Vendor cancelled application",
+                refundPending
+                        ? application.getBusinessName() + " cancelled their approved application for '"
+                            + application.getEvent().getTitle() + "'. Process the R"
+                            + application.getPaymentAmount() + " refund in PayFast, then mark it processed."
+                        : application.getBusinessName() + " cancelled their application for '"
+                            + application.getEvent().getTitle() + "'. The stall has been released.",
+                refundPending ? "APPLICATION_REFUND_REQUESTED" : "APPLICATION_CANCELLED",
+                cancelled.getId());
+    }
+
+    @Transactional
+    public ApplicationResponse markRefundProcessed(Long applicationId, Long organizerId) {
+        Application application = applicationRepository.findByIdForUpdate(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
+        if (!application.getEvent().getOrganizer().getId().equals(organizerId)) {
+            throw new UnauthorizedAccessException("update refund for", "application");
+        }
+        if (application.getStatus() != ApplicationStatus.CANCELLED
+                || application.getPaymentStatus() != ApplicationPaymentStatus.REFUND_PENDING) {
+            throw new IllegalStateException("This application does not have a pending refund");
+        }
+        application.setPaymentStatus(ApplicationPaymentStatus.REFUNDED);
+        Application updated = applicationRepository.save(application);
+        notificationService.createNotification(application.getVendor(),
+                "Stall fee refunded",
+                "The organiser marked your refund for '" + application.getEvent().getTitle()
+                        + "' as processed in PayFast.",
+                "APPLICATION_REFUND_COMPLETED", updated.getId());
+        return Helper.toApplicationResponse(updated);
     }
 }

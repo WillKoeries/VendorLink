@@ -4,5 +4,8 @@ public enum ApplicationPaymentStatus {
     NOT_REQUIRED,
     UNPAID,
     PENDING,
-    PAID
+    PAID,
+    REFUND_PENDING,
+    REFUNDED,
+    CANCELLED
 }

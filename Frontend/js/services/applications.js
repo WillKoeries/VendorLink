@@ -4,7 +4,7 @@
  * A vendor applies for a stall at an event; the event's organiser reviews it.
  * Status flow (UML ApplicationStatus):
  *   PENDING → APPROVED | REJECTED   (organiser decides)
- *   PENDING → CANCELLED             (vendor withdraws, or the event is cancelled)
+ *   PENDING | APPROVED → CANCELLED  (vendor withdraws; paid fees require a refund)
  *
  * Fully integrated with Spring Boot REST API (/api/applications).
  */
@@ -298,15 +298,33 @@ async function cancelApplication(id) {
     if (!application || application.vendorId !== session.userId) {
       throw new Error('Application not found.');
     }
-    if (application.status !== ApplicationStatus.PENDING) {
-      throw new Error('Only pending applications can be withdrawn.');
+    if (![ApplicationStatus.PENDING, ApplicationStatus.APPROVED].includes(application.status)) {
+      throw new Error('Only pending or approved applications can be cancelled.');
     }
+    const previousStatus = application.status;
     application.status = ApplicationStatus.CANCELLED;
 
     const event = db.events.find(e => e.id === application.eventId);
+    if (previousStatus === ApplicationStatus.APPROVED && event) {
+      event.availableStalls = Math.min(event.totalStalls, (event.availableStalls || 0) + 1);
+      if (event.status === EventStatus.CLOSED) event.status = EventStatus.OPEN;
+      if (['PAID', 'PENDING'].includes(application.paymentStatus)) {
+        application.paymentStatus = 'REFUND_PENDING';
+      } else if (application.paymentStatus === 'UNPAID') {
+        application.paymentStatus = 'CANCELLED';
+      }
+    }
     if (event) {
       addDemoNotification(db, event.organizerId, NotificationType.APPLICATION_CANCELLED, application.id,
-        'Application withdrawn', `${application.businessName} withdrew their application for ${event.title}.`);
+        previousStatus === ApplicationStatus.APPROVED && application.paymentStatus === 'REFUND_PENDING'
+          ? 'Stall fee refund required' : 'Application cancelled',
+        previousStatus === ApplicationStatus.APPROVED && application.paymentStatus === 'REFUND_PENDING'
+          ? `${application.businessName} cancelled their approved stall for ${event.title}. Process their refund through PayFast.`
+          : `${application.businessName} cancelled their application for ${event.title}.`);
+      if (application.paymentStatus === 'REFUND_PENDING') {
+        addDemoNotification(db, session.userId, NotificationType.APPLICATION_CANCELLED, application.id,
+          'Refund requested', `The organiser must process your refund for ${event.title} through PayFast.`);
+      }
     }
     saveDemoDb(db);
     return attachApplicationRelations(application, db);
@@ -333,6 +351,33 @@ async function cancelApplication(id) {
 
   _vlMyAppsCache = null;
   return { id: Number(id), status: ApplicationStatus.CANCELLED };
+}
+
+async function markApplicationRefundProcessed(id) {
+  const session = getSession();
+  if (!session) throw new Error('Please log in.');
+  if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.DEMO_MODE) {
+    await demoDelay(300);
+    const db = getDemoDb();
+    const application = db.applications.find(a => a.id === Number(id));
+    const event = application && db.events.find(e => e.id === application.eventId);
+    if (!application || !event || !canManageEvent(event, session)) throw new Error('Application not found.');
+    if (application.paymentStatus !== 'REFUND_PENDING') throw new Error('This application does not have a pending refund.');
+    application.paymentStatus = 'REFUNDED';
+    addDemoNotification(db, application.vendorId, 'APPLICATION_REFUND_COMPLETED', application.id,
+      'Stall fee refunded', `The organiser marked your refund for ${event.title} as processed in PayFast.`);
+    saveDemoDb(db);
+    return attachApplicationRelations(application, db);
+  }
+  const response = await fetch(`/api/applications/${id}/refund-processed`, {
+    method: 'POST', headers: getAppAuthHeaders()
+  });
+  if (!response.ok) {
+    let message = `Failed to update refund status: HTTP ${response.status}`;
+    try { message = (await response.json()).message || message; } catch (e) { }
+    throw new Error(message);
+  }
+  return normalizeApplication(await response.json());
 }
 
 // ---------- Organiser actions ----------
@@ -465,6 +510,7 @@ window.applyForEvent = applyForEvent;
 window.getMyApplications = getMyApplications;
 window.getMyApplicationForEvent = getMyApplicationForEvent;
 window.cancelApplication = cancelApplication;
+window.markApplicationRefundProcessed = markApplicationRefundProcessed;
 window.getOrganizerApplications = getOrganizerApplications;
 window.reviewApplication = reviewApplication;
 window.validateApplicationData = validateApplicationData;

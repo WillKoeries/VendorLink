@@ -336,6 +336,9 @@ function renderApplications() {
 }
 
 function applicationPaymentBadge(application) {
+  if (application.paymentStatus === 'REFUND_PENDING') return '<span class="badge badge-warning">Refund requested</span>';
+  if (application.paymentStatus === 'REFUNDED') return '<span class="badge badge-success">Refunded</span>';
+  if (application.paymentStatus === 'CANCELLED') return '<span class="badge badge-neutral">Payment cancelled</span>';
   if (application.status !== ApplicationStatus.APPROVED) return '<span class="text-muted">—</span>';
   if (application.paymentStatus === 'PAID') return '<span class="badge badge-success">Paid</span>';
   if (application.paymentStatus === 'PENDING') return '<span class="badge badge-warning">Payment in progress</span>';
@@ -365,7 +368,7 @@ function openReviewModal(applicationId) {
       <dt>Special requirements</dt><dd>${escapeHtml(a.specialRequirements || 'None')}</dd>
       <dt>Applied</dt><dd>${escapeHtml(formatDateTime(a.appliedAt))}</dd>
       ${a.reviewedAt ? `<dt>Reviewed</dt><dd>${escapeHtml(formatDateTime(a.reviewedAt))}</dd>` : ''}
-      ${a.status === ApplicationStatus.APPROVED ? `<dt>Stall fee payment</dt><dd>${escapeHtml(a.paymentStatus === 'PAID' ? 'Paid' : a.paymentStatus === 'PENDING' ? 'Payment in progress' : a.paymentStatus === 'UNPAID' ? `Due ${formatCurrency(a.paymentAmount)}` : 'No payment due')}</dd>` : ''}
+      ${a.paymentStatus && a.paymentStatus !== 'NOT_REQUIRED' ? `<dt>Stall fee payment</dt><dd>${escapeHtml(a.paymentStatus === 'PAID' ? 'Paid' : a.paymentStatus === 'PENDING' ? 'Payment in progress' : a.paymentStatus === 'UNPAID' ? `Due ${formatCurrency(a.paymentAmount)}` : a.paymentStatus === 'REFUND_PENDING' ? 'Refund requested — process through PayFast' : a.paymentStatus === 'REFUNDED' ? 'Refunded' : a.paymentStatus === 'CANCELLED' ? 'Payment cancelled' : 'No payment due')}</dd>` : ''}
       ${!isPending && a.reviewNotes ? `<dt>Your notes</dt><dd>${escapeHtml(a.reviewNotes)}</dd>` : ''}
     </dl>
     ${isPending && event ? `
@@ -383,7 +386,9 @@ function openReviewModal(applicationId) {
   document.getElementById('reviewModalFooter').innerHTML = isPending
     ? `<button type="button" class="btn btn-danger" data-decision="REJECTED" data-application-id="${a.id}"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Reject</button>
        <button type="button" class="btn btn-success" data-decision="APPROVED" data-application-id="${a.id}" ${full ? 'disabled' : ''}><i class="fa-solid fa-check" aria-hidden="true"></i> Approve</button>`
-    : '<button type="button" class="btn btn-secondary" data-close-modal>Close</button>';
+    : `${a.paymentStatus === 'REFUND_PENDING'
+      ? `<button type="button" class="btn btn-primary" data-refund-processed="${a.id}"><i class="fa-solid fa-check" aria-hidden="true"></i> Mark refund processed</button>` : ''}
+       <button type="button" class="btn btn-secondary" data-close-modal>Close</button>`;
 
   openModal('reviewModal');
 }
@@ -402,6 +407,28 @@ async function submitDecision(button) {
     showToast(err.message, 'error');
     setButtonLoading(button, false);
     document.querySelectorAll('[data-decision]').forEach(b => { b.disabled = false; });
+  }
+}
+
+async function submitRefundProcessed(button) {
+  const confirmed = await confirmDialog({
+    title: 'Confirm refund processed?',
+    message: 'Use this only after the refund is completed in PayFast. The vendor will be notified.',
+    confirmText: 'Yes, refund is complete',
+    cancelText: 'Not yet'
+  });
+  if (!confirmed) return;
+  button.disabled = true;
+  setButtonLoading(button, true, 'Saving…');
+  try {
+    await markApplicationRefundProcessed(button.dataset.refundProcessed);
+    closeModal('reviewModal');
+    showToast('Refund marked as processed. The vendor has been notified.', 'success');
+    await loadDashboard();
+  } catch (err) {
+    showToast(err.message, 'error');
+    button.disabled = false;
+    setButtonLoading(button, false);
   }
 }
 
@@ -783,6 +810,9 @@ function setupListeners() {
 
     const decision = e.target.closest('[data-decision]');
     if (decision) return submitDecision(decision);
+
+    const refundProcessed = e.target.closest('[data-refund-processed]');
+    if (refundProcessed) return submitRefundProcessed(refundProcessed);
 
     const edit = e.target.closest('[data-edit-event]');
     if (edit) return openEventModal(edit.dataset.editEvent);

@@ -117,6 +117,8 @@ function getNotificationStyle(type) {
     APPLICATION_APPROVED: { icon: 'fa-circle-check', tone: 'success' },
     APPLICATION_REJECTED: { icon: 'fa-circle-xmark', tone: 'danger' },
     APPLICATION_CANCELLED: { icon: 'fa-rotate-left', tone: 'warning' },
+    APPLICATION_REFUND_REQUESTED: { icon: 'fa-money-bill-transfer', tone: 'warning' },
+    APPLICATION_REFUND_COMPLETED: { icon: 'fa-circle-check', tone: 'success' },
     EVENT_UPDATED: { icon: 'fa-calendar-day', tone: 'primary' },
     EVENT_CANCELLED: { icon: 'fa-calendar-xmark', tone: 'danger' }
   };

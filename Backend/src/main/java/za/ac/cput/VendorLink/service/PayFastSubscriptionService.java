@@ -268,10 +268,23 @@ public class PayFastSubscriptionService implements PaymentGateway {
         }
         String paymentStatus = posted.get("payment_status");
         if ("CANCELLED".equals(paymentStatus)) {
-            if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING) {
-                application.setPaymentStatus(ApplicationPaymentStatus.UNPAID);
-                application.setMerchantPaymentId(null);
-                applicationRepository.save(application);
+            if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING
+                    || application.getPaymentStatus() == ApplicationPaymentStatus.REFUND_PENDING) {
+                if (application.getStatus() == ApplicationStatus.CANCELLED) {
+                    if (application.getPaymentCompletedAt() == null) {
+                        application.setPaymentStatus(ApplicationPaymentStatus.CANCELLED);
+                        Application cancelledPayment = applicationRepository.save(application);
+                        notificationService.createNotification(application.getVendor(),
+                                "No refund is due",
+                                "PayFast confirmed that payment for your cancelled application to '"
+                                        + application.getEvent().getTitle() + "' did not complete, so no refund is needed.",
+                                "APPLICATION_PAYMENT_CANCELLED", cancelledPayment.getId());
+                    }
+                } else {
+                    application.setPaymentStatus(ApplicationPaymentStatus.UNPAID);
+                    application.setMerchantPaymentId(null);
+                    applicationRepository.save(application);
+                }
             }
             return;
         }
@@ -279,19 +292,29 @@ public class PayFastSubscriptionService implements PaymentGateway {
             log.warn("PayFast did not confirm application payment {}", paymentId);
             return;
         }
-        if (application.getStatus() != ApplicationStatus.APPROVED) {
-            log.warn("Ignoring payment {} because its application is no longer approved", paymentId);
-            return;
-        }
-        if (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING) {
-            application.setPaymentStatus(ApplicationPaymentStatus.PAID);
+        if (application.getPaymentCompletedAt() == null
+                && (application.getPaymentStatus() == ApplicationPaymentStatus.PENDING
+                || application.getPaymentStatus() == ApplicationPaymentStatus.REFUND_PENDING)) {
+            application.setPaymentStatus(application.getStatus() == ApplicationStatus.CANCELLED
+                    ? ApplicationPaymentStatus.REFUND_PENDING : ApplicationPaymentStatus.PAID);
             application.setPfPaymentId(posted.get("pf_payment_id"));
             application.setPaymentCompletedAt(LocalDateTime.now());
             Application paid = applicationRepository.save(application);
-            notificationService.createNotification(application.getEvent().getOrganizer(),
-                    "Vendor stall fee paid",
-                    application.getBusinessName() + " paid the stall fee for " + application.getEvent().getTitle() + ".",
-                    "APPLICATION_PAYMENT_COMPLETED", paid.getId());
+            String title = application.getStatus() == ApplicationStatus.CANCELLED
+                    ? "Refund required for late payment" : "Vendor stall fee paid";
+            String message = application.getStatus() == ApplicationStatus.CANCELLED
+                    ? application.getBusinessName() + " completed payment after cancelling their application for "
+                        + application.getEvent().getTitle() + ". Process the refund in PayFast."
+                    : application.getBusinessName() + " paid the stall fee for " + application.getEvent().getTitle() + ".";
+            notificationService.createNotification(application.getEvent().getOrganizer(), title, message,
+                    application.getStatus() == ApplicationStatus.CANCELLED
+                            ? "APPLICATION_REFUND_REQUESTED" : "APPLICATION_PAYMENT_COMPLETED", paid.getId());
+            if (application.getStatus() == ApplicationStatus.CANCELLED) {
+                notificationService.createNotification(application.getVendor(), "Refund required",
+                        "Your payment for the cancelled application to '" + application.getEvent().getTitle()
+                                + "' completed late. The organiser has been asked to process your refund through PayFast.",
+                        "APPLICATION_REFUND_REQUESTED", paid.getId());
+            }
         }
     }
 

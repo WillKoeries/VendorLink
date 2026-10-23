@@ -104,4 +104,13 @@ public class ApplicationController {
         applicationService.cancelApplication(id, userDetails.getUserId());
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/refund-processed")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMIN')")
+    public ResponseEntity<ApplicationResponse> markRefundProcessed(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(applicationService.markRefundProcessed(id, userDetails.getUserId()));
+    }
 }

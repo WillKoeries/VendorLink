@@ -220,13 +220,15 @@ function renderApplications() {
 
 function applicationCardHtml(a) {
   const e = a.event;
-  const canWithdraw = a.status === ApplicationStatus.PENDING;
+  const canWithdraw = [ApplicationStatus.PENDING, ApplicationStatus.APPROVED].includes(a.status);
   const paymentDue = a.status === ApplicationStatus.APPROVED
     && ['UNPAID', 'PENDING'].includes(a.paymentStatus);
   const note = a.reviewNotes
     ? `<div class="review-note"><strong>Organiser’s note:</strong> ${escapeHtml(a.reviewNotes)}</div>` : '';
   const eventCancelled = e && e.status === EventStatus.CANCELLED
     ? '<div class="review-note"><strong>This event was cancelled by the organiser.</strong></div>' : '';
+  const refundNote = a.status === ApplicationStatus.CANCELLED && a.paymentStatus === 'REFUND_PENDING'
+    ? '<div class="review-note"><strong>Refund requested.</strong> The organiser must process this through PayFast.</div>' : '';
 
   return `
     <article class="application-card">
@@ -239,16 +241,20 @@ function applicationCardHtml(a) {
                  <span><i class="fa-solid fa-wallet" aria-hidden="true"></i>${escapeHtml(formatCurrency(e.stallFee))}</span>` : ''}
           <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Applied ${escapeHtml(formatDate(a.appliedAt.slice(0, 10)))}</span>
         </div>
-        ${note}${eventCancelled}
+        ${note}${eventCancelled}${refundNote}
       </div>
       <div class="application-side">
         ${applicationStatusBadge(a.status)}
         ${a.status === ApplicationStatus.APPROVED && a.paymentStatus === 'PAID'
           ? '<span class="badge badge-success"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Paid</span>' : ''}
+        ${a.status === ApplicationStatus.CANCELLED && a.paymentStatus === 'REFUND_PENDING'
+          ? '<span class="badge badge-warning"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Refund requested</span>' : ''}
+        ${a.status === ApplicationStatus.CANCELLED && a.paymentStatus === 'REFUNDED'
+          ? '<span class="badge badge-success"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Refunded</span>' : ''}
         <div class="application-actions">
           ${e ? `<a class="btn btn-secondary btn-sm" href="event-details.html?id=${e.id}">View event</a>` : ''}
           ${paymentDue ? `<button type="button" class="btn btn-primary btn-sm" data-pay-application="${a.id}"><i class="fa-solid fa-wallet" aria-hidden="true"></i> ${a.paymentStatus === 'PENDING' ? 'Continue payment' : `Pay ${escapeHtml(formatCurrency(a.paymentAmount))}`}</button>` : ''}
-          ${canWithdraw ? `<button type="button" class="btn btn-danger btn-sm" data-withdraw-id="${a.id}">Withdraw</button>` : ''}
+          ${canWithdraw ? `<button type="button" class="btn btn-danger btn-sm" data-withdraw-id="${a.id}">${a.status === ApplicationStatus.APPROVED ? 'Cancel stall' : 'Withdraw'}</button>` : ''}
         </div>
       </div>
     </article>`;
@@ -258,16 +264,20 @@ async function withdrawApplication(id) {
   const application = state.applications.find(a => a.id === Number(id));
   if (!application) return;
   const ok = await confirmDialog({
-    title: 'Withdraw this application?',
-    message: `Your application for ${application.event ? application.event.title : 'this event'} will be cancelled and the organiser will be told. You can apply again later if stalls are still available.`,
-    confirmText: 'Withdraw application',
+    title: application.status === ApplicationStatus.APPROVED ? 'Cancel this approved stall?' : 'Withdraw this application?',
+    message: application.status === ApplicationStatus.APPROVED
+      ? `Your approved stall for ${application.event ? application.event.title : 'this event'} will be cancelled and released. If you have paid or a payment is still completing, a refund will be requested from the organiser to process through PayFast.`
+      : `Your application for ${application.event ? application.event.title : 'this event'} will be cancelled and the organiser will be told.`,
+    confirmText: application.status === ApplicationStatus.APPROVED ? 'Cancel stall' : 'Withdraw application',
     cancelText: 'Keep it',
     danger: true
   });
   if (!ok) return;
   try {
     await cancelApplication(application.id);
-    showToast('Your application was withdrawn.', 'success');
+    showToast(application.status === ApplicationStatus.APPROVED && ['PAID', 'PENDING'].includes(application.paymentStatus)
+      ? 'Your stall was cancelled. The organiser has been asked to process your refund through PayFast.'
+      : 'Your application was withdrawn.', 'success');
     await loadDashboard();
   } catch (err) {
     showToast(err.message, 'error');
